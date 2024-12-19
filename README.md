@@ -113,3 +113,65 @@ For the latest updates, strategy sharing, and community discussions, join our QQ
 ---  
 
 
+### **A Note to Fellow Developers**  
+
+Thank you for taking an interest in this project!  
+
+During the development of this Bloons TD 6 automation script, I have done my best to implement its core functionalities. However, I am aware of my limitations, and I want to humbly share a few points with you:  
+
+1. **Limited Code Comments**  
+   Due to time constraints, the code might lack sufficient comments. Some parts of the logic may not be immediately clear. If you encounter any confusion while reading the code, please feel free to reach out with questions or suggestions!  
+
+2. **Imperfect Features**  
+   While the script performs basic automation tasks, there is still room for improvement. Some edge cases might be unhandled, or certain implementations may not be the most efficient. Your input will be invaluable for refining the project.  
+
+3. **Open Collaboration**  
+   I hope this project can serve as a starting point for community collaboration. If you have optimization ideas, feature proposals, or bug fixes, I warmly welcome your PRs or participation in discussions.  
+
+4. **Thank You for Your Understanding**  
+   As a developer with limited experience, I acknowledge that there are inevitable mistakes or oversights in my work. I hope for your understanding and patience as we work together to make this tool even better.  
+
+---
+
+### **Acknowledgments**  
+
+I sincerely thank every developer willing to contribute to this project. Your support and expertise will make this tool more robust and enhance the experience for players.  
+
+
+---
+
+**开发者说明**  
+**Notes for Developers**  
+
+---
+
+### **致开发者的一封信**  
+
+感谢各位开发者关注和支持这个项目！  
+
+在开发这款气球塔防6自动化脚本的过程中，我尽力实现了多个功能模块，但也深知自身能力的局限性。以下几点需要特别说明：  
+
+1. **代码注释不足**  
+   由于开发时间有限，代码中可能存在注释不足的问题，部分逻辑可能难以直接理解。如果您在阅读代码时遇到困惑，欢迎随时提出疑问或建议！  
+
+2. **功能实现尚不完善**  
+   虽然脚本实现了基本的自动化功能，但仍有改进空间。例如，某些功能可能存在边界情况未处理的问题，或者效率不够高。您的宝贵意见将是完善此项目的关键。  
+
+3. **开放合作**  
+   我衷心希望这个项目不仅仅是一个工具，而是能够成为一个开发者社区合作的起点。如果您有任何优化建议、代码改进或者功能拓展的想法，请随时提交 PR 或加入讨论。  
+
+4. **期待您的包容**  
+   作为一名普通的开发者，我在编写代码时不可避免地犯了一些错误或疏漏。希望各位开发者能够包容这些不足之处，并帮助这个项目成长为一个更加优秀的工具。  
+
+---
+
+### **致谢**  
+
+感谢每一位愿意参与到这个项目中的开发者，您的支持和贡献将使这个项目更加完善，也将为玩家带来更好的体验！  
+
+QQ交流群：**960225891**  
+期待与您交流合作！  
+
+--- 
+
+
