@@ -22,7 +22,6 @@ namespace BTD6AutoCommunity
 {
     internal class GetGameData
     {
-        //private static string outputFilePath = "game_status.txt";
         private Dictionary<int, Mat> digitTemplates;
         private Mat yellowBlockTemplates;
         private IntPtr hWnd;
@@ -30,71 +29,34 @@ namespace BTD6AutoCommunity
         private DisPlayMouseCoordinates.POINT clientTopLeft;
         private int gameDpi;
         private double windowdpi;
-        public GetGameData(double mydpi, int mygameDpi, IntPtr myhWnd)
+        public GetGameData(double mydpi, int mygameDpi, IntPtr myhWnd, int mode) // mode = 1 仅颜色获取 mode = 2 游戏数据获取    
         {
             windowdpi = mydpi;
             gameDpi = mygameDpi;
             hWnd = myhWnd;
-            digitTemplates = new Dictionary<int, Mat>();
             if (GetClientRect(hWnd, out clientRect))
             {
                 clientTopLeft.X = clientRect.Left;
                 clientTopLeft.Y = clientRect.Top;
                 DisPlayMouseCoordinates.ClientToScreen(hWnd, ref clientTopLeft);
             }
-            for (int i = 0; i <= 9; i++)
+            if (mode == 2) // 游戏数据获取
             {
-                if (gameDpi == 0) // 1920x1080
+                digitTemplates = new Dictionary<int, Mat>();
+                for (int i = 0; i <= 9; i++)
                 {
-                    string templatePath = $@"data\templates\digits\digit_{i}.png"; // 模板图片路径
-                    digitTemplates.Add(i, Cv2.ImRead(templatePath, ImreadModes.Unchanged));
-                }
-                else // 1280x720
-                {
-                    string templatePath = $@"data\templates\digits\digit_1{i}.png"; // 模板图片路径
-                    digitTemplates.Add(i, Cv2.ImRead(templatePath, ImreadModes.Unchanged));
+                    if (gameDpi == 0) // 1920x1080
+                    {
+                        string templatePath = $@"data\templates\digits\digit_{i}.png"; // 模板图片路径
+                        digitTemplates.Add(i, Cv2.ImRead(templatePath, ImreadModes.Unchanged));
+                    }
+                    else // 1280x720
+                    {
+                        string templatePath = $@"data\templates\digits\digit_1{i}.png"; // 模板图片路径
+                        digitTemplates.Add(i, Cv2.ImRead(templatePath, ImreadModes.Unchanged));
+                    }
                 }
             }
-        }
-
-        private static (float, float, float) RGBToHSV(Color color)
-        {
-            float r = color.R / 255.0f;
-            float g = color.G / 255.0f;
-            float b = color.B / 255.0f;
-
-            float max = Math.Max(r, Math.Max(g, b));
-            float min = Math.Min(r, Math.Min(g, b));
-            float h, s, v = max; // v is the value (brightness)
-
-            float d = max - min;
-            s = max == 0 ? 0 : d / max; // s is the saturation
-
-            //计算色相
-            if (max == min)
-            {
-                h = 0; // achromatic
-            }
-            else
-            {
-                if (max == r)
-                {
-                    h = (g - b) / d + (g < b ? 6 : 0);
-                }
-                else if (max == g)
-                {
-                    h = (b - r) / d + 2;
-                }
-                else // max == b
-                {
-                    h = (r - g) / d + 4;
-                }
-                h /= 6;
-            }
-
-            // 将色相转化为度数
-            h *= 360;
-            return (h, s, v);
         }
 
         public List<string> GetCurrentGameData(bool ifContinue) // 自由游戏
@@ -167,12 +129,19 @@ namespace BTD6AutoCommunity
                 goldNumberArea.X += ((gameDpi == 0) ? 390 : 260);
                 lifeNumberArea.X += ((gameDpi == 0) ? 390 : 260);
             }
-            string roundNumber = GetNumberFromScreenArea(roundNumberArea);
-            string goldNumber = GetNumberFromScreenArea(goldNumberArea);
-            string lifeNumber = GetNumberFromScreenArea(lifeNumberArea);
-            gameData.Add(roundNumber);
-            gameData.Add(goldNumber);
-            gameData.Add(lifeNumber);
+            // 创建任务数组
+            Task<string>[] tasks = new Task<string>[3];
+            tasks[0] = Task.Run(() => GetNumberFromScreenArea(roundNumberArea));
+            tasks[1] = Task.Run(() => GetNumberFromScreenArea(goldNumberArea));
+            tasks[2] = Task.Run(() => GetNumberFromScreenArea(lifeNumberArea));
+
+            // 等待所有任务完成
+            Task.WaitAll(tasks);
+
+            // 将识别结果添加到列表
+            gameData.Add(tasks[0].Result);
+            gameData.Add(tasks[1].Result);
+            gameData.Add(tasks[2].Result);
             // 将识别结果写入文件
             //string status = $"Round: {roundNumber}, Gold: {goldNumber}, Life: {lifeNumber}";
             //File.WriteAllText(outputFilePath, status);
@@ -201,7 +170,7 @@ namespace BTD6AutoCommunity
             }
         }
 
-        private Color GetGameColor(int x, int y)
+        public Color GetGameColor(int x, int y)
         {
             using (Bitmap bitmap = new Bitmap(1, 1))
             {
@@ -444,7 +413,7 @@ namespace BTD6AutoCommunity
                 }
                 else
                 {
-                    OpenCvSharp.Size size = new OpenCvSharp.Size((int)(83 * 0.662), (int)(47 * 0.662));
+                    OpenCvSharp.Size size = new OpenCvSharp.Size((int)(83 * 0.714), (int)(47 * 0.714));
                     Cv2.Resize(image, image, size);
                 }
                 //Cv2.ImShow("123", image);
@@ -471,10 +440,6 @@ namespace BTD6AutoCommunity
                         //maxVals.Add(maxVal);
                         Rect rect = new Rect(maxLoc.X, maxLoc.Y, (int)(template.Value.Width * 0.9), (int)(template.Value.Height * 0.9));
                         Cv2.Rectangle(image, rect, Scalar.Green, -1);
-                        //OpenCvSharp.Point Center;
-                        //Center.X = maxLoc.X + template.Value.Width / 2;
-                        //Center.Y = maxLoc.Y + template.Value.Height / 2;
-                        //Cv2.FloodFill(result, maxLoc, new Scalar(0));
                     }
                     else
                     {

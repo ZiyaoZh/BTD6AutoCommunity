@@ -193,7 +193,6 @@
             this.OperationsLV = new System.Windows.Forms.ListView();
             this.脚本名 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.treeView1 = new System.Windows.Forms.TreeView();
-            this.DisplayMouseTM = new System.Windows.Forms.Timer(this.components);
             this.GetGameDataTM = new System.Windows.Forms.Timer(this.components);
             this.ExecuteCircleTM = new System.Windows.Forms.Timer(this.components);
             this.ExecuteCollectionTM = new System.Windows.Forms.Timer(this.components);
@@ -1540,7 +1539,6 @@
             0,
             0,
             0});
-            this.GetGameDataUD.ValueChanged += new System.EventHandler(this.GetGameDataUD_ValueChanged);
             // 
             // label8
             // 
@@ -2362,7 +2360,7 @@
             this.tableLayoutPanel14.ColumnCount = 3;
             this.tableLayoutPanel14.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45.49356F));
             this.tableLayoutPanel14.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 54.50644F));
-            this.tableLayoutPanel14.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 179F));
+            this.tableLayoutPanel14.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 211F));
             this.tableLayoutPanel14.Controls.Add(this.OperationsTV, 0, 0);
             this.tableLayoutPanel14.Controls.Add(this.tableLayoutPanel15, 2, 0);
             this.tableLayoutPanel14.Controls.Add(this.OperationsLV, 1, 0);
@@ -2381,7 +2379,7 @@
             this.OperationsTV.Dock = System.Windows.Forms.DockStyle.Fill;
             this.OperationsTV.Location = new System.Drawing.Point(3, 3);
             this.OperationsTV.Name = "OperationsTV";
-            this.OperationsTV.Size = new System.Drawing.Size(225, 627);
+            this.OperationsTV.Size = new System.Drawing.Size(211, 627);
             this.OperationsTV.TabIndex = 0;
             this.OperationsTV.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OperationsTV_AfterSelect);
             // 
@@ -2395,7 +2393,7 @@
             this.tableLayoutPanel15.Controls.Add(this.DeleteOperationBT, 0, 2);
             this.tableLayoutPanel15.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.tableLayoutPanel15.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel15.Location = new System.Drawing.Point(511, 3);
+            this.tableLayoutPanel15.Location = new System.Drawing.Point(479, 3);
             this.tableLayoutPanel15.Name = "tableLayoutPanel15";
             this.tableLayoutPanel15.RowCount = 6;
             this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
@@ -2404,7 +2402,7 @@
             this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
             this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.tableLayoutPanel15.Size = new System.Drawing.Size(174, 627);
+            this.tableLayoutPanel15.Size = new System.Drawing.Size(206, 627);
             this.tableLayoutPanel15.TabIndex = 1;
             // 
             // ImportBT
@@ -2412,7 +2410,7 @@
             this.ImportBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ImportBT.Location = new System.Drawing.Point(3, 524);
             this.ImportBT.Name = "ImportBT";
-            this.ImportBT.Size = new System.Drawing.Size(168, 29);
+            this.ImportBT.Size = new System.Drawing.Size(200, 29);
             this.ImportBT.TabIndex = 0;
             this.ImportBT.Text = "导入";
             this.ImportBT.UseVisualStyleBackColor = true;
@@ -2423,7 +2421,7 @@
             this.EditBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.EditBT.Location = new System.Drawing.Point(3, 559);
             this.EditBT.Name = "EditBT";
-            this.EditBT.Size = new System.Drawing.Size(168, 29);
+            this.EditBT.Size = new System.Drawing.Size(200, 29);
             this.EditBT.TabIndex = 1;
             this.EditBT.Text = "编辑";
             this.EditBT.UseVisualStyleBackColor = true;
@@ -2434,7 +2432,7 @@
             this.RunBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.RunBT.Location = new System.Drawing.Point(3, 594);
             this.RunBT.Name = "RunBT";
-            this.RunBT.Size = new System.Drawing.Size(168, 30);
+            this.RunBT.Size = new System.Drawing.Size(200, 30);
             this.RunBT.TabIndex = 2;
             this.RunBT.Text = "运行";
             this.RunBT.UseVisualStyleBackColor = true;
@@ -2445,7 +2443,7 @@
             this.DeleteOperationBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DeleteOperationBT.Location = new System.Drawing.Point(3, 489);
             this.DeleteOperationBT.Name = "DeleteOperationBT";
-            this.DeleteOperationBT.Size = new System.Drawing.Size(168, 29);
+            this.DeleteOperationBT.Size = new System.Drawing.Size(200, 29);
             this.DeleteOperationBT.TabIndex = 3;
             this.DeleteOperationBT.Text = "删除";
             this.DeleteOperationBT.UseVisualStyleBackColor = true;
@@ -2460,9 +2458,9 @@
             this.OperationsLV.Dock = System.Windows.Forms.DockStyle.Fill;
             this.OperationsLV.HideSelection = false;
             this.OperationsLV.LabelEdit = true;
-            this.OperationsLV.Location = new System.Drawing.Point(234, 3);
+            this.OperationsLV.Location = new System.Drawing.Point(220, 3);
             this.OperationsLV.Name = "OperationsLV";
-            this.OperationsLV.Size = new System.Drawing.Size(271, 627);
+            this.OperationsLV.Size = new System.Drawing.Size(253, 627);
             this.OperationsLV.TabIndex = 2;
             this.OperationsLV.UseCompatibleStateImageBehavior = false;
             this.OperationsLV.View = System.Windows.Forms.View.Details;
@@ -2481,10 +2479,6 @@
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(688, 633);
             this.treeView1.TabIndex = 0;
-            // 
-            // DisplayMouseTM
-            // 
-            this.DisplayMouseTM.Tick += new System.EventHandler(this.DisplayMouseTM_Tick);
             // 
             // GetGameDataTM
             // 
@@ -2569,8 +2563,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TabControl StartPrgramTC;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage3;
@@ -2594,38 +2586,16 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel8;
-        private System.Windows.Forms.ComboBox MapCB;
-        private System.Windows.Forms.ComboBox DifficultyCB;
-        private System.Windows.Forms.ComboBox ModeCB;
-        private System.Windows.Forms.ComboBox HeroCB;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.ComboBox Argument1CB;
-        private System.Windows.Forms.Button CoordsChosingBT;
-        private System.Windows.Forms.ComboBox CoinTriggeringCB;
-        private System.Windows.Forms.Button AddInstructionBT;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel10;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel11;
-        private System.Windows.Forms.Button UpBT;
-        private System.Windows.Forms.Button DownBT;
-        private System.Windows.Forms.Button SaveInstructionBT;
-        private System.Windows.Forms.ComboBox Argument2CB;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel12;
-        private System.Windows.Forms.Button DeleteInstructionBT;
-        private System.Windows.Forms.ListBox InstructionsViewTL;
-        private System.Windows.Forms.ComboBox RoundTriggeringCB;
-        private System.Windows.Forms.ComboBox InstructionClassCB;
         private System.Windows.Forms.Label InstructionLB;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel13;
-        private System.Windows.Forms.Label CoordsXLB;
-        private System.Windows.Forms.Label CoordsYLB;
-        private System.Windows.Forms.TextBox CoordsXTB;
-        private System.Windows.Forms.TextBox CoordsYTB;
         private System.Windows.Forms.Label RoundTriggeringLB;
         private System.Windows.Forms.Label CoinTriggeringLB;
-        private System.Windows.Forms.Button ChangeInstructionBT;
-        private System.Windows.Forms.Timer DisplayMouseTM;
         private System.Windows.Forms.Timer GetGameDataTM;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel14;
@@ -2637,13 +2607,7 @@
         private System.Windows.Forms.ListView OperationsLV;
         private System.Windows.Forms.ColumnHeader 脚本名;
         private System.Windows.Forms.Button DeleteOperationBT;
-        private System.Windows.Forms.Button AnchorCoordsBT;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel16;
-        private System.Windows.Forms.Label AnchorXLB;
-        private System.Windows.Forms.Label AnchorYLB;
-        private System.Windows.Forms.TextBox AnchorXTB;
-        private System.Windows.Forms.TextBox AnchorYTB;
-        private System.Windows.Forms.Button ClearInstructionBT;
         private System.Windows.Forms.Label DifficultyLB;
         private System.Windows.Forms.ComboBox ExecuteDifficultyCB;
         private System.Windows.Forms.Label ScriptLB;
@@ -2653,7 +2617,6 @@
         private System.Windows.Forms.ListBox PreviewLB;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel18;
         private System.Windows.Forms.Label BasicLB;
-        private System.Windows.Forms.Button InsertInstructionBT;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel19;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.NumericUpDown GetGameDataUD;
@@ -2675,7 +2638,6 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.ComboBox GameDpiCB;
         private System.Windows.Forms.Timer ExecuteCircleTM;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox CheckUpgradeCB;
@@ -2739,6 +2701,36 @@
         private System.Windows.Forms.CheckBox DoubleCoinCB;
         private System.Windows.Forms.CheckBox FastPathCB;
         private System.Windows.Forms.ToolTip AnchorBTTT;
+        internal System.Windows.Forms.ComboBox Argument2CB;
+        internal System.Windows.Forms.ComboBox Argument1CB;
+        internal System.Windows.Forms.ComboBox MapCB;
+        internal System.Windows.Forms.ComboBox DifficultyCB;
+        internal System.Windows.Forms.ComboBox ModeCB;
+        internal System.Windows.Forms.ComboBox HeroCB;
+        internal System.Windows.Forms.ComboBox CoinTriggeringCB;
+        internal System.Windows.Forms.ComboBox RoundTriggeringCB;
+        internal System.Windows.Forms.TextBox CoordsXTB;
+        internal System.Windows.Forms.TextBox CoordsYTB;
+        internal System.Windows.Forms.TextBox AnchorXTB;
+        internal System.Windows.Forms.TextBox AnchorYTB;
+        internal System.Windows.Forms.ComboBox InstructionClassCB;
+        internal System.Windows.Forms.ListBox InstructionsViewTL;
+        internal System.Windows.Forms.TabControl StartPrgramTC;
+        internal System.Windows.Forms.Button CoordsChosingBT;
+        internal System.Windows.Forms.Button AddInstructionBT;
+        internal System.Windows.Forms.Button UpBT;
+        internal System.Windows.Forms.Button DownBT;
+        internal System.Windows.Forms.Button SaveInstructionBT;
+        internal System.Windows.Forms.Button DeleteInstructionBT;
+        internal System.Windows.Forms.Label CoordsXLB;
+        internal System.Windows.Forms.Label CoordsYLB;
+        internal System.Windows.Forms.Button ChangeInstructionBT;
+        internal System.Windows.Forms.Button AnchorCoordsBT;
+        internal System.Windows.Forms.Label AnchorXLB;
+        internal System.Windows.Forms.Label AnchorYLB;
+        internal System.Windows.Forms.Button ClearInstructionBT;
+        internal System.Windows.Forms.Button InsertInstructionBT;
+        internal System.Windows.Forms.ComboBox GameDpiCB;
     }
 }
 
