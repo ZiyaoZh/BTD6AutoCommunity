@@ -103,7 +103,7 @@ namespace BTD6AutoCommunity
         private IntPtr hWnd;
         public bool stopFlag;
         public (int, int) currentTrigger;
-        private GetGameData gameData;
+        private GetGameData levelState;
         private int abiliityRgb;
 
         public bool findMapFlag;
@@ -117,12 +117,17 @@ namespace BTD6AutoCommunity
         public int currentMap; // 收集
         public int currentDifficulty;
 
+        private List<int> reDeployList;
+        private int currentReDeployIndex;
+        private bool reDeployFlag;
+        private int reDeployPace;
+
         public ExecuteDirectiveClass(double mydpi, int mygameDpi, IntPtr myhWnd)
         {
             windowDpi = mydpi;
             gameDpi = mygameDpi;
             hWnd = myhWnd;
-
+            levelState = new GetGameData(windowDpi, gameDpi, hWnd, 1);
             currentIndex = 0;
             currentMiniIndex = 0;
             circleTimes = 0;
@@ -144,6 +149,11 @@ namespace BTD6AutoCommunity
             currentMap = -1;
 
             ifContinueGame = false;
+            // 1 上 2 下 3 左 4 右 5 左上 6 左下 7 右上 8 右下 
+            reDeployList = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8 };
+            currentReDeployIndex = -1;
+            reDeployFlag = false;
+            reDeployPace = 1;
         }
 
 
@@ -243,6 +253,7 @@ namespace BTD6AutoCommunity
                 // 23 找英雄是否可放
                 // 24 技能释放前rgb
                 // 25 技能释放后rgb
+                // 26 检测放置是否成功
             }
         }
 
@@ -288,10 +299,9 @@ namespace BTD6AutoCommunity
 
         public void ExecuteDirective(int round, int coin, Dictionary<int, string> upgradeCount, bool checkUpgrade, int executeMode)
         { // 升级指令
-            gameData = new GetGameData(windowDpi, gameDpi, hWnd);
             if (checkUpgrade)
             {
-                if (!gameData.InGame())
+                if (!levelState.InGame())
                 {
                     if (retry > 10)
                     {
@@ -300,7 +310,7 @@ namespace BTD6AutoCommunity
                         currentMiniIndex = 0;
                         while (executeFlag)
                         {
-                            if (gameData.Complete())
+                            if (levelState.Complete())
                             {
                                 executeFlag = false;
                                 if (executeMode == 3)
@@ -311,7 +321,7 @@ namespace BTD6AutoCommunity
                                 completeFlag = true;
                                 return;
                             }
-                            if (gameData.ifFail())
+                            if (levelState.ifFail())
                             {
                                 executeFlag = false;
                                 restartFlag = true;
@@ -353,7 +363,7 @@ namespace BTD6AutoCommunity
             {
                 //if (!upgradeFlag)
                 //{
-                //    //currentYellowBlockCount = gameData.GetYellowBlockCount();
+                //    //currentYellowBlockCount = levelState.GetYellowBlockCount();
                 //    upgradeFlag = true;
                 //}
                 int colorIndex = GetColorIndex(arguments[1]);
@@ -364,18 +374,8 @@ namespace BTD6AutoCommunity
                 {
                     return;
                 }
-                //int reCount = 0;
-                //while (currentYellowBlockCount == -1)
-                //{
-                //    if (reCount > 5)
-                //    {
-                //        reCount = 0;
-                //        break;
-                //    }
-                //    currentYellowBlockCount = gameData.GetYellowBlockCount(colorIndex);
-                //    reCount++;
-                //}
-                if (!gameData.GetYellowBlockCount(colorIndex, p))
+
+                if (!levelState.GetYellowBlockCount(colorIndex, p))
                 {
                     RunCode(arguments);
                     //System.IO.File.AppendAllText(@"answer.txt", currentYellowBlockCount.ToString() + " " + upgradeCount[currentIndex][route].ToString() + "\n");
@@ -388,7 +388,7 @@ namespace BTD6AutoCommunity
             else if (arguments[0] == 8 && arguments[1] >= 65 && arguments[1] <= 90)
             {
                 RunCode(arguments);
-                if (gameData.IfDeploy())
+                if (levelState.IfDeploy())
                 {
                     currentMiniIndex++;
                 }
@@ -421,15 +421,13 @@ namespace BTD6AutoCommunity
 
         public void ExecuteDirective(int round, int coin, int mode, bool checkUpgrade, int executeMode)
         { // mode == 0 升级指令， mode == 2 鼠标点击指令
-            gameData = new GetGameData(windowDpi, gameDpi, hWnd);
-
             executeFlag = true;
 
             currentInstructionCount = directive[currentIndex].Count;
             List<int> arguments = directive[currentIndex][currentMiniIndex].Split(' ').Select(Int32.Parse).ToList();
             if (checkUpgrade)
             {
-                if (!gameData.InGame())
+                if (!levelState.InGame())
                 {
                     if (retry > 10)
                     {
@@ -438,7 +436,7 @@ namespace BTD6AutoCommunity
                         currentMiniIndex = 0;
                         while (executeFlag)
                         {
-                            if (gameData.Complete())
+                            if (levelState.Complete())
                             {
                                 executeFlag = false;
                                 if (executeMode == 3)
@@ -449,7 +447,7 @@ namespace BTD6AutoCommunity
                                 completeFlag = true;
                                 return;
                             }
-                            if (gameData.ifFail())
+                            if (levelState.ifFail())
                             {
                                 executeFlag = false;
                                 restartFlag = true;
@@ -492,7 +490,7 @@ namespace BTD6AutoCommunity
                 if (mode == 0) // 放置指令
                 {
                     RunCode(arguments);
-                    if (gameData.IfDeploy())
+                    if (levelState.IfDeploy())
                     {
                         currentMiniIndex++;
                     }
@@ -505,21 +503,21 @@ namespace BTD6AutoCommunity
             }
             else if (arguments[0] == 23) // 找英雄是否可放
             {
-                if (gameData.IfHeroDeploy())
+                if (levelState.IfHeroDeploy())
                 {
                     currentMiniIndex++;
                 }
             }
             else if (arguments[0] == 24) // 技能释放前rgb
             {
-                abiliityRgb = gameData.AbilityReady(arguments[1]);
+                abiliityRgb = levelState.AbilityReady(arguments[1]);
                 List<int> keyarguments = new List<int> { 8, arguments[2] };
                 RunCode(keyarguments);
                 currentMiniIndex++;
             }
             else if (arguments[0] == 25) // 技能释放后rgb
             {
-                int currentRgb = gameData.AbilityReady(arguments[1]);
+                int currentRgb = levelState.AbilityReady(arguments[1]);
                 if (Math.Abs(currentRgb - abiliityRgb) < 15)
                 {
                     currentMiniIndex--;
@@ -547,10 +545,23 @@ namespace BTD6AutoCommunity
             }
             else if (arguments[0] == 17) // 游戏胜利结束判定
             {
-                gameData = new GetGameData(windowDpi, gameDpi, hWnd);
-                if (gameData.Complete())
+                if (levelState.Complete())
                 {
                     currentMiniIndex++;
+                }
+            }
+            else if (arguments[0] == 26) // 检测放置是否成功
+            {
+                Thread.Sleep(80);
+                if (!levelState.IfDeploy())
+                {
+                    currentMiniIndex++;
+                }
+                else
+                {
+                    reDeployFlag = true;
+                    currentReDeployIndex = 0;
+                    currentMiniIndex--;
                 }
             }
             else
@@ -578,6 +589,174 @@ namespace BTD6AutoCommunity
             return;
         }
 
+        public void DeployMonkey(int round, int coin, bool checkUpgrade, int executeMode)
+        {
+            executeFlag = true;
+
+            currentInstructionCount = directive[currentIndex].Count;
+            List<int> arguments = directive[currentIndex][currentMiniIndex].Split(' ').Select(Int32.Parse).ToList();
+            if (checkUpgrade)
+            {
+                if (!levelState.InGame())
+                {
+                    if (retry > 10)
+                    {
+                        retry = 0;
+                        currentIndex = 0;
+                        currentMiniIndex = 0;
+                        while (executeFlag)
+                        {
+                            if (levelState.Complete())
+                            {
+                                executeFlag = false;
+                                if (executeMode == 3)
+                                {
+                                    restartFlag = true;
+                                    return;
+                                }
+                                completeFlag = true;
+                                return;
+                            }
+                            if (levelState.ifFail())
+                            {
+                                executeFlag = false;
+                                restartFlag = true;
+                                return;
+                            }
+                        }
+                        return;
+                    }
+                    retry++;
+                    MoveTo(75, 60);
+                    LeftClick();
+                    return;
+                }
+                else
+                {
+                    retry = 0;
+                }
+            }
+            if (arguments[0] == 0)
+            {
+                currentTrigger = (arguments[1], arguments[2]);
+                if (arguments[1] <= round && arguments[2] <= coin)
+                {
+                    currentMiniIndex++;
+                    DeployMonkey(round, coin, checkUpgrade, executeMode);
+                }
+                else
+                {
+                    if (ifContinueGame)
+                    {
+                        MoveTo(75, 60);
+                        LeftClick();
+                    }
+                    return;
+                }
+            }
+            else if (arguments[0] == 1 || arguments[0] == 11) // 移动/移动+点击
+            {
+                if (reDeployFlag)
+                {
+                    if (currentReDeployIndex == reDeployList.Count)
+                    {
+                        currentReDeployIndex = 0;
+                        reDeployPace++;
+                    }
+                    int x = currentCoords.Item1;
+                    int y = currentCoords.Item2;
+                    switch (reDeployList[currentReDeployIndex])
+                    {
+                        case 1: // 上
+                            arguments[2] += reDeployPace;
+                            break;
+                        case 2: // 下
+                            arguments[2] -= reDeployPace;
+                            break;
+                        case 3: // 左
+                            arguments[1] -= reDeployPace;
+                            break;
+                        case 4: // 右
+                            arguments[1] += reDeployPace;
+                            break;
+                        case 5: // 左上
+                            arguments[1] -= reDeployPace;
+                            arguments[2] += reDeployPace;
+                            break;
+                        case 6: // 左下
+                            arguments[1] -= reDeployPace;
+                            arguments[2] -= reDeployPace;
+                            break;
+                        case 7: // 右上
+                            arguments[1] += reDeployPace;
+                            arguments[2] += reDeployPace;
+                            break;
+                        case 8: // 右下
+                            arguments[1] += reDeployPace;
+                            arguments[2] -= reDeployPace;
+                            break;
+                    }
+                    RunCode(arguments);
+                    currentMiniIndex += 2;
+                    arguments[1] = x;
+                    arguments[2] = y;
+                }
+                else
+                {
+                    RunCode(arguments);
+                    currentMiniIndex++;
+                }
+            }
+            else if (arguments[0] == 8 || arguments[0] == 6)
+            {
+                RunCode(arguments);
+                if (levelState.IfDeploy())
+                {
+                    currentMiniIndex++;
+                }
+            }
+            else if (arguments[0] == 26) // 检测放置是否成功
+            {
+                //MessageBox.Show("检测放置是否成功");
+                Thread.Sleep(80);
+                if (!levelState.IfDeploy())
+                {
+                    reDeployFlag = false;
+                    currentReDeployIndex = -1;
+                    reDeployPace = 1;
+                    currentMiniIndex++;
+                }
+                else
+                {
+                    reDeployFlag = true;
+                    currentReDeployIndex++;
+                    currentMiniIndex = 1;
+                }
+            }
+            else
+            {
+                RunCode(arguments);
+                currentMiniIndex++;
+            }
+            if (currentMiniIndex == currentInstructionCount)
+            {
+                currentMiniIndex = 0;
+                currentIndex++;
+            }
+            if (currentIndex == directive.Count)
+            {
+                currentIndex = 0;
+                executeFlag = false;
+                if (executeMode == 3)
+                {
+                    restartFlag = true;
+                    return;
+                }
+                completeFlag = true;
+                stopFlag = true;
+            }
+        }
+
         public void ExecuteFindMap()
         {
             findMapFlag = true;
@@ -592,8 +771,7 @@ namespace BTD6AutoCommunity
             List<int> arguments = findMapDirective[currentIndex][currentMiniIndex].Split(' ').Select(Int32.Parse).ToList();
             if (arguments[0] == 18)
             {
-                gameData = new GetGameData(windowDpi, gameDpi, hWnd);
-                currentMap = gameData.GetMapId();
+                currentMap = levelState.GetMapId();
                 currentMiniIndex++;
             }
             else
@@ -622,8 +800,7 @@ namespace BTD6AutoCommunity
             List<int> arguments = selectHeroDirective[currentIndex][currentMiniIndex].Split(' ').Select(Int32.Parse).ToList();
             if (arguments[0] == 19)
             {
-                gameData = new GetGameData(windowDpi, gameDpi, hWnd);
-                (int, int) pos = gameData.GetHeroPos(arguments[1]);
+                (int, int) pos = levelState.GetHeroPos(arguments[1]);
                 if (pos.Item1 != -1)
                 {
                     MoveTo(pos.Item1, pos.Item2);
@@ -670,8 +847,7 @@ namespace BTD6AutoCommunity
             List<int> arguments = selectMapDirective[currentIndex][currentMiniIndex].Split(' ').Select(Int32.Parse).ToList();
             if (arguments[0] == 16)
             {
-                gameData = new GetGameData(windowDpi, gameDpi, hWnd);
-                (int, int) pos = gameData.GetMapPos(arguments[1]);
+                (int, int) pos = levelState.GetMapPos(arguments[1]);
                 if (pos.Item1 != -1)
                 {
                     MoveTo(pos.Item1, pos.Item2);
@@ -719,18 +895,18 @@ namespace BTD6AutoCommunity
             List<int> arguments = completeDirective[currentIndex][currentMiniIndex].Split(' ').Select(Int32.Parse).ToList();
             if (arguments[0] == 17)
             {
-                if (!gameData.InGame())
+                if (!levelState.InGame())
                 {
                     MoveTo(75, 60);
                     LeftClick();
                 }
-                if (gameData.ifFail())
+                if (levelState.ifFail())
                 {
                     completeFlag = false;
                     restartFlag = true;
                     return;
                 }
-                if (gameData.Complete())
+                if (levelState.Complete())
                 {
                     //File.AppendAllText(@"D:\log.txt", "complete\n");
                     currentMiniIndex++;
@@ -764,9 +940,9 @@ namespace BTD6AutoCommunity
             List<int> arguments = restartDirective[currentIndex][currentMiniIndex].Split(' ').Select(Int32.Parse).ToList();
             if (arguments[0] == 22)
             {
-                if (gameData.ifFail() || gameData.Complete())
+                if (levelState.ifFail() || levelState.Complete())
                 {
-                    int cur_x = gameData.GetRestartX();
+                    int cur_x = levelState.GetRestartX();
                     if (cur_x == -1)
                     {
                         return;
@@ -784,7 +960,7 @@ namespace BTD6AutoCommunity
                 }
                 else
                 {
-                    if (!gameData.InGame())
+                    if (!levelState.InGame())
                     {
                         MoveTo(75, 60);
                         LeftClick();

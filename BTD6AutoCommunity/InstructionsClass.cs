@@ -31,267 +31,12 @@ namespace BTD6AutoCommunity
         public List<(int, int)> triggering;
         public List<List<string>> compilerDirective;
 
-        public Dictionary<int, string> monkeysToDisplay;
-        public Dictionary<int, string> objectToDisplay;
-        public Dictionary<int, string> typeToDisplay;
-        public Dictionary<int, string> abilityToDisplay;
-        public Dictionary<int, string> targetToChange;
-        public Dictionary<int, string> instructionPackages;
-
-        public Dictionary<int, string> maps;
-        public Dictionary<int, string> heros;
-        public Dictionary<int, string> difficulty;
-        public Dictionary<int, string> mode;
         public List<string> displayinstructions { get; set; }
         public List<string> digitalinstructions { get; set; }
         public InstructionsClass() 
         {
             displayinstructions = new List<string>();
             digitalinstructions = new List<string>();
-
-            typeToDisplay = new Dictionary<int, string>
-            {
-                { 0, "放置猴子" },
-                { 1, "升级猴子" },
-                { 2, "切换猴子目标" },
-                { 3, "使用技能" },
-                { 4, "切换倍速" },
-                { 5, "出售猴子" },
-                { 6, "设置猴子功能"},
-                { 7, "放置英雄"},
-                { 8, "升级英雄"},
-                { 9, "英雄物品放置"},
-                { 10, "切换英雄目标" },
-                { 11, "设置英雄功能"},
-                { 12, "出售英雄" },
-                { 13, "鼠标点击" },
-                { 14, "修改猴子坐标" },
-                { 15, "等待(ms)"},
-                { 16, "开启自由游戏" },
-                { 17, "结束自由游戏" },
-                { 25, "快捷指令包"}
-            };
-            monkeysToDisplay = new Dictionary<int, string>
-            {
-                { 0, "飞镖猴" },
-                { 1, "回旋镖猴" },
-                { 2, "大炮" },
-                { 3, "图钉塔" },
-                { 4, "冰猴" },
-                { 5, "胶水猴" },
-
-                { 10, "狙击猴" },
-                { 11, "潜水艇猴" },
-                { 12, "海盗猴" },
-                { 13, "王牌飞行员" },
-                { 14, "直升机" },
-                { 15, "迫击炮猴" },
-                { 16, "机枪猴" },
-
-                { 20, "法师猴" },
-                { 21, "超猴" },
-                { 22, "忍者猴" },
-                { 23, "炼金术士" },
-                { 24, "德鲁伊" },
-                { 25, "人鱼猴"},
-
-                { 30, "香蕉农场" },
-                { 31, "刺钉工厂" },
-                { 32, "猴村" },
-                { 33, "工程师猴" },
-                { 34, "驯兽大师" }
-            };
-            abilityToDisplay = new Dictionary<int, string>
-            {
-                { 0,"\"1\""},
-                { 1,"\"2\""},
-                { 2,"\"3\""},
-                { 3,"\"4\""},
-                { 4,"\"5\""},
-                { 5,"\"6\""},
-                { 6,"\"7\""},
-                { 7,"\"8\""},
-                { 8,"\"9\""},
-                { 9,"\"0\""},
-                { 10,"\"-\""},
-                { 11,"\"+\""}
-            };
-            targetToChange = new Dictionary<int, string>
-            {
-                { 0,"右改1次"},
-                { 1,"右改2次"},
-                { 2,"右改3次"},
-                { 3,"左改1次"},
-                { 4,"左改2次"},
-                { 5,"左改3次"}
-            };
-            instructionPackages = new Dictionary<int, string>
-            {
-                { 0, "022飞镖猴(模范)" },
-                { 1, "022回旋镖猴(模范)" },
-                { 5, "022海盗(模范)" },
-                { 6, "220潜艇(模范)" },
-                { 7, "022王牌飞行员(模范)" },
-                { 10, "022法师猴(模范)" },
-                { 11, "022忍者猴(模范)" },
-                { 15, "022工程师(模范)" },
-
-                { 20, "032飞镖猴(强力)" },
-                { 21, "204回旋镖(强力)" },
-                { 22, "024回旋镖(强力)" },
-                { 23, "031大炮(强力)" },
-                { 24, "050大炮(强力+出售)" },
-                { 25, "420冰猴" },
-                { 26, "204图钉塔" },
-                { 27, "420火锅" },
-
-                { 30, "302狙击猴(强力)" },
-                { 31, "204狙击猴(强力)" },
-                { 32, "042空投狙" },
-                { 33, "004商船" },
-                { 34, "042炮船" },
-                { 35, "420驱逐舰(强力)" },
-                { 36, "050沙皇炸弹" },
-                { 37, "204科曼奇" },
-                { 38, "420长空(翼猴)"},
-                { 39, "204潜艇" },
-
-                { 40, "130德鲁伊" },
-                { 41, "302超猴(强力)" },
-                { 42, "203超猴" },
-                { 43, "300炼金(出售)" },
-                { 44, "320炼金术士(出售)" },
-                { 45, "401人鱼猴" },
-
-                { 50, "023香蕉农场" },
-                { 51, "420香蕉农场" },
-                { 52, "240刺钉工厂" },
-                { 53, "032刺钉工厂(靠近)" },
-            };
-            maps = new Dictionary<int, string>
-            {
-                { 0, "猴子草甸" },
-                { 1, "循环" },
-                { 2, "道路中间" },
-                { 3, "汀克顿" },
-                { 4, "树桩" },
-                { 5, "市中心" },
-                { 6, "一二杉" },
-                { 7, "废料厂" },
-                { 8, "小木屋" },
-                { 9, "度假胜地" },
-                { 10, "溜冰鞋" },
-                { 11, "莲花岛" },
-                { 12, "糖果瀑布" },
-                { 13, "冬季公园" },
-                { 14, "鬼脸南瓜" },
-                { 15, "公园路径" },
-                { 16, "高山竞速" },
-                { 17, "冰冻三尺" },
-                { 18, "立体主义" },
-                { 19, "四个圈子" },
-                { 20, "树篱" },
-                { 21, "路的尽头" },
-                { 22, "原木" },
-
-                { 30, "硫磺泉" },
-                { 31, "水上乐园" },
-                { 32, "独眼巨人" },
-                { 33, "隐蔽的花园" },
-                { 34, "采石场" },
-                { 35, "静谧街道" },
-                { 36, "布隆纳留斯精英" },
-                { 37, "平衡" },
-                { 38, "已加密" },
-                { 39, "集市" },
-                { 40, "阿多拉神庙" },
-                { 41, "复活节春天" },
-                { 42, "飞镖卡丁车" },
-                { 43, "登月" },
-                { 44, "鬼屋" },
-                { 45, "顺流而下" },
-                { 46, "靶场" },
-                { 47, "龟裂之地" },
-                { 48, "河床" },
-                { 49, "滑槽" },
-                { 50, "耙" },
-                { 51, "香料群岛" },
-                { 52, "夜光海湾" },
-
-                { 60, "城堡复仇" },
-                { 61, "黑暗之径" },
-                { 62, "侵蚀" },
-                { 63, "午夜豪宅" },
-                { 64, "凹陷的柱子" },
-                { 65, "X因子" },
-                { 66, "梅萨" },
-                { 67, "齿轮转动" },
-                { 68, "泄洪道" },
-                { 69, "货运" },
-                { 70, "帕特的池塘" },
-                { 71, "半岛" },
-                { 72, "高级金融" },
-                { 73, "另一块砖" },
-                { 74, "海岸" },
-                { 75, "玉米地" },
-                { 76, "地下" },
-                { 77, "古代传送门" },
-                { 78, "破釜沉舟" },
-
-                { 90, "冰河之径" },
-                { 91, "黑暗地下城" },
-                { 92, "避难所" },
-                { 93, "峡谷" },
-                { 94, "水淹山谷" },
-                { 95, "炼狱" },
-                { 96, "血腥水坑" },
-                { 97, "工坊" },
-                { 98, "方院" },
-                { 99, "黑暗城堡" },
-                { 100, "泥泞的水坑" },
-                { 101, "#哎哟" },
-            };
-            heros = new Dictionary<int, string>
-            {
-                { 0, "昆西" },
-                { 1, "格温多琳" },
-                { 2, "先锋琼斯" },
-                { 3, "奥本" },
-                { 4, "罗莎莉亚" },
-                { 5, "上尉丘吉尔" },
-                { 6, "本杰明" },
-                { 7, "帕特" },
-                { 8, "艾泽里" },
-                { 9, "阿多拉" },
-                { 10, "艾蒂安" },
-                { 11, "萨乌达" },
-                { 12, "海军上将布里克尔" },
-                { 13, "灵机" },
-                { 14, "杰拉尔多" },
-                { 15, "科沃斯" }
-            };
-            difficulty = new Dictionary<int, string>
-            {
-                { 0, "简单" },
-                { 1, "中级" },
-                { 2, "困难" }
-            };
-            mode = new Dictionary<int, string>
-            {
-                { 0, "标准" },
-                { 1, "放气" },
-                { 2, "天启" },
-                { 3, "相反" },
-                { 4, "现金减半" },
-                { 5, "双倍生命值MOAB" },
-                { 6, "代替气球回合" },
-                { 7, "极难模式" },
-                { 8, "点击" },
-                { 9, "仅初级" },
-                { 10, "仅军事" },
-                { 11, "仅魔法" },
-
-            };
 
             // 初始化计数列表
             objectCount = new List<int>();
@@ -927,25 +672,25 @@ namespace BTD6AutoCommunity
             switch (arguments[0])
             {
                 case 0: // 放置指令
-                    displayInstruction += monkeysToDisplay[objectId[arguments[2]].Item1] + objectId[arguments[2]].Item2.ToString();
+                    displayInstruction += Constants.MonkeysToDisplay[objectId[arguments[2]].Item1] + objectId[arguments[2]].Item2.ToString();
                     displayInstruction += "放置";
                     displayInstruction += "于(" + arguments[3].ToString() + ", " + arguments[4].ToString() + ")";
 
                     break;
                 case 1: // 升级指令
-                    displayInstruction += monkeysToDisplay[objectId[arguments[1]].Item1] + objectId[arguments[1]].Item2.ToString();
+                    displayInstruction += Constants.MonkeysToDisplay[objectId[arguments[1]].Item1] + objectId[arguments[1]].Item2.ToString();
                     displayInstruction += "升级至";
                     displayInstruction += objectList[arguments[1]].GetAllUpgradeLevel();
 
                     break;
                 case 2: // 切换目标指令
-                    displayInstruction += monkeysToDisplay[objectId[arguments[1]].Item1] + objectId[arguments[1]].Item2.ToString();
+                    displayInstruction += Constants.MonkeysToDisplay[objectId[arguments[1]].Item1] + objectId[arguments[1]].Item2.ToString();
                     displayInstruction += "目标";
-                    displayInstruction += targetToChange[arguments[2]];
+                    displayInstruction += Constants.TargetToChange[arguments[2]];
                     break;
                 case 3: // 释放技能指令
                     displayInstruction += "释放技能";
-                    displayInstruction += abilityToDisplay[arguments[1]];
+                    displayInstruction += Constants.AbilityToDisplay[arguments[1]];
                     if (arguments.Count > 4)
                     {
                         displayInstruction += "于(" + arguments[2].ToString() + ", " + arguments[3].ToString() + ")";
@@ -964,11 +709,11 @@ namespace BTD6AutoCommunity
                     break;
                 case 5: // 出售指令
                     displayInstruction += "出售";
-                    displayInstruction += monkeysToDisplay[objectId[arguments[1]].Item1] + objectId[arguments[1]].Item2.ToString();
+                    displayInstruction += Constants.MonkeysToDisplay[objectId[arguments[1]].Item1] + objectId[arguments[1]].Item2.ToString();
 
                     break;
                 case 6: // 设置猴子功能
-                    displayInstruction += monkeysToDisplay[objectId[arguments[1]].Item1] + objectId[arguments[1]].Item2.ToString();
+                    displayInstruction += Constants.MonkeysToDisplay[objectId[arguments[1]].Item1] + objectId[arguments[1]].Item2.ToString();
                     displayInstruction += "更改功能";
 
                     if (arguments.Count > 4)
@@ -998,7 +743,7 @@ namespace BTD6AutoCommunity
                     break;
                 case 10:
                     displayInstruction += "英雄目标";
-                    displayInstruction += targetToChange[arguments[1]];
+                    displayInstruction += Constants.TargetToChange[arguments[1]];
 
                     break;
                 case 11:
@@ -1028,7 +773,7 @@ namespace BTD6AutoCommunity
 
                     break;
                 case 14:
-                    displayInstruction += "修改" + monkeysToDisplay[objectId[arguments[1]].Item1] + objectId[arguments[1]].Item2.ToString() + "坐标";
+                    displayInstruction += "修改" + Constants.MonkeysToDisplay[objectId[arguments[1]].Item1] + objectId[arguments[1]].Item2.ToString() + "坐标";
                     displayInstruction += "于(" + arguments[2].ToString() + ", " + arguments[3].ToString() + ")";
 
                     break;
@@ -1473,7 +1218,7 @@ namespace BTD6AutoCommunity
         {
             int intTime = DateTime.Now.GetHashCode() % 1000;
             string Time = (intTime > 0 ? intTime : -1 * intTime).ToString();
-            string filePath = $@"data\我的脚本\{maps[selectedMap]}\{difficulty[selectedDifficulty]}\{mode[selectedMode]}-{heros[selectedHero]}-" + Time + ".btd6";
+            string filePath = $@"data\我的脚本\{Constants.Maps[selectedMap]}\{Constants.Difficulty[selectedDifficulty]}\{Constants.Mode[selectedMode]}-{Constants.Heros[selectedHero]}-" + Time + ".btd6";
             string directoryPath = Path.GetDirectoryName(filePath);
             //string filePath = "你好.json";
             var partialInfo = new
@@ -1630,8 +1375,12 @@ namespace BTD6AutoCommunity
                         miniDirective.Add(GetMoveInstruction(arguments[3], arguments[4], scale, false));
 
                         miniDirective.Add("8 " + objectKeyPairs[arguments[1]].ToString());
+
                         // click
                         miniDirective.Add("2");
+
+                        miniDirective.Add("26");
+
                         break;
                     case 1: // 升级猴子
                         if (!IfLast(i))
@@ -1828,6 +1577,8 @@ namespace BTD6AutoCommunity
                         miniDirective.Add("7 " + "85");
                         // click
                         miniDirective.Add("2");
+
+
                         break;
                     case 8:
                         if (!IfLast(i))
