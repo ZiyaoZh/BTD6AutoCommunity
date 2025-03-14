@@ -28,21 +28,53 @@ namespace BTD6AutoCommunity
         public BTD6AutoCommunity()
         {
             InitializeComponent();
+            InitializeStartPage();
             InitializeScriptsEditor();
             InitializeMyScriptsPage();
             InitializeSettingPage();
-            InitializeStartPage();
         }
 
         private void BTD6AutoCommunity_Activated(object sender, EventArgs e)
         {
-            KeyEvents.RegisterHotKey(Handle, 101, 0, Keys.F1); //注册F1热键,根据id值101来判断需要执行哪个函数
         }
 
         private void BTD6AutoCommunity_Leave(object sender, EventArgs e)
         {
-            KeyEvents.UnregisterHotKey(Handle, 101); //注册F1热键,根据id值101来判断需要执行哪个函数
         }
 
+        private void BTD6AutoCommunity_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ReleaseAllKeys(); //释放所有热键
+            WindowApiWrapper.UnregisterHotKey(Handle, 101); //注册F1热键,根据id值101来判断需要执行哪个函数
+            WindowApiWrapper.UnregisterHotKey(Handle, 102);
+            WindowApiWrapper.UnregisterHotKey(Handle, 103);
+            WindowApiWrapper.UnregisterHotKey(Handle, 104);
+            WindowApiWrapper.UnregisterHotKey(Handle, 105);
+            WindowApiWrapper.UnregisterHotKey(Handle, 106);
+            WindowApiWrapper.UnregisterHotKey(Handle, 107);
+            WindowApiWrapper.UnregisterHotKey(Handle, 108);
+
+        }
+
+
+        private void ReleaseAllKeys()
+        {
+            for (int i = 0x08; i <= 0x87; i++)
+            {
+                InputSimulator.KeyboardRelease((ushort)i);
+            }
+        }
+
+        private void BTD6AutoCommunity_Load(object sender, EventArgs e)
+        {
+            WindowApiWrapper.RegisterHotKey(Handle, 101, 0, Keys.F1); //注册F1热键,根据id值101来判断需要执行哪个函数
+            WindowApiWrapper.RegisterHotKey(Handle, 102, 1, Keys.F1);
+            WindowApiWrapper.RegisterHotKey(Handle, 103, 2, Keys.F1);
+            WindowApiWrapper.RegisterHotKey(Handle, 104, 3, Keys.F1);
+            WindowApiWrapper.RegisterHotKey(Handle, 105, 4, Keys.F1);
+            WindowApiWrapper.RegisterHotKey(Handle, 106, 5, Keys.F1);
+            WindowApiWrapper.RegisterHotKey(Handle, 107, 6, Keys.F1);
+            WindowApiWrapper.RegisterHotKey(Handle, 108, 7, Keys.F1);
+        }
     }
 }
