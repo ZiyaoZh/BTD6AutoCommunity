@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BTD6AutoCommunity
 {
-    internal class MonkeyTowerClass
+    public class MonkeyTowerClass
     {
         public string name { get; set; }  // 猴子塔的名字
         public int deployCost { get; set; }    // 部署价格
@@ -20,7 +20,7 @@ namespace BTD6AutoCommunity
 
         public bool exsitence = true;
 
-        public bool ifDelete = true;
+        public bool IsDelete = true;
 
         public List<double> difficultyCost = new List<double>{ 0.85, 1.0, 1.08, 1.2 };
 

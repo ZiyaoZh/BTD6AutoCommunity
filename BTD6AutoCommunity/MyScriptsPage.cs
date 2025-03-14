@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static BTD6AutoCommunity.Constants;
 
 namespace BTD6AutoCommunity
 {
@@ -60,30 +61,32 @@ namespace BTD6AutoCommunity
                 {
                     if (dirInfo.Name == "我的脚本")
                     {
-                        foreach (var kvp in Constants.Maps)
+                        foreach (Maps maps in Enum.GetValues(typeof(Maps)))
                         {
-                            string subDirName = kvp.Value;
+                            string subDirName = GetTypeName(maps);
                             DirectoryInfo subDir = new DirectoryInfo(Path.Combine(dirInfo.FullName, subDirName));
                             TreeNode subNode = new TreeNode(subDirName)
                             {
                                 Tag = subDir
                             };
                             subNode.Nodes.Add(""); // Add dummy node to make it expandable
-                            if (kvp.Key >= 90)
+                            switch (GetMapType(maps))
                             {
-                                subNode.ForeColor = Color.Red;
-                            }
-                            else if (kvp.Key >= 60)
-                            {
-                                subNode.ForeColor = Color.Purple;
-                            }
-                            else if (kvp.Key >= 30)
-                            {
-                                subNode.ForeColor = Color.Blue;
-                            }
-                            else
-                            {
-                                subNode.ForeColor = Color.Green;
+                                case MapTypes.Expert:
+                                    subNode.ForeColor = Color.Red;
+                                    break;
+                                case MapTypes.Advanced:
+                                    subNode.ForeColor = Color.Purple;
+                                    break;
+                                case MapTypes.Intermediate:
+                                    subNode.ForeColor = Color.Blue;
+                                    break;
+                                case MapTypes.Beginner:
+                                    subNode.ForeColor = Color.Green;
+                                    break;
+                                default:
+                                    subNode.ForeColor = Color.Black;
+                                    break;
                             }
                             node.Nodes.Add(subNode);
                         }
@@ -185,10 +188,11 @@ namespace BTD6AutoCommunity
                         MyInstructions.Clear();
 
                         string jsonString = File.ReadAllText(filePath);
-                        MyInstructions = JsonConvert.DeserializeObject<InstructionsClass>(jsonString);
-                        MyInstructions.BluidObjectList();
-                        LoadGameInfo();
-                        BindInstructionsViewTL(MyInstructions.displayinstructions);
+                        MyInstructions = JsonConvert.DeserializeObject<ScriptEditorSuite>(jsonString);
+                        MyInstructions.ScriptName = Path.GetFileNameWithoutExtension(filePath);
+                        MyInstructions.RepairScript();
+                        LoadScriptInfo();
+                        BindInstructionsViewTL(MyInstructions.Displayinstructions);
                         StartPrgramTC.SelectedIndex = 1;
                     }
                     catch
@@ -305,10 +309,11 @@ namespace BTD6AutoCommunity
                         MyInstructions.Clear();
                         string jsonString = File.ReadAllText(filePath);
 
-                        MyInstructions = JsonConvert.DeserializeObject<InstructionsClass>(jsonString);
-                        MyInstructions.BluidObjectList();
-                        LoadGameInfo();
-                        BindInstructionsViewTL(MyInstructions.displayinstructions);
+                        MyInstructions = JsonConvert.DeserializeObject<ScriptEditorSuite>(jsonString);
+                        MyInstructions.ScriptName = Path.GetFileNameWithoutExtension(filePath);
+                        MyInstructions.RepairScript();
+                        LoadScriptInfo();
+                        BindInstructionsViewTL(MyInstructions.Displayinstructions);
                         StartPrgramTC.SelectedIndex = 1;
                     }
                     catch

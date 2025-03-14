@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BTD6AutoCommunity
 {
-    internal class HeroClass
+    public class HeroClass
     {
         public string name;  // 猴子塔的名字
         public int deployCost;    // 部署价格

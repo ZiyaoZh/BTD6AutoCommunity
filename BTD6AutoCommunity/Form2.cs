@@ -34,8 +34,11 @@ namespace BTD6AutoCommunity
 
         public void UpdateLabelPosition(Point screenPos, string text)
         {
-            MousePosLB.Text = text;
-            Location = new Point(screenPos.X + 10, screenPos.Y + 10);
+            MousePosLB.Invoke((MethodInvoker)delegate
+            {
+                MousePosLB.Text = text;
+                Location = new Point(screenPos.X + 10, screenPos.Y + 10);
+            });
         }
     }
 }
