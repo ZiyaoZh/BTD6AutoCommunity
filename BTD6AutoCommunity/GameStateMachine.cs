@@ -147,7 +147,7 @@ namespace BTD6AutoCommunity
             }
 
             // 收集活动相关界面需要优先判断
-            if (CheckColor(_context, 960, 180, 0x121417) && CheckColor(_context, 750, 60, 0x121417) && CheckColor(_context, 1130, 200, 0x121417))
+            if (CheckColor(_context, 960, 180, 0x121417) && CheckColor(_context, 750, 60, 0x121417) && CheckColor(_context, 1130, 200, 0x121417) && CheckColor(_context, 1725, 500, 0x121417))
             {
                 if (CheckColor(_context, 884, 1000, 0x67E400) && CheckColor(_context, 1037, 1000, 0x67E400))
                     return GameState.ChestsOpenedScreen;
@@ -210,7 +210,8 @@ namespace BTD6AutoCommunity
                 }
 
                 // 收集活动主界面
-                if (CheckColor(_context, 750, 60, 0xBF330B) && CheckColor(_context, 1030, 60, 0xBF330B))
+                if ((CheckColor(_context, 750, 60, 0xBF330B) || CheckColor(_context, 750, 60, 0xCD78FF))
+                    && (CheckColor(_context, 1100, 60, 0xBF330B) || CheckColor(_context, 1100, 60, 0xCD78FF)))
                     return GameState.CollectionActivitiesScreen;
 
                 // 可返回界面
@@ -237,7 +238,9 @@ namespace BTD6AutoCommunity
                 return GameState.LevelTipScreen;
 
             // 收集活动可开箱界面
-            if (CheckColor(_context, 750, 60, 0xBF330B) && CheckColor(_context, 1100, 60, 0xBF330B) && CheckColor(_context, 885, 681, 0x67E200))
+            if ((CheckColor(_context, 750, 60, 0xBF330B) || CheckColor(_context, 750, 60, 0xCD78FF)) 
+                && (CheckColor(_context, 1100, 60, 0xBF330B) || CheckColor(_context, 1100, 60, 0xCD78FF))
+                && CheckColor(_context, 885, 681, 0x67E200))
                 return GameState.CollectionActivitiesAvailableScreen;
 
             if (CheckColor(_context, 760, 660, 0xF34E13) && CheckColor(_context, 1130, 660, 0xF45417))

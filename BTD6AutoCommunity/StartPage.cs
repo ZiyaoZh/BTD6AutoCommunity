@@ -34,10 +34,6 @@ namespace BTD6AutoCommunity
             BindSelectedFunction();
             BindSelectedMap();
             BindSelectedDifficulty();
-
-            //gameContext = new GameContext();
-            //stateMachine = new GameStateMachine(gameContext);
-            //stateTimer.Start();
         }
 
         private void BindSelectedFunction()
@@ -57,7 +53,6 @@ namespace BTD6AutoCommunity
             ExecuteModeCB.DisplayMember = "FunctionName";
             ExecuteModeCB.SelectedValueChanged += ExecuteModeCB_SelectedValueChanged;
 
-            //ExecuteModeCB.SelectedValue = FunctionTypes.Custom;
         }
         private void BindSelectedDifficulty()
         {
@@ -82,7 +77,7 @@ namespace BTD6AutoCommunity
             DataTable dt = new DataTable();
             dt.Columns.Add("Value", typeof(Maps));
             dt.Columns.Add("MapName", typeof(string));
-            foreach (Maps item in Enum.GetValues(typeof(Maps)))
+            foreach (Maps item in MapsToDisplay)
             {
                 DataRow dr = dt.NewRow();
                 dr["Value"] = item;
@@ -132,6 +127,7 @@ namespace BTD6AutoCommunity
                         break;
                     case FunctionTypes.BlackBorder:
                         MessageBox.Show("敬请期待！");
+                        RunBlackBorderMode();
                         break;
                     case FunctionTypes.Events:
                         RunEventsMode(userSelection);
@@ -150,6 +146,8 @@ namespace BTD6AutoCommunity
                 eventsStrategy = null;
                 raceStrategy?.Stop();
                 raceStrategy = null;
+                //blackBorderStrategy?.Stop();
+                //blackBorderStrategy = null;
                 ReleaseAllKeys();
                 StartProgramBT.Text = "启动";
             }
@@ -240,6 +238,12 @@ namespace BTD6AutoCommunity
             }
         }
 
+        private void RunBlackBorderMode()
+        {
+            logHandler = new LogHandler() { EnableInfoLog = scriptSettings.EnableLogging };
+            logHandler.OnLogMessage += HandleLogMessage;
+
+        }
         private void HandleStopEvent()
         {
             if (StartProgramBT.InvokeRequired)

@@ -29,6 +29,8 @@ namespace BTD6AutoCommunity
         InTheLoop = 1,
         // 道路中间
         MiddleOfTheRoad = 2,
+        // 水疗温泉
+        SpaPits = 23,
         // 汀克顿
         TinkerTon = 3,
         // 树桩
@@ -234,6 +236,25 @@ namespace BTD6AutoCommunity
         /// </remarks>
         CHIMPS = 8
     }
+
+    public enum LevelModeBudgets
+    { 
+        EasyStandard = 0,
+        PrimaryOnly = 1,
+        Deflation = 2,
+        MediumStandard = 3,
+        MilitaryOnly = 4,
+        Apopalypse = 5,
+        Reverse = 6,
+        HardStandard = 7,
+        MagicMonkeysOnly = 8,
+        DoubleHpMoabs = 9,
+        HalfCash = 10,
+        AlternateBloonsRounds = 11,
+        Impoppable = 12,
+        CHIMPS = 13
+    }
+
 
     public enum LevelDifficulties
     {
@@ -519,6 +540,32 @@ namespace BTD6AutoCommunity
                 ? pos
                  : new Point(0, 0);
         }
+        
+        private static readonly Dictionary<LevelModeBudgets, Point> LevelModeBudgetPoint = new Dictionary<LevelModeBudgets, Point>()
+        {
+            { LevelModeBudgets.EasyStandard, new Point(406, 365) },
+            { LevelModeBudgets.PrimaryOnly, new Point(382, 396) },
+            { LevelModeBudgets.Deflation, new Point(435, 396) },
+            { LevelModeBudgets.MediumStandard, new Point(492, 365) },
+            { LevelModeBudgets.MilitaryOnly, new Point(467, 396) },
+            { LevelModeBudgets.Apopalypse, new Point(494, 396) },
+            { LevelModeBudgets.Reverse, new Point(520, 396) },
+            { LevelModeBudgets.HardStandard, new Point(580, 365) },
+            { LevelModeBudgets.MagicMonkeysOnly, new Point(543, 373) },
+            { LevelModeBudgets.DoubleHpMoabs, new Point(552, 396) },
+            { LevelModeBudgets.HalfCash, new Point(607, 396) },
+            { LevelModeBudgets.AlternateBloonsRounds, new Point(616, 373) },
+            { LevelModeBudgets.Impoppable, new Point(666, 365) },
+            { LevelModeBudgets.CHIMPS, new Point(693, 396) }
+        };
+
+        public static Point GetLevelModeBudgetPos(LevelModeBudgets levelModeBudget, int index)
+        {
+            Point basePos = LevelModeBudgetPoint.TryGetValue(levelModeBudget, out var pos)
+                ? pos
+                 : new Point(0, 0);
+            return new Point(basePos.X + 424 * (index % 3), basePos.Y + 314 * (index / 3));
+        }
 
         public static List<Point> UpgradeYellowPosition => new List<Point>()
         {
@@ -670,13 +717,96 @@ namespace BTD6AutoCommunity
                 .FirstOrDefault(e => (int)e == id);
         }
 
-        
+        public static List<Maps> MapsToDisplay = new List<Maps>
+        {
+            Maps.MonkeyMeadow,
+            Maps.InTheLoop,
+            Maps.MiddleOfTheRoad,
+            Maps.SpaPits,
+            Maps.TinkerTon,
+            Maps.TreeStump,
+            Maps.TownCenter,
+            Maps.OneTwoTree,
+            Maps.ScrapYard,
+            Maps.TheCabin,
+            Maps.Resort,
+            Maps.Skates,
+            Maps.LotusIsland,
+            Maps.CandyFalls,
+            Maps.WinterPark,
+            Maps.Carved,
+            Maps.ParkPath,
+            Maps.AlpineRun,
+            Maps.FrozenOver,
+            Maps.Cubism,
+            Maps.FourCircles,
+            Maps.Hedge,
+            Maps.EndOfTheRoad,
+            Maps.Logs,
+            Maps.LuminousCove,
+            Maps.SulfurSprings,
+            Maps.WaterPark,
+            Maps.Polyphemus,
+            Maps.CoveredGarden,
+            Maps.Quarry,
+            Maps.QuietStreet,
+            Maps.BloonariusPrime,
+            Maps.Balance,
+            Maps.Encrypted,
+            Maps.Bazaar,
+            Maps.AdorasTemple,
+            Maps.SpringSpring,
+            Maps.KartMonkey,
+            Maps.MoonLanding,
+            Maps.Haunted,
+            Maps.Downstream,
+            Maps.FiringRange,
+            Maps.Cracked,
+            Maps.Streambed,
+            Maps.Chutes,
+            Maps.Rake,
+            Maps.SpiceIslands,
+            Maps.EnchantedGlade,
+            Maps.LastResort,
+            Maps.AncientPortal,
+            Maps.CastleRevenge,
+            Maps.DarkPath,
+            Maps.Erosion,
+            Maps.MidnightMansion,
+            Maps.SunkenColumns,
+            Maps.XFactor,
+            Maps.Mesa,
+            Maps.Geared,
+            Maps.Spillway,
+            Maps.Cargo,
+            Maps.PatsPond,
+            Maps.Peninsula,
+            Maps.HighFinance,
+            Maps.AnotherBrick,
+            Maps.OffTheCoast,
+            Maps.Cornfield,
+            Maps.Underground,
+            Maps.GlacialTrail,
+            Maps.DarkDungeon,
+            Maps.Sanctuary,
+            Maps.Ravine,
+            Maps.FloodedValley,
+            Maps.Infernal,
+            Maps.BloodyPuddles,
+            Maps.Workshop,
+            Maps.Quad,
+            Maps.DarkCastle,
+            Maps.MuddyPuddles,
+            Maps.Ouch
+        };
+
         private static readonly Dictionary<Maps, string> _mapNames = new Dictionary<Maps, string>
         {
             { Maps.MonkeyMeadow, "猴子草甸" },
             { Maps.InTheLoop, "循环" },
             { Maps.MiddleOfTheRoad, "道路中间" },
             { Maps.TinkerTon, "汀克顿" },
+            { Maps.SpaPits, "水疗温泉" },
             { Maps.TreeStump, "树桩" },
             { Maps.TownCenter, "市中心" },
             { Maps.OneTwoTree, "一二杉" },
@@ -777,6 +907,7 @@ namespace BTD6AutoCommunity
             { Maps.InTheLoop, MapTypes.Beginner },
             { Maps.MiddleOfTheRoad, MapTypes.Beginner },
             { Maps.TinkerTon, MapTypes.Beginner },
+            { Maps.SpaPits, MapTypes.Beginner },
             { Maps.TreeStump, MapTypes.Beginner },
             { Maps.TownCenter, MapTypes.Beginner },
             { Maps.OneTwoTree, MapTypes.Beginner },
@@ -818,7 +949,7 @@ namespace BTD6AutoCommunity
             { Maps.Chutes, MapTypes.Intermediate },
             { Maps.Rake, MapTypes.Intermediate },
             { Maps.SpiceIslands, MapTypes.Intermediate },
-            { Maps.LuminousCove, MapTypes.Advanced },
+            { Maps.LuminousCove, MapTypes.Intermediate },
             { Maps.CastleRevenge, MapTypes.Advanced },
             { Maps.DarkPath, MapTypes.Advanced },
             { Maps.Erosion, MapTypes.Advanced },

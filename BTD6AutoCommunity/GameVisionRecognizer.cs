@@ -60,6 +60,23 @@ namespace BTD6AutoCommunity
             }
         }
 
+        public static int GetMapEreaIndex(GameContext context, System.Drawing.Point mapPos)
+        {
+            if (mapPos.Y < 430 && mapPos.Y > 120)
+            {
+                if (mapPos.X < 740) return 0;
+                if (mapPos.X < 1170) return 1;
+                if (mapPos.X < 1600) return 2;
+            }
+            if (mapPos.Y > 430 && mapPos.Y < 750)
+            {
+                if (mapPos.X < 740) return 3;
+                if (mapPos.X < 1170) return 4;
+                if (mapPos.X < 1600) return 5;
+            }
+            return -1;
+        }
+
         public static System.Drawing.Point GetHeroPosition(GameContext context, Heroes heroName)
         {
             try

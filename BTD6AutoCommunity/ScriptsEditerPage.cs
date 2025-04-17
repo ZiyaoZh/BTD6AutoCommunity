@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing;
@@ -136,7 +135,7 @@ namespace BTD6AutoCommunity
             DataTable dt = new DataTable();
             dt.Columns.Add("Value", typeof(Maps));
             dt.Columns.Add("MapName", typeof(string));
-            foreach (Maps item in Enum.GetValues(typeof(Maps)))
+            foreach (Maps item in MapsToDisplay)
             {
                 DataRow dr = dt.NewRow();
                 dr["Value"] = item;

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using static BTD6AutoCommunity.InputSimulator;
 using static BTD6AutoCommunity.GameVisionRecognizer;
 using static BTD6AutoCommunity.ScriptEditorSuite;
@@ -264,6 +262,7 @@ namespace BTD6AutoCommunity
                 if (colorIndex == -1) return; // 未弹出升级界面
 
                 int p = instructionInfo.Arguments[3];
+                Debug.WriteLine("Upgrade " + colorIndex + " " + p);
                 if (p == 0) return;
 
                 if (!GetYellowBlockCount(_context, colorIndex, p))
