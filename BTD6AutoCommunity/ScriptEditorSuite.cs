@@ -1334,7 +1334,8 @@ namespace BTD6AutoCommunity
                         {
                             objectList[monkeyId].Upgrade(arguments[2]);
                             arguments[3] = objectList[monkeyId].GetUpgradeLevel(arguments[2]);
-                            Displayinstructions[i] = ArgumentsToInstruction(arguments).Item1;
+                            Displayinstructions[i] = ArgumentsToInstruction(arguments).DisplayInstruction;
+                            Digitalinstructions[i] = ArgumentsToInstruction(arguments).DigitalInstruction;
                         }
                     }
                     else if (type == ActionTypes.SwitchMonkeyTarget &&
@@ -1442,12 +1443,18 @@ namespace BTD6AutoCommunity
                         upgradeCount.Add(i, objectList[args[1]].GetAllUpgradeLevel());
 
                         // 修复升级指令，添加具体升级的等级参数
-                        if (args.Count() == 5)
+                        if (args.Count() == 5) // 旧版本没有升级等级参数
                         {
                             args.Insert(3, objectList[args[1]].GetUpgradeLevel(args[2]));
+                            Displayinstructions[i] = ArgumentsToInstruction(args).DisplayInstruction;
                             Digitalinstructions[i] = ArgumentsToInstruction(args).DigitalInstruction;
                         }
-                        //File.AppendAllText(@"levels.txt", objectList[args[1]].upgradeLevels[0].ToString() + " " + objectList[args[1]].upgradeLevels[1].ToString() + " " + objectList[args[1]].upgradeLevels[2].ToString() + " \n");
+                        else // 新版本有升级等级参数
+                        {
+                            args[3] = objectList[args[1]].GetUpgradeLevel(args[2]);
+                            Displayinstructions[i] = ArgumentsToInstruction(args).DisplayInstruction;
+                            Digitalinstructions[i] = ArgumentsToInstruction(args).DigitalInstruction;
+                        }
                         break;
                     case ActionTypes.SellMonkey:
                         objectList[args[1]].Sale();

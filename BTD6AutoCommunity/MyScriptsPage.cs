@@ -61,7 +61,7 @@ namespace BTD6AutoCommunity
                 {
                     if (dirInfo.Name == "我的脚本")
                     {
-                        foreach (Maps maps in Enum.GetValues(typeof(Maps)))
+                        foreach (Maps maps in MapsToDisplay)
                         {
                             string subDirName = GetTypeName(maps);
                             DirectoryInfo subDir = new DirectoryInfo(Path.Combine(dirInfo.FullName, subDirName));
