@@ -155,7 +155,7 @@ namespace BTD6AutoCommunity
                 if (!CheckColor(_context, 828, 537, 0x121417) && !CheckColor(_context, 1130, 537, 0x121417))
                     return GameState.TwoChestsScreen;
 
-                if (!CheckColor(_context, 677, 537, 0x121417) && CheckColor(_context, 1277, 537, 0x121417))
+                if (!CheckColor(_context, 677, 537, 0x121417) && !CheckColor(_context, 1277, 537, 0x121417))
                     return GameState.ThreeChestsScreen;
             }
 

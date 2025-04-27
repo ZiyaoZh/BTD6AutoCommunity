@@ -29,52 +29,7 @@ namespace BTD6AutoCommunity
             isSettingHotKey = false;
             LoadSettings();
         }
-        //{ HotkeyAction.DartMonkey, new HotKey(Keys.Q) },
-        //{ HotkeyAction.BoomerangMonkey, new HotKey(Keys.W) },
-        //{ HotkeyAction.BombShooter, new HotKey(Keys.E) },
-        //{ HotkeyAction.TackShooter, new HotKey(Keys.R) },
-        //{ HotkeyAction.IceMonkey, new HotKey(Keys.T) },
-        //{ HotkeyAction.GlueGunner, new HotKey(Keys.Y) },
-        //{ HotkeyAction.SniperMonkey, new HotKey(Keys.Z) },
-        //{ HotkeyAction.MonkeySub, new HotKey(Keys.X) },
-        //{ HotkeyAction.MonkeyBuccaneer, new HotKey(Keys.C) },
-        //{ HotkeyAction.MonkeyAce, new HotKey(Keys.V) },
-        //{ HotkeyAction.HeliPilot, new HotKey(Keys.B) },
-        //{ HotkeyAction.MortarMonkey, new HotKey(Keys.N) },
-        //{ HotkeyAction.DartlingGunner, new HotKey(Keys.M) },
-        //{ HotkeyAction.WizardMonkey, new HotKey(Keys.A) },
-        //{ HotkeyAction.SuperMonkey, new HotKey(Keys.S) },
-        //{ HotkeyAction.NinjaMonkey, new HotKey(Keys.D) },
-        //{ HotkeyAction.Alchemist, new HotKey(Keys.F) },
-        //{ HotkeyAction.Druid, new HotKey(Keys.G) },
-        //{ HotkeyAction.MerMonkey, new HotKey(Keys.O) },
-        //{ HotkeyAction.BananaFarm, new HotKey(Keys.H) },
-        //{ HotkeyAction.SpikeFactory, new HotKey(Keys.J) },
-        //{ HotkeyAction.MonkeyVillage, new HotKey(Keys.K) },
-        //{ HotkeyAction.EngineerMonkey, new HotKey(Keys.L) },
-        //{ HotkeyAction.BeastHandler, new HotKey(Keys.I) },
-        //{ HotkeyAction.Hero, new HotKey(Keys.U) },
-        //{ HotkeyAction.UpgradeTopPath, new HotKey(Keys.Oemcomma) },
-        //{ HotkeyAction.UpgradeMiddlePath, new HotKey(Keys.OemPeriod) },
-        //{ HotkeyAction.UpgradeBottomPath, new HotKey(Keys.OemQuestion) },
-        //{ HotkeyAction.SwitchTarget, new HotKey(Keys.Tab) },
-        //{ HotkeyAction.ReverseSwitchTarget, new HotKey(Keys.Tab, control: true) },
-        //{ HotkeyAction.SetFunction1, new HotKey(Keys.PageDown) },
-        //{ HotkeyAction.SetFunction2, new HotKey(Keys.PageUp) },
-        //{ HotkeyAction.ChangeSpeed, new HotKey(Keys.Space) },
-        //{ HotkeyAction.NextRound, new HotKey(Keys.Space, shift: true) },
-        //{ HotkeyAction.Skill1, new HotKey(Keys.D1) },
-        //{ HotkeyAction.Skill2, new HotKey(Keys.D2) },
-        //{ HotkeyAction.Skill3, new HotKey(Keys.D3) },
-        //{ HotkeyAction.Skill4, new HotKey(Keys.D4) },
-        //{ HotkeyAction.Skill5, new HotKey(Keys.D5) },
-        //{ HotkeyAction.Skill6, new HotKey(Keys.D6) },
-        //{ HotkeyAction.Skill7, new HotKey(Keys.D7) },
-        //{ HotkeyAction.Skill8, new HotKey(Keys.D8) },
-        //{ HotkeyAction.Skill9, new HotKey(Keys.D9) },
-        //{ HotkeyAction.Skill10, new HotKey(Keys.D0) },
-        //{ HotkeyAction.Skill11, new HotKey(Keys.OemMinus) },
-        //{ HotkeyAction.Skill12, new HotKey(Keys.Oemplus) }
+
         private void InitHotKeyButton()
         {
             DartMonkeyHotkeyBT.Tag = Monkeys.DartMonkey;
@@ -217,12 +172,13 @@ namespace BTD6AutoCommunity
 
         private void SaveSettingsBT_Click(object sender, EventArgs e)
         {
-            scriptSettings.DataReadInterval = (int)GetGameDataUD.Value;
-            scriptSettings.OperationInterval = (int)ExecuteUD.Value;
+            scriptSettings.DataReadInterval = (int)GetGameDataIntervalUD.Value;
+            scriptSettings.OperationInterval = (int)ExecuteIntervalUD.Value;
             scriptSettings.GameDpi = GameDpiCB.SelectedIndex;
-            scriptSettings.EnableDoubleCoin = DoubleCoinCB.Checked;
-            scriptSettings.EnableFastPath = FastPathCB.Checked;
+            scriptSettings.EnableDoubleCoin = EnableDoubleCoinCB.Checked;
+            scriptSettings.EnableFastPath = EnableFastPathCB.Checked;
             scriptSettings.EnableLogging = EnableLoggingCB.Checked;
+            scriptSettings.EnableRecommendInterval = EnableRecommendIntervalCB.Checked;
             //foreach (var buttonKeyPairs in hotKeysMap)
             //{
             //    scriptSettings.HotKey[Int32.Parse(buttonKeyPairs.Key.Tag.ToString())] = buttonKeyPairs.Value;
@@ -233,12 +189,13 @@ namespace BTD6AutoCommunity
         private void LoadSettings()
         {
             scriptSettings = LoadJsonSettings();
-            GetGameDataUD.Value = scriptSettings.DataReadInterval;
-            ExecuteUD.Value = scriptSettings.OperationInterval;
+            GetGameDataIntervalUD.Value = scriptSettings.DataReadInterval;
+            ExecuteIntervalUD.Value = scriptSettings.OperationInterval;
             GameDpiCB.SelectedIndex = scriptSettings.GameDpi;
 
-            DoubleCoinCB.Checked = scriptSettings.EnableDoubleCoin;
-            FastPathCB.Checked = scriptSettings.EnableFastPath;
+            EnableDoubleCoinCB.Checked = scriptSettings.EnableDoubleCoin;
+            EnableFastPathCB.Checked = scriptSettings.EnableFastPath;
+            EnableRecommendIntervalCB.Checked = scriptSettings.EnableRecommendInterval;
             EnableLoggingCB.Checked = scriptSettings.EnableLogging;
             InitHotKeyButton();
             RefreshHotkeyText();
@@ -319,6 +276,20 @@ namespace BTD6AutoCommunity
             RefreshHotkeyText();
             currentButton = null;
             isSettingHotKey = false;
+        }
+
+        private void RecommendedIntervalCB_CheckedChanged(object sender, EventArgs e)
+        {
+            //if (EnableRecommendIntervalCB.Checked)
+            //{
+            //    GetGameDataIntervalUD.Enabled = false;
+            //    ExecuteIntervalUD.Enabled = false;
+            //}
+            //else
+            //{
+            //    GetGameDataIntervalUD.Enabled = true;
+            //    ExecuteIntervalUD.Enabled = true;
+            //}
         }
     }
 }

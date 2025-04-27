@@ -1364,7 +1364,6 @@ namespace BTD6AutoCommunity
 
                 if (DisplayMouseTimer == null)
                 {
-
                     DisplayMouseTimer = new System.Timers.Timer(100);
                     DisplayMouseTimer.Elapsed += new ElapsedEventHandler(DisplayMouseTimer_Elapsed);
                     DisplayMouseTimer.Start();
@@ -1409,8 +1408,14 @@ namespace BTD6AutoCommunity
             mousePoint = context.ConvertScreenPosition(mousePoint);
             mousePos.X = mousePoint.X;
             mousePos.Y = mousePoint.Y;
-            
-            overlayForm.UpdateLabelPosition(Cursor.Position, $"X: {mousePos.X}, Y: {mousePos.Y}");
+            if (mousePos.X >= 16000 || mousePos.Y >= 9000)
+            {
+                overlayForm.UpdateLabelPosition(Cursor.Position, "无效的坐标");
+            }
+            else
+            {
+                overlayForm.UpdateLabelPosition(Cursor.Position, $"X: {mousePos.X}, Y: {mousePos.Y}");
+            }
         }
     }
 }

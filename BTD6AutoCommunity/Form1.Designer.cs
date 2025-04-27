@@ -47,7 +47,9 @@
             this.ExecuteDifficultyCB = new System.Windows.Forms.ComboBox();
             this.ScriptLB = new System.Windows.Forms.Label();
             this.ExecuteScriptCB = new System.Windows.Forms.ComboBox();
+            this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
             this.ImportScriptBT = new System.Windows.Forms.Button();
+            this.EditScriptBT = new System.Windows.Forms.Button();
             this.StartProgramBT = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -60,8 +62,8 @@
             this.CurrentLifeLB = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel22 = new System.Windows.Forms.TableLayoutPanel();
-            this.CurrentInstructionLB = new System.Windows.Forms.Label();
-            this.CurrentTriggerLB = new System.Windows.Forms.Label();
+            this.CurrentTriggerLB = new System.Windows.Forms.RichTextBox();
+            this.CurrentInstructionLB = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
             this.PreviewLB = new System.Windows.Forms.ListBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -69,6 +71,7 @@
             this.logsLB = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel8 = new System.Windows.Forms.TableLayoutPanel();
             this.label14 = new System.Windows.Forms.Label();
             this.MapCB = new System.Windows.Forms.ComboBox();
@@ -83,6 +86,7 @@
             this.AnchorYTB = new System.Windows.Forms.TextBox();
             this.label79 = new System.Windows.Forms.Label();
             this.ScriptNameTB = new System.Windows.Forms.TextBox();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel9 = new System.Windows.Forms.TableLayoutPanel();
             this.label15 = new System.Windows.Forms.Label();
             this.Argument1CB = new System.Windows.Forms.ComboBox();
@@ -117,12 +121,13 @@
             this.tableLayoutPanel19 = new System.Windows.Forms.TableLayoutPanel();
             this.label10 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.GetGameDataUD = new System.Windows.Forms.NumericUpDown();
+            this.GetGameDataIntervalUD = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
-            this.ExecuteUD = new System.Windows.Forms.NumericUpDown();
+            this.ExecuteIntervalUD = new System.Windows.Forms.NumericUpDown();
             this.GameDpiCB = new System.Windows.Forms.ComboBox();
-            this.DoubleCoinCB = new System.Windows.Forms.CheckBox();
-            this.FastPathCB = new System.Windows.Forms.CheckBox();
+            this.EnableDoubleCoinCB = new System.Windows.Forms.CheckBox();
+            this.EnableFastPathCB = new System.Windows.Forms.CheckBox();
+            this.EnableRecommendIntervalCB = new System.Windows.Forms.CheckBox();
             this.label12 = new System.Windows.Forms.Label();
             this.tableLayoutPanel17 = new System.Windows.Forms.TableLayoutPanel();
             this.SpikeFactoryHotkeyBT = new System.Windows.Forms.Button();
@@ -269,8 +274,6 @@
             this.脚本名 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.AnchorBTTT = new System.Windows.Forms.ToolTip(this.components);
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.StartPrgramTC.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -278,6 +281,7 @@
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
+            this.tableLayoutPanel7.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel5.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -285,8 +289,16 @@
             this.tableLayoutPanel6.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.tableLayoutPanel8.SuspendLayout();
             this.tableLayoutPanel16.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
             this.tableLayoutPanel9.SuspendLayout();
             this.tableLayoutPanel13.SuspendLayout();
             this.tableLayoutPanel10.SuspendLayout();
@@ -296,22 +308,14 @@
             this.tableLayoutPanel20.SuspendLayout();
             this.tableLayoutPanel18.SuspendLayout();
             this.tableLayoutPanel19.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.GetGameDataUD)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ExecuteUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GetGameDataIntervalUD)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ExecuteIntervalUD)).BeginInit();
             this.tableLayoutPanel17.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tableLayoutPanel23.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tableLayoutPanel14.SuspendLayout();
             this.tableLayoutPanel15.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
             this.SuspendLayout();
             // 
             // InstructionClassCB
@@ -409,7 +413,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 3;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 302F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 118F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 160F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 92F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(335, 600);
             this.tableLayoutPanel2.TabIndex = 0;
@@ -446,7 +450,7 @@
             this.tableLayoutPanel4.Controls.Add(this.ExecuteDifficultyCB, 1, 2);
             this.tableLayoutPanel4.Controls.Add(this.ScriptLB, 0, 3);
             this.tableLayoutPanel4.Controls.Add(this.ExecuteScriptCB, 1, 3);
-            this.tableLayoutPanel4.Controls.Add(this.ImportScriptBT, 1, 4);
+            this.tableLayoutPanel4.Controls.Add(this.tableLayoutPanel7, 1, 4);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -494,7 +498,6 @@
             this.ExecuteMapCB.Name = "ExecuteMapCB";
             this.ExecuteMapCB.Size = new System.Drawing.Size(254, 28);
             this.ExecuteMapCB.TabIndex = 4;
-            this.ExecuteMapCB.SelectedIndexChanged += new System.EventHandler(this.ExecuteDifficultyCB_SelectedIndexChanged);
             // 
             // ExecuteModeCB
             // 
@@ -531,7 +534,6 @@
             this.ExecuteDifficultyCB.Name = "ExecuteDifficultyCB";
             this.ExecuteDifficultyCB.Size = new System.Drawing.Size(254, 28);
             this.ExecuteDifficultyCB.TabIndex = 7;
-            this.ExecuteDifficultyCB.SelectedIndexChanged += new System.EventHandler(this.ExecuteDifficultyCB_SelectedIndexChanged);
             // 
             // ScriptLB
             // 
@@ -557,17 +559,46 @@
             this.ExecuteScriptCB.TabIndex = 9;
             this.ExecuteScriptCB.SelectedIndexChanged += new System.EventHandler(this.ExecuteScriptCB_SelectedIndexChanged);
             // 
+            // tableLayoutPanel7
+            // 
+            this.tableLayoutPanel7.ColumnCount = 4;
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+            this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+            this.tableLayoutPanel7.Controls.Add(this.ImportScriptBT, 4, 0);
+            this.tableLayoutPanel7.Controls.Add(this.EditScriptBT, 2, 0);
+            this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel7.Location = new System.Drawing.Point(66, 155);
+            this.tableLayoutPanel7.Name = "tableLayoutPanel7";
+            this.tableLayoutPanel7.RowCount = 1;
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(254, 34);
+            this.tableLayoutPanel7.TabIndex = 10;
+            // 
             // ImportScriptBT
             // 
-            this.ImportScriptBT.Dock = System.Windows.Forms.DockStyle.Right;
+            this.ImportScriptBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ImportScriptBT.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.ImportScriptBT.Location = new System.Drawing.Point(245, 155);
+            this.ImportScriptBT.Location = new System.Drawing.Point(187, 3);
             this.ImportScriptBT.Name = "ImportScriptBT";
-            this.ImportScriptBT.Size = new System.Drawing.Size(75, 34);
-            this.ImportScriptBT.TabIndex = 10;
+            this.ImportScriptBT.Size = new System.Drawing.Size(64, 28);
+            this.ImportScriptBT.TabIndex = 11;
             this.ImportScriptBT.Text = "导入";
             this.ImportScriptBT.UseVisualStyleBackColor = true;
             this.ImportScriptBT.Click += new System.EventHandler(this.ImportScriptBT_Click);
+            // 
+            // EditScriptBT
+            // 
+            this.EditScriptBT.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EditScriptBT.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.EditScriptBT.Location = new System.Drawing.Point(117, 3);
+            this.EditScriptBT.Name = "EditScriptBT";
+            this.EditScriptBT.Size = new System.Drawing.Size(64, 28);
+            this.EditScriptBT.TabIndex = 12;
+            this.EditScriptBT.Text = "编辑";
+            this.EditScriptBT.UseVisualStyleBackColor = true;
+            this.EditScriptBT.Click += new System.EventHandler(this.EditScriptBT_Click);
             // 
             // StartProgramBT
             // 
@@ -600,9 +631,9 @@
             this.groupBox1.Controls.Add(this.tableLayoutPanel5);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.groupBox1.Location = new System.Drawing.Point(3, 423);
+            this.groupBox1.Location = new System.Drawing.Point(3, 465);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(329, 174);
+            this.groupBox1.Size = new System.Drawing.Size(329, 132);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "回合信息";
@@ -622,11 +653,11 @@
             this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 24);
             this.tableLayoutPanel5.Name = "tableLayoutPanel5";
             this.tableLayoutPanel5.RowCount = 4;
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 35F));
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
+            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(323, 147);
+            this.tableLayoutPanel5.Size = new System.Drawing.Size(323, 105);
             this.tableLayoutPanel5.TabIndex = 1;
             // 
             // label4
@@ -636,7 +667,7 @@
             this.label4.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.label4.Location = new System.Drawing.Point(3, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(94, 35);
+            this.label4.Size = new System.Drawing.Size(94, 32);
             this.label4.TabIndex = 0;
             this.label4.Text = "当前回合";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -646,9 +677,9 @@
             this.label5.AutoSize = true;
             this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label5.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            this.label5.Location = new System.Drawing.Point(3, 35);
+            this.label5.Location = new System.Drawing.Point(3, 32);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(94, 35);
+            this.label5.Size = new System.Drawing.Size(94, 32);
             this.label5.TabIndex = 1;
             this.label5.Text = "当前金币";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -658,9 +689,9 @@
             this.label6.AutoSize = true;
             this.label6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label6.ForeColor = System.Drawing.Color.DarkRed;
-            this.label6.Location = new System.Drawing.Point(3, 70);
+            this.label6.Location = new System.Drawing.Point(3, 64);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(94, 35);
+            this.label6.Size = new System.Drawing.Size(94, 32);
             this.label6.TabIndex = 2;
             this.label6.Text = "当前生命";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -672,7 +703,7 @@
             this.CurrentRoundLB.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.CurrentRoundLB.Location = new System.Drawing.Point(103, 0);
             this.CurrentRoundLB.Name = "CurrentRoundLB";
-            this.CurrentRoundLB.Size = new System.Drawing.Size(217, 35);
+            this.CurrentRoundLB.Size = new System.Drawing.Size(217, 32);
             this.CurrentRoundLB.TabIndex = 3;
             this.CurrentRoundLB.Text = "None";
             this.CurrentRoundLB.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -683,9 +714,9 @@
             this.CurrentGoldLB.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CurrentGoldLB.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.CurrentGoldLB.ForeColor = System.Drawing.Color.DarkGoldenrod;
-            this.CurrentGoldLB.Location = new System.Drawing.Point(103, 35);
+            this.CurrentGoldLB.Location = new System.Drawing.Point(103, 32);
             this.CurrentGoldLB.Name = "CurrentGoldLB";
-            this.CurrentGoldLB.Size = new System.Drawing.Size(217, 35);
+            this.CurrentGoldLB.Size = new System.Drawing.Size(217, 32);
             this.CurrentGoldLB.TabIndex = 4;
             this.CurrentGoldLB.Text = "None";
             this.CurrentGoldLB.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -696,9 +727,9 @@
             this.CurrentLifeLB.Dock = System.Windows.Forms.DockStyle.Fill;
             this.CurrentLifeLB.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.CurrentLifeLB.ForeColor = System.Drawing.Color.DarkRed;
-            this.CurrentLifeLB.Location = new System.Drawing.Point(103, 70);
+            this.CurrentLifeLB.Location = new System.Drawing.Point(103, 64);
             this.CurrentLifeLB.Name = "CurrentLifeLB";
-            this.CurrentLifeLB.Size = new System.Drawing.Size(217, 35);
+            this.CurrentLifeLB.Size = new System.Drawing.Size(217, 32);
             this.CurrentLifeLB.TabIndex = 5;
             this.CurrentLifeLB.Text = "None";
             this.CurrentLifeLB.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -710,7 +741,7 @@
             this.groupBox2.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox2.Location = new System.Drawing.Point(3, 305);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(329, 112);
+            this.groupBox2.Size = new System.Drawing.Size(329, 154);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "指令预览";
@@ -719,43 +750,37 @@
             // 
             this.tableLayoutPanel22.ColumnCount = 1;
             this.tableLayoutPanel22.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel22.Controls.Add(this.CurrentInstructionLB, 0, 0);
             this.tableLayoutPanel22.Controls.Add(this.CurrentTriggerLB, 0, 1);
+            this.tableLayoutPanel22.Controls.Add(this.CurrentInstructionLB, 0, 0);
             this.tableLayoutPanel22.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel22.Location = new System.Drawing.Point(3, 24);
             this.tableLayoutPanel22.Name = "tableLayoutPanel22";
             this.tableLayoutPanel22.RowCount = 2;
-            this.tableLayoutPanel22.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel22.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel22.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel22.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel22.Size = new System.Drawing.Size(323, 85);
+            this.tableLayoutPanel22.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 65F));
+            this.tableLayoutPanel22.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 65F));
+            this.tableLayoutPanel22.Size = new System.Drawing.Size(323, 127);
             this.tableLayoutPanel22.TabIndex = 2;
-            // 
-            // CurrentInstructionLB
-            // 
-            this.CurrentInstructionLB.AutoSize = true;
-            this.CurrentInstructionLB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CurrentInstructionLB.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.CurrentInstructionLB.Location = new System.Drawing.Point(3, 0);
-            this.CurrentInstructionLB.Name = "CurrentInstructionLB";
-            this.CurrentInstructionLB.Size = new System.Drawing.Size(317, 42);
-            this.CurrentInstructionLB.TabIndex = 1;
-            this.CurrentInstructionLB.Text = "当前指令";
-            this.CurrentInstructionLB.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // CurrentTriggerLB
             // 
-            this.CurrentTriggerLB.AutoSize = true;
+            this.CurrentTriggerLB.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.CurrentTriggerLB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CurrentTriggerLB.Font = new System.Drawing.Font("宋体", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.CurrentTriggerLB.ForeColor = System.Drawing.SystemColors.Highlight;
-            this.CurrentTriggerLB.Location = new System.Drawing.Point(3, 42);
+            this.CurrentTriggerLB.Location = new System.Drawing.Point(3, 68);
             this.CurrentTriggerLB.Name = "CurrentTriggerLB";
-            this.CurrentTriggerLB.Size = new System.Drawing.Size(317, 43);
-            this.CurrentTriggerLB.TabIndex = 3;
+            this.CurrentTriggerLB.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.CurrentTriggerLB.Size = new System.Drawing.Size(317, 59);
+            this.CurrentTriggerLB.TabIndex = 2;
             this.CurrentTriggerLB.Text = "触发条件";
-            this.CurrentTriggerLB.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // CurrentInstructionLB
+            // 
+            this.CurrentInstructionLB.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.CurrentInstructionLB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CurrentInstructionLB.Location = new System.Drawing.Point(3, 3);
+            this.CurrentInstructionLB.Name = "CurrentInstructionLB";
+            this.CurrentInstructionLB.Size = new System.Drawing.Size(317, 59);
+            this.CurrentInstructionLB.TabIndex = 3;
+            this.CurrentInstructionLB.Text = "当前指令";
             // 
             // tableLayoutPanel6
             // 
@@ -839,6 +864,25 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "脚本编辑器";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.splitContainer1.Cursor = System.Windows.Forms.Cursors.SizeWE;
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.tableLayoutPanel8);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
+            this.splitContainer1.Size = new System.Drawing.Size(688, 633);
+            this.splitContainer1.SplitterDistance = 145;
+            this.splitContainer1.TabIndex = 1;
             // 
             // tableLayoutPanel8
             // 
@@ -1017,6 +1061,25 @@
             this.ScriptNameTB.Name = "ScriptNameTB";
             this.ScriptNameTB.Size = new System.Drawing.Size(137, 30);
             this.ScriptNameTB.TabIndex = 11;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.tableLayoutPanel9);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.tableLayoutPanel10);
+            this.splitContainer2.Size = new System.Drawing.Size(539, 633);
+            this.splitContainer2.SplitterDistance = 145;
+            this.splitContainer2.TabIndex = 0;
             // 
             // tableLayoutPanel9
             // 
@@ -1429,10 +1492,9 @@
             this.tableLayoutPanel18.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel18.Name = "tableLayoutPanel18";
             this.tableLayoutPanel18.RowCount = 3;
-            this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 168F));
+            this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 208F));
             this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 1380F));
             this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-            this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 500F));
             this.tableLayoutPanel18.Size = new System.Drawing.Size(682, 582);
             this.tableLayoutPanel18.TabIndex = 0;
             // 
@@ -1443,7 +1505,7 @@
             this.BasicLB.Font = new System.Drawing.Font("黑体", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.BasicLB.Location = new System.Drawing.Point(4, 1);
             this.BasicLB.Name = "BasicLB";
-            this.BasicLB.Size = new System.Drawing.Size(101, 168);
+            this.BasicLB.Size = new System.Drawing.Size(101, 208);
             this.BasicLB.TabIndex = 0;
             this.BasicLB.Text = "基础";
             this.BasicLB.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1453,30 +1515,32 @@
             this.tableLayoutPanel19.ColumnCount = 2;
             this.tableLayoutPanel19.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 260F));
             this.tableLayoutPanel19.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel19.Controls.Add(this.label10, 0, 2);
+            this.tableLayoutPanel19.Controls.Add(this.label10, 0, 3);
             this.tableLayoutPanel19.Controls.Add(this.label7, 0, 0);
-            this.tableLayoutPanel19.Controls.Add(this.GetGameDataUD, 1, 0);
+            this.tableLayoutPanel19.Controls.Add(this.GetGameDataIntervalUD, 1, 0);
             this.tableLayoutPanel19.Controls.Add(this.label8, 0, 1);
-            this.tableLayoutPanel19.Controls.Add(this.ExecuteUD, 1, 1);
-            this.tableLayoutPanel19.Controls.Add(this.GameDpiCB, 1, 2);
-            this.tableLayoutPanel19.Controls.Add(this.DoubleCoinCB, 0, 3);
-            this.tableLayoutPanel19.Controls.Add(this.FastPathCB, 1, 3);
+            this.tableLayoutPanel19.Controls.Add(this.ExecuteIntervalUD, 1, 1);
+            this.tableLayoutPanel19.Controls.Add(this.GameDpiCB, 1, 3);
+            this.tableLayoutPanel19.Controls.Add(this.EnableDoubleCoinCB, 0, 4);
+            this.tableLayoutPanel19.Controls.Add(this.EnableFastPathCB, 1, 4);
+            this.tableLayoutPanel19.Controls.Add(this.EnableRecommendIntervalCB, 0, 2);
             this.tableLayoutPanel19.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel19.Location = new System.Drawing.Point(112, 4);
             this.tableLayoutPanel19.Name = "tableLayoutPanel19";
-            this.tableLayoutPanel19.RowCount = 4;
+            this.tableLayoutPanel19.RowCount = 5;
+            this.tableLayoutPanel19.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel19.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel19.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel19.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel19.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel19.Size = new System.Drawing.Size(559, 162);
+            this.tableLayoutPanel19.Size = new System.Drawing.Size(555, 202);
             this.tableLayoutPanel19.TabIndex = 1;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
             this.label10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label10.Location = new System.Drawing.Point(3, 80);
+            this.label10.Location = new System.Drawing.Point(3, 120);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(254, 40);
             this.label10.TabIndex = 4;
@@ -1494,29 +1558,29 @@
             this.label7.Text = "游戏数据获取间隔（ms）";
             this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // GetGameDataUD
+            // GetGameDataIntervalUD
             // 
-            this.GetGameDataUD.Font = new System.Drawing.Font("宋体", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.GetGameDataUD.Increment = new decimal(new int[] {
+            this.GetGameDataIntervalUD.Font = new System.Drawing.Font("宋体", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.GetGameDataIntervalUD.Increment = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.GetGameDataUD.Location = new System.Drawing.Point(263, 3);
-            this.GetGameDataUD.Maximum = new decimal(new int[] {
+            this.GetGameDataIntervalUD.Location = new System.Drawing.Point(263, 3);
+            this.GetGameDataIntervalUD.Maximum = new decimal(new int[] {
             3000,
             0,
             0,
             0});
-            this.GetGameDataUD.Minimum = new decimal(new int[] {
+            this.GetGameDataIntervalUD.Minimum = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.GetGameDataUD.Name = "GetGameDataUD";
-            this.GetGameDataUD.Size = new System.Drawing.Size(139, 34);
-            this.GetGameDataUD.TabIndex = 1;
-            this.GetGameDataUD.Value = new decimal(new int[] {
+            this.GetGameDataIntervalUD.Name = "GetGameDataIntervalUD";
+            this.GetGameDataIntervalUD.Size = new System.Drawing.Size(139, 34);
+            this.GetGameDataIntervalUD.TabIndex = 1;
+            this.GetGameDataIntervalUD.Value = new decimal(new int[] {
             10,
             0,
             0,
@@ -1533,29 +1597,29 @@
             this.label8.Text = "操作时间间隔（ms）";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // ExecuteUD
+            // ExecuteIntervalUD
             // 
-            this.ExecuteUD.Font = new System.Drawing.Font("宋体", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.ExecuteUD.Increment = new decimal(new int[] {
+            this.ExecuteIntervalUD.Font = new System.Drawing.Font("宋体", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.ExecuteIntervalUD.Increment = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.ExecuteUD.Location = new System.Drawing.Point(263, 43);
-            this.ExecuteUD.Maximum = new decimal(new int[] {
+            this.ExecuteIntervalUD.Location = new System.Drawing.Point(263, 43);
+            this.ExecuteIntervalUD.Maximum = new decimal(new int[] {
             3000,
             0,
             0,
             0});
-            this.ExecuteUD.Minimum = new decimal(new int[] {
+            this.ExecuteIntervalUD.Minimum = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.ExecuteUD.Name = "ExecuteUD";
-            this.ExecuteUD.Size = new System.Drawing.Size(139, 34);
-            this.ExecuteUD.TabIndex = 3;
-            this.ExecuteUD.Value = new decimal(new int[] {
+            this.ExecuteIntervalUD.Name = "ExecuteIntervalUD";
+            this.ExecuteIntervalUD.Size = new System.Drawing.Size(139, 34);
+            this.ExecuteIntervalUD.TabIndex = 3;
+            this.ExecuteIntervalUD.Value = new decimal(new int[] {
             10,
             0,
             0,
@@ -1568,39 +1632,51 @@
             this.GameDpiCB.Items.AddRange(new object[] {
             "1920x1080",
             "1280x720"});
-            this.GameDpiCB.Location = new System.Drawing.Point(263, 83);
+            this.GameDpiCB.Location = new System.Drawing.Point(263, 123);
             this.GameDpiCB.Name = "GameDpiCB";
             this.GameDpiCB.Size = new System.Drawing.Size(139, 31);
             this.GameDpiCB.TabIndex = 5;
             // 
-            // DoubleCoinCB
+            // EnableDoubleCoinCB
             // 
-            this.DoubleCoinCB.AutoSize = true;
-            this.DoubleCoinCB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DoubleCoinCB.Location = new System.Drawing.Point(3, 123);
-            this.DoubleCoinCB.Name = "DoubleCoinCB";
-            this.DoubleCoinCB.Size = new System.Drawing.Size(254, 36);
-            this.DoubleCoinCB.TabIndex = 6;
-            this.DoubleCoinCB.Text = "双金";
-            this.DoubleCoinCB.UseVisualStyleBackColor = true;
+            this.EnableDoubleCoinCB.AutoSize = true;
+            this.EnableDoubleCoinCB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EnableDoubleCoinCB.Location = new System.Drawing.Point(3, 163);
+            this.EnableDoubleCoinCB.Name = "EnableDoubleCoinCB";
+            this.EnableDoubleCoinCB.Size = new System.Drawing.Size(254, 36);
+            this.EnableDoubleCoinCB.TabIndex = 6;
+            this.EnableDoubleCoinCB.Text = "双金";
+            this.EnableDoubleCoinCB.UseVisualStyleBackColor = true;
             // 
-            // FastPathCB
+            // EnableFastPathCB
             // 
-            this.FastPathCB.AutoSize = true;
-            this.FastPathCB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.FastPathCB.Location = new System.Drawing.Point(263, 123);
-            this.FastPathCB.Name = "FastPathCB";
-            this.FastPathCB.Size = new System.Drawing.Size(293, 36);
-            this.FastPathCB.TabIndex = 7;
-            this.FastPathCB.Text = "快速路径";
-            this.FastPathCB.UseVisualStyleBackColor = true;
+            this.EnableFastPathCB.AutoSize = true;
+            this.EnableFastPathCB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EnableFastPathCB.Location = new System.Drawing.Point(263, 163);
+            this.EnableFastPathCB.Name = "EnableFastPathCB";
+            this.EnableFastPathCB.Size = new System.Drawing.Size(289, 36);
+            this.EnableFastPathCB.TabIndex = 7;
+            this.EnableFastPathCB.Text = "快速路径";
+            this.EnableFastPathCB.UseVisualStyleBackColor = true;
+            // 
+            // EnableRecommendIntervalCB
+            // 
+            this.EnableRecommendIntervalCB.AutoSize = true;
+            this.EnableRecommendIntervalCB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EnableRecommendIntervalCB.Location = new System.Drawing.Point(3, 83);
+            this.EnableRecommendIntervalCB.Name = "EnableRecommendIntervalCB";
+            this.EnableRecommendIntervalCB.Size = new System.Drawing.Size(254, 34);
+            this.EnableRecommendIntervalCB.TabIndex = 8;
+            this.EnableRecommendIntervalCB.Text = "使用推荐间隔";
+            this.EnableRecommendIntervalCB.UseVisualStyleBackColor = true;
+            this.EnableRecommendIntervalCB.CheckedChanged += new System.EventHandler(this.RecommendedIntervalCB_CheckedChanged);
             // 
             // label12
             // 
             this.label12.AutoSize = true;
             this.label12.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label12.Font = new System.Drawing.Font("黑体", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label12.Location = new System.Drawing.Point(4, 170);
+            this.label12.Location = new System.Drawing.Point(4, 210);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(101, 1380);
             this.label12.TabIndex = 2;
@@ -1743,7 +1819,7 @@
             this.tableLayoutPanel17.Controls.Add(this.SellHotkeyBT, 3, 16);
             this.tableLayoutPanel17.Cursor = System.Windows.Forms.Cursors.Hand;
             this.tableLayoutPanel17.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel17.Location = new System.Drawing.Point(112, 173);
+            this.tableLayoutPanel17.Location = new System.Drawing.Point(112, 213);
             this.tableLayoutPanel17.Name = "tableLayoutPanel17";
             this.tableLayoutPanel17.RowCount = 35;
             this.tableLayoutPanel17.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
@@ -1781,7 +1857,7 @@
             this.tableLayoutPanel17.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel17.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel17.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel17.Size = new System.Drawing.Size(559, 1374);
+            this.tableLayoutPanel17.Size = new System.Drawing.Size(555, 1374);
             this.tableLayoutPanel17.TabIndex = 3;
             // 
             // SpikeFactoryHotkeyBT
@@ -1789,7 +1865,7 @@
             this.SpikeFactoryHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SpikeFactoryHotkeyBT.Location = new System.Drawing.Point(128, 443);
             this.SpikeFactoryHotkeyBT.Name = "SpikeFactoryHotkeyBT";
-            this.SpikeFactoryHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.SpikeFactoryHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.SpikeFactoryHotkeyBT.TabIndex = 41;
             this.SpikeFactoryHotkeyBT.Tag = "31";
             this.SpikeFactoryHotkeyBT.Text = "button42";
@@ -1799,9 +1875,9 @@
             // BananaFarmHotkeyBT
             // 
             this.BananaFarmHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BananaFarmHotkeyBT.Location = new System.Drawing.Point(407, 403);
+            this.BananaFarmHotkeyBT.Location = new System.Drawing.Point(405, 403);
             this.BananaFarmHotkeyBT.Name = "BananaFarmHotkeyBT";
-            this.BananaFarmHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.BananaFarmHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.BananaFarmHotkeyBT.TabIndex = 39;
             this.BananaFarmHotkeyBT.Tag = "30";
             this.BananaFarmHotkeyBT.Text = "30";
@@ -1813,7 +1889,7 @@
             this.MerMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MerMonkeyHotkeyBT.Location = new System.Drawing.Point(128, 403);
             this.MerMonkeyHotkeyBT.Name = "MerMonkeyHotkeyBT";
-            this.MerMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.MerMonkeyHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.MerMonkeyHotkeyBT.TabIndex = 37;
             this.MerMonkeyHotkeyBT.Tag = "25";
             this.MerMonkeyHotkeyBT.Text = "button38";
@@ -1823,9 +1899,9 @@
             // DruidHotkeyBT
             // 
             this.DruidHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DruidHotkeyBT.Location = new System.Drawing.Point(407, 363);
+            this.DruidHotkeyBT.Location = new System.Drawing.Point(405, 363);
             this.DruidHotkeyBT.Name = "DruidHotkeyBT";
-            this.DruidHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.DruidHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.DruidHotkeyBT.TabIndex = 35;
             this.DruidHotkeyBT.Tag = "24";
             this.DruidHotkeyBT.Text = "button36";
@@ -1837,7 +1913,7 @@
             this.AlchemistHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.AlchemistHotkeyBT.Location = new System.Drawing.Point(128, 363);
             this.AlchemistHotkeyBT.Name = "AlchemistHotkeyBT";
-            this.AlchemistHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.AlchemistHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.AlchemistHotkeyBT.TabIndex = 33;
             this.AlchemistHotkeyBT.Tag = "23";
             this.AlchemistHotkeyBT.Text = "button34";
@@ -1847,9 +1923,9 @@
             // NinjaMonkeyHotkeyBT
             // 
             this.NinjaMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.NinjaMonkeyHotkeyBT.Location = new System.Drawing.Point(407, 323);
+            this.NinjaMonkeyHotkeyBT.Location = new System.Drawing.Point(405, 323);
             this.NinjaMonkeyHotkeyBT.Name = "NinjaMonkeyHotkeyBT";
-            this.NinjaMonkeyHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.NinjaMonkeyHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.NinjaMonkeyHotkeyBT.TabIndex = 31;
             this.NinjaMonkeyHotkeyBT.Tag = "22";
             this.NinjaMonkeyHotkeyBT.Text = "button32";
@@ -1861,7 +1937,7 @@
             this.SuperMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SuperMonkeyHotkeyBT.Location = new System.Drawing.Point(128, 323);
             this.SuperMonkeyHotkeyBT.Name = "SuperMonkeyHotkeyBT";
-            this.SuperMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.SuperMonkeyHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.SuperMonkeyHotkeyBT.TabIndex = 29;
             this.SuperMonkeyHotkeyBT.Tag = "21";
             this.SuperMonkeyHotkeyBT.Text = "button30";
@@ -1871,9 +1947,9 @@
             // WizardMonkeyHotkeyBT
             // 
             this.WizardMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.WizardMonkeyHotkeyBT.Location = new System.Drawing.Point(407, 283);
+            this.WizardMonkeyHotkeyBT.Location = new System.Drawing.Point(405, 283);
             this.WizardMonkeyHotkeyBT.Name = "WizardMonkeyHotkeyBT";
-            this.WizardMonkeyHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.WizardMonkeyHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.WizardMonkeyHotkeyBT.TabIndex = 27;
             this.WizardMonkeyHotkeyBT.Tag = "20";
             this.WizardMonkeyHotkeyBT.Text = "20";
@@ -1885,7 +1961,7 @@
             this.DartlingGunnerHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DartlingGunnerHotkeyBT.Location = new System.Drawing.Point(128, 283);
             this.DartlingGunnerHotkeyBT.Name = "DartlingGunnerHotkeyBT";
-            this.DartlingGunnerHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.DartlingGunnerHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.DartlingGunnerHotkeyBT.TabIndex = 25;
             this.DartlingGunnerHotkeyBT.Tag = "16";
             this.DartlingGunnerHotkeyBT.Text = "button26";
@@ -1895,9 +1971,9 @@
             // MortarMonkeyHotkeyBT
             // 
             this.MortarMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MortarMonkeyHotkeyBT.Location = new System.Drawing.Point(407, 243);
+            this.MortarMonkeyHotkeyBT.Location = new System.Drawing.Point(405, 243);
             this.MortarMonkeyHotkeyBT.Name = "MortarMonkeyHotkeyBT";
-            this.MortarMonkeyHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.MortarMonkeyHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.MortarMonkeyHotkeyBT.TabIndex = 23;
             this.MortarMonkeyHotkeyBT.Tag = "15";
             this.MortarMonkeyHotkeyBT.Text = "button24";
@@ -1909,7 +1985,7 @@
             this.HeliPilotHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeliPilotHotkeyBT.Location = new System.Drawing.Point(128, 243);
             this.HeliPilotHotkeyBT.Name = "HeliPilotHotkeyBT";
-            this.HeliPilotHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeliPilotHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeliPilotHotkeyBT.TabIndex = 21;
             this.HeliPilotHotkeyBT.Tag = "14";
             this.HeliPilotHotkeyBT.Text = "button22";
@@ -1919,9 +1995,9 @@
             // MonkeyAceHotkeyBT
             // 
             this.MonkeyAceHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MonkeyAceHotkeyBT.Location = new System.Drawing.Point(407, 203);
+            this.MonkeyAceHotkeyBT.Location = new System.Drawing.Point(405, 203);
             this.MonkeyAceHotkeyBT.Name = "MonkeyAceHotkeyBT";
-            this.MonkeyAceHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.MonkeyAceHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.MonkeyAceHotkeyBT.TabIndex = 19;
             this.MonkeyAceHotkeyBT.Tag = "13";
             this.MonkeyAceHotkeyBT.Text = "button20";
@@ -1933,7 +2009,7 @@
             this.MonkeyBuccaneerHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MonkeyBuccaneerHotkeyBT.Location = new System.Drawing.Point(128, 203);
             this.MonkeyBuccaneerHotkeyBT.Name = "MonkeyBuccaneerHotkeyBT";
-            this.MonkeyBuccaneerHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.MonkeyBuccaneerHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.MonkeyBuccaneerHotkeyBT.TabIndex = 17;
             this.MonkeyBuccaneerHotkeyBT.Tag = "12";
             this.MonkeyBuccaneerHotkeyBT.Text = "button18";
@@ -1943,9 +2019,9 @@
             // MonkeySubHotkeyBT
             // 
             this.MonkeySubHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MonkeySubHotkeyBT.Location = new System.Drawing.Point(407, 163);
+            this.MonkeySubHotkeyBT.Location = new System.Drawing.Point(405, 163);
             this.MonkeySubHotkeyBT.Name = "MonkeySubHotkeyBT";
-            this.MonkeySubHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.MonkeySubHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.MonkeySubHotkeyBT.TabIndex = 15;
             this.MonkeySubHotkeyBT.Tag = "11";
             this.MonkeySubHotkeyBT.Text = "button16";
@@ -1957,7 +2033,7 @@
             this.SniperMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SniperMonkeyHotkeyBT.Location = new System.Drawing.Point(128, 163);
             this.SniperMonkeyHotkeyBT.Name = "SniperMonkeyHotkeyBT";
-            this.SniperMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.SniperMonkeyHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.SniperMonkeyHotkeyBT.TabIndex = 13;
             this.SniperMonkeyHotkeyBT.Tag = "10";
             this.SniperMonkeyHotkeyBT.Text = "button14";
@@ -1967,9 +2043,9 @@
             // GlueGunnerHotkeyBT
             // 
             this.GlueGunnerHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GlueGunnerHotkeyBT.Location = new System.Drawing.Point(407, 123);
+            this.GlueGunnerHotkeyBT.Location = new System.Drawing.Point(405, 123);
             this.GlueGunnerHotkeyBT.Name = "GlueGunnerHotkeyBT";
-            this.GlueGunnerHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.GlueGunnerHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.GlueGunnerHotkeyBT.TabIndex = 11;
             this.GlueGunnerHotkeyBT.Tag = "5";
             this.GlueGunnerHotkeyBT.Text = "button12";
@@ -1981,7 +2057,7 @@
             this.IceMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.IceMonkeyHotkeyBT.Location = new System.Drawing.Point(128, 123);
             this.IceMonkeyHotkeyBT.Name = "IceMonkeyHotkeyBT";
-            this.IceMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.IceMonkeyHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.IceMonkeyHotkeyBT.TabIndex = 9;
             this.IceMonkeyHotkeyBT.Tag = "4";
             this.IceMonkeyHotkeyBT.Text = "button10";
@@ -1991,9 +2067,9 @@
             // TackShooterHotkeyBT
             // 
             this.TackShooterHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TackShooterHotkeyBT.Location = new System.Drawing.Point(407, 83);
+            this.TackShooterHotkeyBT.Location = new System.Drawing.Point(405, 83);
             this.TackShooterHotkeyBT.Name = "TackShooterHotkeyBT";
-            this.TackShooterHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.TackShooterHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.TackShooterHotkeyBT.TabIndex = 7;
             this.TackShooterHotkeyBT.Tag = "3";
             this.TackShooterHotkeyBT.Text = "button8";
@@ -2005,7 +2081,7 @@
             this.BombShooterHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.BombShooterHotkeyBT.Location = new System.Drawing.Point(128, 83);
             this.BombShooterHotkeyBT.Name = "BombShooterHotkeyBT";
-            this.BombShooterHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.BombShooterHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.BombShooterHotkeyBT.TabIndex = 5;
             this.BombShooterHotkeyBT.Tag = "2";
             this.BombShooterHotkeyBT.Text = "button6";
@@ -2017,7 +2093,7 @@
             this.DartMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DartMonkeyHotkeyBT.Location = new System.Drawing.Point(128, 43);
             this.DartMonkeyHotkeyBT.Name = "DartMonkeyHotkeyBT";
-            this.DartMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.DartMonkeyHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.DartMonkeyHotkeyBT.TabIndex = 0;
             this.DartMonkeyHotkeyBT.Tag = "";
             this.DartMonkeyHotkeyBT.Text = "Hot1";
@@ -2027,9 +2103,9 @@
             // BoomerangMonkeyHotkeyBT
             // 
             this.BoomerangMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BoomerangMonkeyHotkeyBT.Location = new System.Drawing.Point(407, 43);
+            this.BoomerangMonkeyHotkeyBT.Location = new System.Drawing.Point(405, 43);
             this.BoomerangMonkeyHotkeyBT.Name = "BoomerangMonkeyHotkeyBT";
-            this.BoomerangMonkeyHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.BoomerangMonkeyHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.BoomerangMonkeyHotkeyBT.TabIndex = 1;
             this.BoomerangMonkeyHotkeyBT.Tag = "1";
             this.BoomerangMonkeyHotkeyBT.Text = "button2";
@@ -2039,9 +2115,9 @@
             // MonkeyVillageHotkeyBT
             // 
             this.MonkeyVillageHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MonkeyVillageHotkeyBT.Location = new System.Drawing.Point(407, 443);
+            this.MonkeyVillageHotkeyBT.Location = new System.Drawing.Point(405, 443);
             this.MonkeyVillageHotkeyBT.Name = "MonkeyVillageHotkeyBT";
-            this.MonkeyVillageHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.MonkeyVillageHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.MonkeyVillageHotkeyBT.TabIndex = 42;
             this.MonkeyVillageHotkeyBT.Tag = "32";
             this.MonkeyVillageHotkeyBT.Text = "button3";
@@ -2053,7 +2129,7 @@
             this.EngineerMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.EngineerMonkeyHotkeyBT.Location = new System.Drawing.Point(128, 483);
             this.EngineerMonkeyHotkeyBT.Name = "EngineerMonkeyHotkeyBT";
-            this.EngineerMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.EngineerMonkeyHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.EngineerMonkeyHotkeyBT.TabIndex = 43;
             this.EngineerMonkeyHotkeyBT.Tag = "33";
             this.EngineerMonkeyHotkeyBT.Text = "button4";
@@ -2063,9 +2139,9 @@
             // BeastHandlerHotkeyBT
             // 
             this.BeastHandlerHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BeastHandlerHotkeyBT.Location = new System.Drawing.Point(407, 483);
+            this.BeastHandlerHotkeyBT.Location = new System.Drawing.Point(405, 483);
             this.BeastHandlerHotkeyBT.Name = "BeastHandlerHotkeyBT";
-            this.BeastHandlerHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.BeastHandlerHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.BeastHandlerHotkeyBT.TabIndex = 44;
             this.BeastHandlerHotkeyBT.Tag = "34";
             this.BeastHandlerHotkeyBT.Text = "button5";
@@ -2087,7 +2163,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label16.Location = new System.Drawing.Point(282, 40);
+            this.label16.Location = new System.Drawing.Point(280, 40);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(119, 40);
             this.label16.TabIndex = 48;
@@ -2109,7 +2185,7 @@
             // 
             this.label18.AutoSize = true;
             this.label18.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label18.Location = new System.Drawing.Point(282, 80);
+            this.label18.Location = new System.Drawing.Point(280, 80);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(119, 40);
             this.label18.TabIndex = 50;
@@ -2120,7 +2196,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label19.Location = new System.Drawing.Point(282, 120);
+            this.label19.Location = new System.Drawing.Point(280, 120);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(119, 40);
             this.label19.TabIndex = 51;
@@ -2142,7 +2218,7 @@
             // 
             this.label21.AutoSize = true;
             this.label21.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label21.Location = new System.Drawing.Point(282, 160);
+            this.label21.Location = new System.Drawing.Point(280, 160);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(119, 40);
             this.label21.TabIndex = 53;
@@ -2164,7 +2240,7 @@
             // 
             this.label23.AutoSize = true;
             this.label23.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label23.Location = new System.Drawing.Point(282, 200);
+            this.label23.Location = new System.Drawing.Point(280, 200);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(119, 40);
             this.label23.TabIndex = 55;
@@ -2186,7 +2262,7 @@
             // 
             this.label25.AutoSize = true;
             this.label25.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label25.Location = new System.Drawing.Point(282, 240);
+            this.label25.Location = new System.Drawing.Point(280, 240);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(119, 40);
             this.label25.TabIndex = 57;
@@ -2208,7 +2284,7 @@
             // 
             this.label27.AutoSize = true;
             this.label27.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label27.Location = new System.Drawing.Point(282, 280);
+            this.label27.Location = new System.Drawing.Point(280, 280);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(119, 40);
             this.label27.TabIndex = 59;
@@ -2230,7 +2306,7 @@
             // 
             this.label29.AutoSize = true;
             this.label29.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label29.Location = new System.Drawing.Point(282, 320);
+            this.label29.Location = new System.Drawing.Point(280, 320);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(119, 40);
             this.label29.TabIndex = 61;
@@ -2263,7 +2339,7 @@
             // 
             this.label32.AutoSize = true;
             this.label32.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label32.Location = new System.Drawing.Point(282, 360);
+            this.label32.Location = new System.Drawing.Point(280, 360);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(119, 40);
             this.label32.TabIndex = 64;
@@ -2285,7 +2361,7 @@
             // 
             this.label34.AutoSize = true;
             this.label34.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label34.Location = new System.Drawing.Point(282, 400);
+            this.label34.Location = new System.Drawing.Point(280, 400);
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(119, 40);
             this.label34.TabIndex = 66;
@@ -2307,7 +2383,7 @@
             // 
             this.label36.AutoSize = true;
             this.label36.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label36.Location = new System.Drawing.Point(282, 440);
+            this.label36.Location = new System.Drawing.Point(280, 440);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(119, 40);
             this.label36.TabIndex = 68;
@@ -2329,7 +2405,7 @@
             // 
             this.label38.AutoSize = true;
             this.label38.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label38.Location = new System.Drawing.Point(282, 480);
+            this.label38.Location = new System.Drawing.Point(280, 480);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(119, 40);
             this.label38.TabIndex = 70;
@@ -2352,7 +2428,7 @@
             this.HeroHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroHotkeyBT.Location = new System.Drawing.Point(128, 563);
             this.HeroHotkeyBT.Name = "HeroHotkeyBT";
-            this.HeroHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroHotkeyBT.TabIndex = 45;
             this.HeroHotkeyBT.Text = "button7";
             this.HeroHotkeyBT.UseVisualStyleBackColor = true;
@@ -2374,7 +2450,7 @@
             this.UpgradeTopPathHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UpgradeTopPathHotkeyBT.Location = new System.Drawing.Point(128, 603);
             this.UpgradeTopPathHotkeyBT.Name = "UpgradeTopPathHotkeyBT";
-            this.UpgradeTopPathHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.UpgradeTopPathHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.UpgradeTopPathHotkeyBT.TabIndex = 46;
             this.UpgradeTopPathHotkeyBT.Text = "button9";
             this.UpgradeTopPathHotkeyBT.UseVisualStyleBackColor = true;
@@ -2384,7 +2460,7 @@
             // 
             this.label42.AutoSize = true;
             this.label42.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label42.Location = new System.Drawing.Point(282, 600);
+            this.label42.Location = new System.Drawing.Point(280, 600);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(119, 40);
             this.label42.TabIndex = 73;
@@ -2417,7 +2493,7 @@
             // 
             this.label45.AutoSize = true;
             this.label45.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label45.Location = new System.Drawing.Point(282, 680);
+            this.label45.Location = new System.Drawing.Point(280, 680);
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(119, 40);
             this.label45.TabIndex = 76;
@@ -2439,7 +2515,7 @@
             // 
             this.label47.AutoSize = true;
             this.label47.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label47.Location = new System.Drawing.Point(282, 720);
+            this.label47.Location = new System.Drawing.Point(280, 720);
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(119, 40);
             this.label47.TabIndex = 78;
@@ -2462,7 +2538,7 @@
             this.UpgradeBottomPathHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UpgradeBottomPathHotkeyBT.Location = new System.Drawing.Point(128, 643);
             this.UpgradeBottomPathHotkeyBT.Name = "UpgradeBottomPathHotkeyBT";
-            this.UpgradeBottomPathHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.UpgradeBottomPathHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.UpgradeBottomPathHotkeyBT.TabIndex = 91;
             this.UpgradeBottomPathHotkeyBT.Text = "button1";
             this.UpgradeBottomPathHotkeyBT.UseVisualStyleBackColor = true;
@@ -2473,7 +2549,7 @@
             this.SwitchTargetHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SwitchTargetHotkeyBT.Location = new System.Drawing.Point(128, 683);
             this.SwitchTargetHotkeyBT.Name = "SwitchTargetHotkeyBT";
-            this.SwitchTargetHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.SwitchTargetHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.SwitchTargetHotkeyBT.TabIndex = 92;
             this.SwitchTargetHotkeyBT.Text = "button2";
             this.SwitchTargetHotkeyBT.UseVisualStyleBackColor = true;
@@ -2484,7 +2560,7 @@
             this.SetFunction1HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SetFunction1HotkeyBT.Location = new System.Drawing.Point(128, 723);
             this.SetFunction1HotkeyBT.Name = "SetFunction1HotkeyBT";
-            this.SetFunction1HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.SetFunction1HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.SetFunction1HotkeyBT.TabIndex = 93;
             this.SetFunction1HotkeyBT.Text = "button3";
             this.SetFunction1HotkeyBT.UseVisualStyleBackColor = true;
@@ -2495,7 +2571,7 @@
             this.NextRoundHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.NextRoundHotkeyBT.Location = new System.Drawing.Point(128, 763);
             this.NextRoundHotkeyBT.Name = "NextRoundHotkeyBT";
-            this.NextRoundHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.NextRoundHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.NextRoundHotkeyBT.TabIndex = 94;
             this.NextRoundHotkeyBT.Text = "button4";
             this.NextRoundHotkeyBT.UseVisualStyleBackColor = true;
@@ -2504,9 +2580,9 @@
             // UpgradeMiddlePathHotkeyBT
             // 
             this.UpgradeMiddlePathHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.UpgradeMiddlePathHotkeyBT.Location = new System.Drawing.Point(407, 603);
+            this.UpgradeMiddlePathHotkeyBT.Location = new System.Drawing.Point(405, 603);
             this.UpgradeMiddlePathHotkeyBT.Name = "UpgradeMiddlePathHotkeyBT";
-            this.UpgradeMiddlePathHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.UpgradeMiddlePathHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.UpgradeMiddlePathHotkeyBT.TabIndex = 99;
             this.UpgradeMiddlePathHotkeyBT.Text = "button9";
             this.UpgradeMiddlePathHotkeyBT.UseVisualStyleBackColor = true;
@@ -2515,9 +2591,9 @@
             // ReverseSwitchTargetHotkeyBT
             // 
             this.ReverseSwitchTargetHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ReverseSwitchTargetHotkeyBT.Location = new System.Drawing.Point(407, 683);
+            this.ReverseSwitchTargetHotkeyBT.Location = new System.Drawing.Point(405, 683);
             this.ReverseSwitchTargetHotkeyBT.Name = "ReverseSwitchTargetHotkeyBT";
-            this.ReverseSwitchTargetHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.ReverseSwitchTargetHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.ReverseSwitchTargetHotkeyBT.TabIndex = 100;
             this.ReverseSwitchTargetHotkeyBT.Text = "button10";
             this.ReverseSwitchTargetHotkeyBT.UseVisualStyleBackColor = true;
@@ -2526,9 +2602,9 @@
             // SetFunction2HotkeyBT
             // 
             this.SetFunction2HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SetFunction2HotkeyBT.Location = new System.Drawing.Point(407, 723);
+            this.SetFunction2HotkeyBT.Location = new System.Drawing.Point(405, 723);
             this.SetFunction2HotkeyBT.Name = "SetFunction2HotkeyBT";
-            this.SetFunction2HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.SetFunction2HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.SetFunction2HotkeyBT.TabIndex = 101;
             this.SetFunction2HotkeyBT.Text = "button11";
             this.SetFunction2HotkeyBT.UseVisualStyleBackColor = true;
@@ -2550,7 +2626,7 @@
             this.Skill11HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Skill11HotkeyBT.Location = new System.Drawing.Point(128, 1003);
             this.Skill11HotkeyBT.Name = "Skill11HotkeyBT";
-            this.Skill11HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill11HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.Skill11HotkeyBT.TabIndex = 108;
             this.Skill11HotkeyBT.Text = "button18";
             this.Skill11HotkeyBT.UseVisualStyleBackColor = true;
@@ -2559,9 +2635,9 @@
             // Skill10HotkeyBT
             // 
             this.Skill10HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Skill10HotkeyBT.Location = new System.Drawing.Point(407, 963);
+            this.Skill10HotkeyBT.Location = new System.Drawing.Point(405, 963);
             this.Skill10HotkeyBT.Name = "Skill10HotkeyBT";
-            this.Skill10HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.Skill10HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.Skill10HotkeyBT.TabIndex = 107;
             this.Skill10HotkeyBT.Text = "button17";
             this.Skill10HotkeyBT.UseVisualStyleBackColor = true;
@@ -2571,7 +2647,7 @@
             // 
             this.label58.AutoSize = true;
             this.label58.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label58.Location = new System.Drawing.Point(282, 960);
+            this.label58.Location = new System.Drawing.Point(280, 960);
             this.label58.Name = "label58";
             this.label58.Size = new System.Drawing.Size(119, 40);
             this.label58.TabIndex = 89;
@@ -2594,7 +2670,7 @@
             this.Skill9HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Skill9HotkeyBT.Location = new System.Drawing.Point(128, 963);
             this.Skill9HotkeyBT.Name = "Skill9HotkeyBT";
-            this.Skill9HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill9HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.Skill9HotkeyBT.TabIndex = 106;
             this.Skill9HotkeyBT.Text = "button16";
             this.Skill9HotkeyBT.UseVisualStyleBackColor = true;
@@ -2603,9 +2679,9 @@
             // Skill8HotkeyBT
             // 
             this.Skill8HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Skill8HotkeyBT.Location = new System.Drawing.Point(407, 923);
+            this.Skill8HotkeyBT.Location = new System.Drawing.Point(405, 923);
             this.Skill8HotkeyBT.Name = "Skill8HotkeyBT";
-            this.Skill8HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.Skill8HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.Skill8HotkeyBT.TabIndex = 98;
             this.Skill8HotkeyBT.Text = "button8";
             this.Skill8HotkeyBT.UseVisualStyleBackColor = true;
@@ -2615,7 +2691,7 @@
             // 
             this.label56.AutoSize = true;
             this.label56.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label56.Location = new System.Drawing.Point(282, 920);
+            this.label56.Location = new System.Drawing.Point(280, 920);
             this.label56.Name = "label56";
             this.label56.Size = new System.Drawing.Size(119, 40);
             this.label56.TabIndex = 87;
@@ -2638,7 +2714,7 @@
             this.Skill7HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Skill7HotkeyBT.Location = new System.Drawing.Point(128, 923);
             this.Skill7HotkeyBT.Name = "Skill7HotkeyBT";
-            this.Skill7HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill7HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.Skill7HotkeyBT.TabIndex = 105;
             this.Skill7HotkeyBT.Text = "button15";
             this.Skill7HotkeyBT.UseVisualStyleBackColor = true;
@@ -2647,9 +2723,9 @@
             // Skill6HotkeyBT
             // 
             this.Skill6HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Skill6HotkeyBT.Location = new System.Drawing.Point(407, 883);
+            this.Skill6HotkeyBT.Location = new System.Drawing.Point(405, 883);
             this.Skill6HotkeyBT.Name = "Skill6HotkeyBT";
-            this.Skill6HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.Skill6HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.Skill6HotkeyBT.TabIndex = 97;
             this.Skill6HotkeyBT.Text = "button7";
             this.Skill6HotkeyBT.UseVisualStyleBackColor = true;
@@ -2659,7 +2735,7 @@
             // 
             this.label54.AutoSize = true;
             this.label54.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label54.Location = new System.Drawing.Point(282, 880);
+            this.label54.Location = new System.Drawing.Point(280, 880);
             this.label54.Name = "label54";
             this.label54.Size = new System.Drawing.Size(119, 40);
             this.label54.TabIndex = 85;
@@ -2682,7 +2758,7 @@
             this.Skill5HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Skill5HotkeyBT.Location = new System.Drawing.Point(128, 883);
             this.Skill5HotkeyBT.Name = "Skill5HotkeyBT";
-            this.Skill5HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill5HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.Skill5HotkeyBT.TabIndex = 104;
             this.Skill5HotkeyBT.Text = "button14";
             this.Skill5HotkeyBT.UseVisualStyleBackColor = true;
@@ -2691,9 +2767,9 @@
             // Skill4HotkeyBT
             // 
             this.Skill4HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Skill4HotkeyBT.Location = new System.Drawing.Point(407, 843);
+            this.Skill4HotkeyBT.Location = new System.Drawing.Point(405, 843);
             this.Skill4HotkeyBT.Name = "Skill4HotkeyBT";
-            this.Skill4HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.Skill4HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.Skill4HotkeyBT.TabIndex = 96;
             this.Skill4HotkeyBT.Text = "button6";
             this.Skill4HotkeyBT.UseVisualStyleBackColor = true;
@@ -2703,7 +2779,7 @@
             // 
             this.label52.AutoSize = true;
             this.label52.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label52.Location = new System.Drawing.Point(282, 840);
+            this.label52.Location = new System.Drawing.Point(280, 840);
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(119, 40);
             this.label52.TabIndex = 83;
@@ -2726,7 +2802,7 @@
             this.Skill3HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Skill3HotkeyBT.Location = new System.Drawing.Point(128, 843);
             this.Skill3HotkeyBT.Name = "Skill3HotkeyBT";
-            this.Skill3HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill3HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.Skill3HotkeyBT.TabIndex = 103;
             this.Skill3HotkeyBT.Text = "button13";
             this.Skill3HotkeyBT.UseVisualStyleBackColor = true;
@@ -2735,9 +2811,9 @@
             // Skill2HotkeyBT
             // 
             this.Skill2HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Skill2HotkeyBT.Location = new System.Drawing.Point(407, 803);
+            this.Skill2HotkeyBT.Location = new System.Drawing.Point(405, 803);
             this.Skill2HotkeyBT.Name = "Skill2HotkeyBT";
-            this.Skill2HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.Skill2HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.Skill2HotkeyBT.TabIndex = 95;
             this.Skill2HotkeyBT.Text = "button5";
             this.Skill2HotkeyBT.UseVisualStyleBackColor = true;
@@ -2747,7 +2823,7 @@
             // 
             this.label50.AutoSize = true;
             this.label50.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label50.Location = new System.Drawing.Point(282, 800);
+            this.label50.Location = new System.Drawing.Point(280, 800);
             this.label50.Name = "label50";
             this.label50.Size = new System.Drawing.Size(119, 40);
             this.label50.TabIndex = 81;
@@ -2770,7 +2846,7 @@
             this.Skill1HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Skill1HotkeyBT.Location = new System.Drawing.Point(128, 803);
             this.Skill1HotkeyBT.Name = "Skill1HotkeyBT";
-            this.Skill1HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill1HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.Skill1HotkeyBT.TabIndex = 102;
             this.Skill1HotkeyBT.Text = "button12";
             this.Skill1HotkeyBT.UseVisualStyleBackColor = true;
@@ -2780,7 +2856,7 @@
             // 
             this.label60.AutoSize = true;
             this.label60.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label60.Location = new System.Drawing.Point(282, 1000);
+            this.label60.Location = new System.Drawing.Point(280, 1000);
             this.label60.Name = "label60";
             this.label60.Size = new System.Drawing.Size(119, 40);
             this.label60.TabIndex = 109;
@@ -2790,9 +2866,9 @@
             // Skill12HotkeyBT
             // 
             this.Skill12HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Skill12HotkeyBT.Location = new System.Drawing.Point(407, 1003);
+            this.Skill12HotkeyBT.Location = new System.Drawing.Point(405, 1003);
             this.Skill12HotkeyBT.Name = "Skill12HotkeyBT";
-            this.Skill12HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.Skill12HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.Skill12HotkeyBT.TabIndex = 110;
             this.Skill12HotkeyBT.Text = "button1";
             this.Skill12HotkeyBT.UseVisualStyleBackColor = true;
@@ -2802,7 +2878,7 @@
             // 
             this.label61.AutoSize = true;
             this.label61.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label61.Location = new System.Drawing.Point(282, 760);
+            this.label61.Location = new System.Drawing.Point(280, 760);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(119, 40);
             this.label61.TabIndex = 111;
@@ -2812,9 +2888,9 @@
             // ChangeSpeedHotkeyBT
             // 
             this.ChangeSpeedHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ChangeSpeedHotkeyBT.Location = new System.Drawing.Point(407, 763);
+            this.ChangeSpeedHotkeyBT.Location = new System.Drawing.Point(405, 763);
             this.ChangeSpeedHotkeyBT.Name = "ChangeSpeedHotkeyBT";
-            this.ChangeSpeedHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.ChangeSpeedHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.ChangeSpeedHotkeyBT.TabIndex = 112;
             this.ChangeSpeedHotkeyBT.Text = "button1";
             this.ChangeSpeedHotkeyBT.UseVisualStyleBackColor = true;
@@ -2922,7 +2998,7 @@
             // 
             this.label70.AutoSize = true;
             this.label70.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label70.Location = new System.Drawing.Point(282, 1040);
+            this.label70.Location = new System.Drawing.Point(280, 1040);
             this.label70.Name = "label70";
             this.label70.Size = new System.Drawing.Size(119, 40);
             this.label70.TabIndex = 122;
@@ -2933,7 +3009,7 @@
             // 
             this.label71.AutoSize = true;
             this.label71.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label71.Location = new System.Drawing.Point(282, 1080);
+            this.label71.Location = new System.Drawing.Point(280, 1080);
             this.label71.Name = "label71";
             this.label71.Size = new System.Drawing.Size(119, 40);
             this.label71.TabIndex = 123;
@@ -2944,7 +3020,7 @@
             // 
             this.label72.AutoSize = true;
             this.label72.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label72.Location = new System.Drawing.Point(282, 1120);
+            this.label72.Location = new System.Drawing.Point(280, 1120);
             this.label72.Name = "label72";
             this.label72.Size = new System.Drawing.Size(119, 40);
             this.label72.TabIndex = 124;
@@ -2955,7 +3031,7 @@
             // 
             this.label73.AutoSize = true;
             this.label73.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label73.Location = new System.Drawing.Point(282, 1160);
+            this.label73.Location = new System.Drawing.Point(280, 1160);
             this.label73.Name = "label73";
             this.label73.Size = new System.Drawing.Size(119, 40);
             this.label73.TabIndex = 125;
@@ -2966,7 +3042,7 @@
             // 
             this.label74.AutoSize = true;
             this.label74.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label74.Location = new System.Drawing.Point(282, 1200);
+            this.label74.Location = new System.Drawing.Point(280, 1200);
             this.label74.Name = "label74";
             this.label74.Size = new System.Drawing.Size(119, 40);
             this.label74.TabIndex = 126;
@@ -2977,7 +3053,7 @@
             // 
             this.label75.AutoSize = true;
             this.label75.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label75.Location = new System.Drawing.Point(282, 1240);
+            this.label75.Location = new System.Drawing.Point(280, 1240);
             this.label75.Name = "label75";
             this.label75.Size = new System.Drawing.Size(119, 40);
             this.label75.TabIndex = 127;
@@ -2988,7 +3064,7 @@
             // 
             this.label76.AutoSize = true;
             this.label76.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label76.Location = new System.Drawing.Point(282, 1280);
+            this.label76.Location = new System.Drawing.Point(280, 1280);
             this.label76.Name = "label76";
             this.label76.Size = new System.Drawing.Size(119, 40);
             this.label76.TabIndex = 128;
@@ -2999,7 +3075,7 @@
             // 
             this.label77.AutoSize = true;
             this.label77.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label77.Location = new System.Drawing.Point(282, 1320);
+            this.label77.Location = new System.Drawing.Point(280, 1320);
             this.label77.Name = "label77";
             this.label77.Size = new System.Drawing.Size(119, 40);
             this.label77.TabIndex = 129;
@@ -3011,7 +3087,7 @@
             this.HeroObject1HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject1HotkeyBT.Location = new System.Drawing.Point(128, 1043);
             this.HeroObject1HotkeyBT.Name = "HeroObject1HotkeyBT";
-            this.HeroObject1HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject1HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject1HotkeyBT.TabIndex = 130;
             this.HeroObject1HotkeyBT.Text = "button1";
             this.HeroObject1HotkeyBT.UseVisualStyleBackColor = true;
@@ -3019,9 +3095,9 @@
             // HeroObject2HotkeyBT
             // 
             this.HeroObject2HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject2HotkeyBT.Location = new System.Drawing.Point(407, 1043);
+            this.HeroObject2HotkeyBT.Location = new System.Drawing.Point(405, 1043);
             this.HeroObject2HotkeyBT.Name = "HeroObject2HotkeyBT";
-            this.HeroObject2HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.HeroObject2HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.HeroObject2HotkeyBT.TabIndex = 131;
             this.HeroObject2HotkeyBT.Text = "button2";
             this.HeroObject2HotkeyBT.UseVisualStyleBackColor = true;
@@ -3031,7 +3107,7 @@
             this.HeroObject3HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject3HotkeyBT.Location = new System.Drawing.Point(128, 1083);
             this.HeroObject3HotkeyBT.Name = "HeroObject3HotkeyBT";
-            this.HeroObject3HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject3HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject3HotkeyBT.TabIndex = 132;
             this.HeroObject3HotkeyBT.Text = "button3";
             this.HeroObject3HotkeyBT.UseVisualStyleBackColor = true;
@@ -3039,9 +3115,9 @@
             // HeroObject4HotkeyBT
             // 
             this.HeroObject4HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject4HotkeyBT.Location = new System.Drawing.Point(407, 1083);
+            this.HeroObject4HotkeyBT.Location = new System.Drawing.Point(405, 1083);
             this.HeroObject4HotkeyBT.Name = "HeroObject4HotkeyBT";
-            this.HeroObject4HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.HeroObject4HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.HeroObject4HotkeyBT.TabIndex = 133;
             this.HeroObject4HotkeyBT.Text = "button4";
             this.HeroObject4HotkeyBT.UseVisualStyleBackColor = true;
@@ -3051,7 +3127,7 @@
             this.HeroObject5HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject5HotkeyBT.Location = new System.Drawing.Point(128, 1123);
             this.HeroObject5HotkeyBT.Name = "HeroObject5HotkeyBT";
-            this.HeroObject5HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject5HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject5HotkeyBT.TabIndex = 134;
             this.HeroObject5HotkeyBT.Text = "button5";
             this.HeroObject5HotkeyBT.UseVisualStyleBackColor = true;
@@ -3059,9 +3135,9 @@
             // HeroObject6HotkeyBT
             // 
             this.HeroObject6HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject6HotkeyBT.Location = new System.Drawing.Point(407, 1123);
+            this.HeroObject6HotkeyBT.Location = new System.Drawing.Point(405, 1123);
             this.HeroObject6HotkeyBT.Name = "HeroObject6HotkeyBT";
-            this.HeroObject6HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.HeroObject6HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.HeroObject6HotkeyBT.TabIndex = 135;
             this.HeroObject6HotkeyBT.Text = "button6";
             this.HeroObject6HotkeyBT.UseVisualStyleBackColor = true;
@@ -3071,7 +3147,7 @@
             this.HeroObject7HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject7HotkeyBT.Location = new System.Drawing.Point(128, 1163);
             this.HeroObject7HotkeyBT.Name = "HeroObject7HotkeyBT";
-            this.HeroObject7HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject7HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject7HotkeyBT.TabIndex = 136;
             this.HeroObject7HotkeyBT.Text = "button7";
             this.HeroObject7HotkeyBT.UseVisualStyleBackColor = true;
@@ -3079,9 +3155,9 @@
             // HeroObject8HotkeyBT
             // 
             this.HeroObject8HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject8HotkeyBT.Location = new System.Drawing.Point(407, 1163);
+            this.HeroObject8HotkeyBT.Location = new System.Drawing.Point(405, 1163);
             this.HeroObject8HotkeyBT.Name = "HeroObject8HotkeyBT";
-            this.HeroObject8HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.HeroObject8HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.HeroObject8HotkeyBT.TabIndex = 137;
             this.HeroObject8HotkeyBT.Text = "button8";
             this.HeroObject8HotkeyBT.UseVisualStyleBackColor = true;
@@ -3091,7 +3167,7 @@
             this.HeroObject9HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject9HotkeyBT.Location = new System.Drawing.Point(128, 1203);
             this.HeroObject9HotkeyBT.Name = "HeroObject9HotkeyBT";
-            this.HeroObject9HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject9HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject9HotkeyBT.TabIndex = 138;
             this.HeroObject9HotkeyBT.Text = "button9";
             this.HeroObject9HotkeyBT.UseVisualStyleBackColor = true;
@@ -3099,9 +3175,9 @@
             // HeroObject10HotkeyBT
             // 
             this.HeroObject10HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject10HotkeyBT.Location = new System.Drawing.Point(407, 1203);
+            this.HeroObject10HotkeyBT.Location = new System.Drawing.Point(405, 1203);
             this.HeroObject10HotkeyBT.Name = "HeroObject10HotkeyBT";
-            this.HeroObject10HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.HeroObject10HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.HeroObject10HotkeyBT.TabIndex = 139;
             this.HeroObject10HotkeyBT.Text = "button10";
             this.HeroObject10HotkeyBT.UseVisualStyleBackColor = true;
@@ -3111,7 +3187,7 @@
             this.HeroObject11HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject11HotkeyBT.Location = new System.Drawing.Point(128, 1243);
             this.HeroObject11HotkeyBT.Name = "HeroObject11HotkeyBT";
-            this.HeroObject11HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject11HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject11HotkeyBT.TabIndex = 140;
             this.HeroObject11HotkeyBT.Text = "button11";
             this.HeroObject11HotkeyBT.UseVisualStyleBackColor = true;
@@ -3119,9 +3195,9 @@
             // HeroObject12HotkeyBT
             // 
             this.HeroObject12HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject12HotkeyBT.Location = new System.Drawing.Point(407, 1243);
+            this.HeroObject12HotkeyBT.Location = new System.Drawing.Point(405, 1243);
             this.HeroObject12HotkeyBT.Name = "HeroObject12HotkeyBT";
-            this.HeroObject12HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.HeroObject12HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.HeroObject12HotkeyBT.TabIndex = 141;
             this.HeroObject12HotkeyBT.Text = "button12";
             this.HeroObject12HotkeyBT.UseVisualStyleBackColor = true;
@@ -3131,7 +3207,7 @@
             this.HeroObject13HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject13HotkeyBT.Location = new System.Drawing.Point(128, 1283);
             this.HeroObject13HotkeyBT.Name = "HeroObject13HotkeyBT";
-            this.HeroObject13HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject13HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject13HotkeyBT.TabIndex = 142;
             this.HeroObject13HotkeyBT.Text = "button13";
             this.HeroObject13HotkeyBT.UseVisualStyleBackColor = true;
@@ -3139,9 +3215,9 @@
             // HeroObject14HotkeyBT
             // 
             this.HeroObject14HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject14HotkeyBT.Location = new System.Drawing.Point(407, 1283);
+            this.HeroObject14HotkeyBT.Location = new System.Drawing.Point(405, 1283);
             this.HeroObject14HotkeyBT.Name = "HeroObject14HotkeyBT";
-            this.HeroObject14HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.HeroObject14HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.HeroObject14HotkeyBT.TabIndex = 143;
             this.HeroObject14HotkeyBT.Text = "button14";
             this.HeroObject14HotkeyBT.UseVisualStyleBackColor = true;
@@ -3151,7 +3227,7 @@
             this.HeroObject15HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject15HotkeyBT.Location = new System.Drawing.Point(128, 1323);
             this.HeroObject15HotkeyBT.Name = "HeroObject15HotkeyBT";
-            this.HeroObject15HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject15HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject15HotkeyBT.TabIndex = 144;
             this.HeroObject15HotkeyBT.Text = "button15";
             this.HeroObject15HotkeyBT.UseVisualStyleBackColor = true;
@@ -3159,9 +3235,9 @@
             // HeroObject16HotkeyBT
             // 
             this.HeroObject16HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject16HotkeyBT.Location = new System.Drawing.Point(407, 1323);
+            this.HeroObject16HotkeyBT.Location = new System.Drawing.Point(405, 1323);
             this.HeroObject16HotkeyBT.Name = "HeroObject16HotkeyBT";
-            this.HeroObject16HotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.HeroObject16HotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.HeroObject16HotkeyBT.TabIndex = 145;
             this.HeroObject16HotkeyBT.Text = "button16";
             this.HeroObject16HotkeyBT.UseVisualStyleBackColor = true;
@@ -3170,7 +3246,7 @@
             // 
             this.label78.AutoSize = true;
             this.label78.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label78.Location = new System.Drawing.Point(282, 640);
+            this.label78.Location = new System.Drawing.Point(280, 640);
             this.label78.Name = "label78";
             this.label78.Size = new System.Drawing.Size(119, 40);
             this.label78.TabIndex = 146;
@@ -3180,9 +3256,9 @@
             // SellHotkeyBT
             // 
             this.SellHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SellHotkeyBT.Location = new System.Drawing.Point(407, 643);
+            this.SellHotkeyBT.Location = new System.Drawing.Point(405, 643);
             this.SellHotkeyBT.Name = "SellHotkeyBT";
-            this.SellHotkeyBT.Size = new System.Drawing.Size(149, 34);
+            this.SellHotkeyBT.Size = new System.Drawing.Size(147, 34);
             this.SellHotkeyBT.TabIndex = 147;
             this.SellHotkeyBT.Text = "button1";
             this.SellHotkeyBT.UseVisualStyleBackColor = true;
@@ -3193,7 +3269,7 @@
             this.label41.AutoSize = true;
             this.label41.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label41.Font = new System.Drawing.Font("黑体", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label41.Location = new System.Drawing.Point(4, 1551);
+            this.label41.Location = new System.Drawing.Point(4, 1591);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(101, 50);
             this.label41.TabIndex = 4;
@@ -3204,9 +3280,9 @@
             // 
             this.panel2.Controls.Add(this.EnableLoggingCB);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(112, 1554);
+            this.panel2.Location = new System.Drawing.Point(112, 1594);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(559, 44);
+            this.panel2.Size = new System.Drawing.Size(555, 44);
             this.panel2.TabIndex = 5;
             // 
             // EnableLoggingCB
@@ -3217,7 +3293,7 @@
             this.EnableLoggingCB.Dock = System.Windows.Forms.DockStyle.Fill;
             this.EnableLoggingCB.Location = new System.Drawing.Point(0, 0);
             this.EnableLoggingCB.Name = "EnableLoggingCB";
-            this.EnableLoggingCB.Size = new System.Drawing.Size(559, 44);
+            this.EnableLoggingCB.Size = new System.Drawing.Size(555, 44);
             this.EnableLoggingCB.TabIndex = 0;
             this.EnableLoggingCB.Text = "启用日志输出";
             this.EnableLoggingCB.UseVisualStyleBackColor = true;
@@ -3385,44 +3461,6 @@
             this.treeView1.Size = new System.Drawing.Size(688, 633);
             this.treeView1.TabIndex = 0;
             // 
-            // splitContainer1
-            // 
-            this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitContainer1.Cursor = System.Windows.Forms.Cursors.SizeWE;
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.tableLayoutPanel8);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(688, 633);
-            this.splitContainer1.SplitterDistance = 145;
-            this.splitContainer1.TabIndex = 1;
-            // 
-            // splitContainer2
-            // 
-            this.splitContainer2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Name = "splitContainer2";
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.tableLayoutPanel9);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.tableLayoutPanel10);
-            this.splitContainer2.Size = new System.Drawing.Size(539, 633);
-            this.splitContainer2.SplitterDistance = 145;
-            this.splitContainer2.TabIndex = 0;
-            // 
             // BTD6AutoCommunity
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -3444,20 +3482,28 @@
             this.tableLayoutPanel3.PerformLayout();
             this.tableLayoutPanel4.ResumeLayout(false);
             this.tableLayoutPanel4.PerformLayout();
+            this.tableLayoutPanel7.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.tableLayoutPanel5.ResumeLayout(false);
             this.tableLayoutPanel5.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.tableLayoutPanel22.ResumeLayout(false);
-            this.tableLayoutPanel22.PerformLayout();
             this.tableLayoutPanel6.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.tabPage2.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.tableLayoutPanel8.ResumeLayout(false);
             this.tableLayoutPanel8.PerformLayout();
             this.tableLayoutPanel16.ResumeLayout(false);
             this.tableLayoutPanel16.PerformLayout();
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
             this.tableLayoutPanel9.ResumeLayout(false);
             this.tableLayoutPanel9.PerformLayout();
             this.tableLayoutPanel13.ResumeLayout(false);
@@ -3471,8 +3517,8 @@
             this.tableLayoutPanel18.PerformLayout();
             this.tableLayoutPanel19.ResumeLayout(false);
             this.tableLayoutPanel19.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.GetGameDataUD)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ExecuteUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GetGameDataIntervalUD)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ExecuteIntervalUD)).EndInit();
             this.tableLayoutPanel17.ResumeLayout(false);
             this.tableLayoutPanel17.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -3481,14 +3527,6 @@
             this.tabPage4.ResumeLayout(false);
             this.tableLayoutPanel14.ResumeLayout(false);
             this.tableLayoutPanel15.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-            this.splitContainer2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -3547,13 +3585,11 @@
         private System.Windows.Forms.Label BasicLB;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel19;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.NumericUpDown GetGameDataUD;
+        private System.Windows.Forms.NumericUpDown GetGameDataIntervalUD;
         private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.NumericUpDown ExecuteUD;
+        private System.Windows.Forms.NumericUpDown ExecuteIntervalUD;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel20;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel22;
-        private System.Windows.Forms.Label CurrentInstructionLB;
-        private System.Windows.Forms.Label CurrentTriggerLB;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel23;
         private System.Windows.Forms.Button SaveSettingsBT;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -3615,8 +3651,8 @@
         private System.Windows.Forms.Label label38;
         private System.Windows.Forms.Label label39;
         private System.Windows.Forms.Label label40;
-        private System.Windows.Forms.CheckBox DoubleCoinCB;
-        private System.Windows.Forms.CheckBox FastPathCB;
+        private System.Windows.Forms.CheckBox EnableDoubleCoinCB;
+        private System.Windows.Forms.CheckBox EnableFastPathCB;
         private System.Windows.Forms.ToolTip AnchorBTTT;
         internal System.Windows.Forms.ComboBox Argument2CB;
         internal System.Windows.Forms.ComboBox Argument1CB;
@@ -3729,12 +3765,17 @@
         private System.Windows.Forms.Button HeroObject16HotkeyBT;
         private System.Windows.Forms.Label label78;
         private System.Windows.Forms.Button SellHotkeyBT;
-        private System.Windows.Forms.Button ImportScriptBT;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label79;
         private System.Windows.Forms.TextBox ScriptNameTB;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.CheckBox EnableRecommendIntervalCB;
+        private System.Windows.Forms.RichTextBox CurrentTriggerLB;
+        private System.Windows.Forms.RichTextBox CurrentInstructionLB;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
+        private System.Windows.Forms.Button EditScriptBT;
+        private System.Windows.Forms.Button ImportScriptBT;
     }
 }
 

@@ -391,7 +391,7 @@ namespace BTD6AutoCommunity
                         int lastIndex = directoryName.Length - 1;
                         ExecuteMapCB.SelectedIndex = ExecuteMapCB.FindString(directoryName[lastIndex - 2]);
                         ExecuteDifficultyCB.SelectedIndex = ExecuteDifficultyCB.FindString(directoryName[lastIndex - 1]);
-                        ExecuteDifficultyCB_SelectedIndexChanged(ExecuteDifficultyCB, EventArgs.Empty);
+                        ExecuteDifficultyCB_SelectedValueChanged(ExecuteDifficultyCB, EventArgs.Empty);
                         ExecuteScriptCB.SelectedIndex = ExecuteScriptCB.FindString(Path.GetFileNameWithoutExtension(directoryName[lastIndex]));
 
                         StartPrgramTC.SelectedIndex = 0;

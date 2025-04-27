@@ -70,6 +70,7 @@ namespace BTD6AutoCommunity
             ExecuteDifficultyCB.DataSource = dt;
             ExecuteDifficultyCB.ValueMember = "Value";
             ExecuteDifficultyCB.DisplayMember = "DifficultyName";
+            ExecuteDifficultyCB.SelectedValueChanged += ExecuteDifficultyCB_SelectedValueChanged;
         }
 
         private void BindSelectedMap()
@@ -87,6 +88,7 @@ namespace BTD6AutoCommunity
             ExecuteMapCB.DataSource = dt;
             ExecuteMapCB.ValueMember = "Value";
             ExecuteMapCB.DisplayMember = "MapName";
+            ExecuteMapCB.SelectedValueChanged += ExecuteDifficultyCB_SelectedValueChanged;
         }
 
         private void BindPreviewLB(List<string> lst)
@@ -290,11 +292,41 @@ namespace BTD6AutoCommunity
         {
             CurrentInstructionLB.Invoke((MethodInvoker)delegate
             {
-                CurrentInstructionLB.Text = "当前指令：" + instructionInfo.Content;
+                CurrentInstructionLB.Text = "当前指令：\n" + instructionInfo.Content;
             });
             CurrentTriggerLB.Invoke((MethodInvoker)delegate
             {
-                CurrentTriggerLB.Text = $"触发条件：第{instructionInfo.RoundTrigger}回合后 {instructionInfo.CashTrigger}金币";
+                CurrentTriggerLB.Clear();
+
+                // 固定前缀
+                CurrentTriggerLB.SelectionFont = new Font(CurrentTriggerLB.Font, FontStyle.Regular);
+                CurrentTriggerLB.SelectionColor = Color.Black;
+                CurrentTriggerLB.AppendText("触发条件：\n");
+
+                // 回合条件
+                bool isRoundMet = instructionInfo.IsRoundMet;
+                string roundIcon = isRoundMet ? "✅" : "❌";
+                CurrentTriggerLB.SelectionFont = isRoundMet
+                    ? new Font(CurrentTriggerLB.Font, FontStyle.Regular)
+                    : new Font(CurrentTriggerLB.Font, FontStyle.Bold);
+
+                CurrentTriggerLB.SelectionColor = isRoundMet ? Color.Blue : Color.Red;
+                CurrentTriggerLB.AppendText($"第{instructionInfo.RoundTrigger}回合后{roundIcon}");
+
+                // 分隔符
+                CurrentTriggerLB.SelectionFont = new Font(CurrentTriggerLB.Font, FontStyle.Regular);
+                CurrentTriggerLB.SelectionColor = Color.Black;
+                CurrentTriggerLB.AppendText(" / ");
+
+                // 金币条件
+                bool isCashMet = instructionInfo.IsCashMet;
+                string cashIcon = isCashMet ? "✅" : "❌";
+                CurrentTriggerLB.SelectionFont = isCashMet
+                    ? new Font(CurrentTriggerLB.Font, FontStyle.Regular)
+                    : new Font(CurrentTriggerLB.Font, FontStyle.Bold);
+
+                CurrentTriggerLB.SelectionColor = isCashMet ? Color.Blue : Color.Red;
+                CurrentTriggerLB.AppendText($"{instructionInfo.CashTrigger}金币{cashIcon}");
             });
             PreviewLB.Invoke((MethodInvoker)delegate
             {
@@ -319,7 +351,7 @@ namespace BTD6AutoCommunity
             ExecuteDifficultyCB.Invoke((MethodInvoker)delegate
             {
                 ExecuteDifficultyCB.SelectedValue = scriptEditorSuite.SelectedDifficulty;
-                ExecuteDifficultyCB_SelectedIndexChanged(ExecuteDifficultyCB, EventArgs.Empty);
+                ExecuteDifficultyCB_SelectedValueChanged(ExecuteDifficultyCB, EventArgs.Empty);
             });
             ExecuteScriptCB.Invoke((MethodInvoker)delegate
             {
@@ -375,7 +407,7 @@ namespace BTD6AutoCommunity
         }
 
 
-        private void ExecuteDifficultyCB_SelectedIndexChanged(object sender, EventArgs e)
+        private void ExecuteDifficultyCB_SelectedValueChanged(object sender, EventArgs e)
         {
             string selectDir1 = ExecuteMapCB.Text;
             string selectDir2 = ExecuteDifficultyCB.Text;
@@ -455,9 +487,38 @@ namespace BTD6AutoCommunity
                     //File.Copy(sourceFilePath, destinationFilePath, true);
                     ExecuteMapCB.SelectedValue = scriptEditorSuite.SelectedMap;
                     ExecuteDifficultyCB.SelectedValue = scriptEditorSuite.SelectedDifficulty;
-                    ExecuteDifficultyCB_SelectedIndexChanged(ExecuteDifficultyCB, EventArgs.Empty);
+                    ExecuteDifficultyCB_SelectedValueChanged(ExecuteDifficultyCB, EventArgs.Empty);
                     ExecuteScriptCB.SelectedIndex = ExecuteScriptCB.FindString(scriptEditorSuite.ScriptName);
                 }
+            }
+        }
+
+        private void EditScriptBT_Click(object sender, EventArgs e)
+        {
+            Maps selectedMap = (Maps)ExecuteMapCB.SelectedValue;
+            LevelDifficulties selectedDifficulty = (LevelDifficulties)ExecuteDifficultyCB.SelectedValue;
+            string scriptName = ExecuteScriptCB.Text;
+            string filePath = $@"data\我的脚本\{GetTypeName(selectedMap)}\{GetTypeName(selectedDifficulty)}\" + scriptName + ".btd6";
+            if (!File.Exists(filePath))
+            {
+                MessageBox.Show("请选择脚本！");
+                return;
+            }
+            try
+            {
+                MyInstructions.Clear();
+                string jsonString = File.ReadAllText(filePath);
+
+                MyInstructions = JsonConvert.DeserializeObject<ScriptEditorSuite>(jsonString);
+                MyInstructions.ScriptName = Path.GetFileNameWithoutExtension(filePath);
+                MyInstructions.RepairScript();
+                LoadScriptInfo();
+                BindInstructionsViewTL(MyInstructions.Displayinstructions);
+                StartPrgramTC.SelectedIndex = 1;
+            }
+            catch
+            {
+                MessageBox.Show("文件打开失败！");
             }
         }
     }

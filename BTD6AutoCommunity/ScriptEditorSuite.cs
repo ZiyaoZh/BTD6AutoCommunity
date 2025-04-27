@@ -29,6 +29,10 @@ namespace BTD6AutoCommunity
         public int RoundTrigger { get; set; }  // 回合触发条件
         public int CashTrigger { get; set; }   // Cash触发条件
 
+        public bool IsRoundMet { get; set; }  // 是否达到回合触发条件
+
+        public bool IsCashMet { get; set; }   // 是否达到Cash触发条件
+
         public ScriptInstructionInfo(int index, ActionTypes type, List<int> arguments, string content, int round, int cash)
         {
             Index = index;
@@ -37,6 +41,8 @@ namespace BTD6AutoCommunity
             Content = content;
             RoundTrigger = round;
             CashTrigger = cash;
+            IsRoundMet = true;
+            IsCashMet = true;
         }
 
         public override string ToString()
@@ -1387,7 +1393,9 @@ namespace BTD6AutoCommunity
                 Type = type,
                 Arguments = arguments,
                 CashTrigger = arguments[arguments.Count() - 1],
-                RoundTrigger = arguments[arguments.Count() - 2]
+                RoundTrigger = arguments[arguments.Count() - 2],
+                IsRoundMet = true,
+                IsCashMet = true
             };
         }
 

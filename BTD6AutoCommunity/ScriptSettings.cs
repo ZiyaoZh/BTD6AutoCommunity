@@ -26,6 +26,8 @@ namespace BTD6AutoCommunity
 
         public bool EnableLogging { get; set; }
 
+        public bool EnableRecommendInterval { get; set; }
+
         public Dictionary<Monkeys, HotKey> UserMonkeyHotKey { get; set; }
 
         public Dictionary<SkillTypes, HotKey> UserSkillHotKey { get; set; }
@@ -128,6 +130,7 @@ namespace BTD6AutoCommunity
             EnableDoubleCoin = false;
             EnableFastPath = false;
             EnableLogging = true;
+            EnableRecommendInterval = true;
         }
 
         public void RestoreDefaultHotKey()
@@ -212,7 +215,8 @@ namespace BTD6AutoCommunity
                 UserMonkeyHotKey,
                 EnableDoubleCoin,
                 EnableFastPath,
-                EnableLogging
+                EnableLogging,
+                EnableRecommendInterval
             };
             File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(settings, Formatting.Indented));
         }
