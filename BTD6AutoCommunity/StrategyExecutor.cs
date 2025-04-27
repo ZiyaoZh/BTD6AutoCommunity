@@ -128,7 +128,18 @@ namespace BTD6AutoCommunity
                     currentTrigger = (arguments[1], arguments[2]);
 
                     // 不满足触发条件
-                    if (arguments[1] > currentRound || arguments[2] > currentCash) return;
+                    if (arguments[1] > currentRound || arguments[2] > currentCash)
+                    {
+                        if (arguments[1] > currentRound)
+                        {
+                            instructionInfo.IsRoundMet = false;
+                        }
+                        if (arguments[2] > currentCash)
+                        {
+                            instructionInfo.IsCashMet = false;
+                        }
+                        return;
+                    }
 
                     currentSecondIndex++;
                     Tick(currentRound, currentCash);

@@ -76,5 +76,7 @@ namespace BTD6AutoCommunity
             WindowApiWrapper.RegisterHotKey(Handle, 107, 6, Keys.F1);
             WindowApiWrapper.RegisterHotKey(Handle, 108, 7, Keys.F1);
         }
+
+
     }
 }

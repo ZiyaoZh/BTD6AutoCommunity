@@ -13,13 +13,17 @@ namespace BTD6AutoCommunity
 {
     public partial class OverlayForm : Form
     {
-        private System.Windows.Forms.Label MousePosLB;
+        private readonly System.Windows.Forms.Label MousePosLB;
         public OverlayForm()
         {
-            MousePosLB = new System.Windows.Forms.Label { AutoSize = true };
-            ;
-            MousePosLB.BackColor = Color.LightYellow;
-            MousePosLB.Font = new System.Drawing.Font("宋体", 12, FontStyle.Regular); 
+            MousePosLB = new System.Windows.Forms.Label { 
+                AutoSize = true,
+                BackColor = Color.FromArgb(30, 30, 30), // 深灰背景
+                ForeColor = Color.White,                // 白色字体
+                Font = new System.Drawing.Font("Segoe UI", 10, FontStyle.Regular),
+                BorderStyle = BorderStyle.FixedSingle,
+                TextAlign = ContentAlignment.MiddleLeft,
+            };
             FormBorderStyle = FormBorderStyle.None;
             StartPosition = FormStartPosition.Manual;
             Size = new Size(1, 1); // Small size to avoid taking much space
@@ -36,7 +40,7 @@ namespace BTD6AutoCommunity
         {
             MousePosLB.Invoke((MethodInvoker)delegate
             {
-                MousePosLB.Text = text;
+                MousePosLB.Text = $"{text}\nEnter自动输入";
                 Location = new Point(screenPos.X + 10, screenPos.Y + 10);
             });
         }

@@ -59,6 +59,8 @@ namespace BTD6AutoCommunity
         private ScriptEditorSuite ScriptEditorSuite;
         public event Action<ScriptEditorSuite> OnScriptLoaded;
 
+        private int returnableScreenCount = 0;
+
         private LevelDataMonitor levelDataMonitor;
         private List<string> CurrentGameData; // 0: round, 1: cash, 2: life
         public event Action<List<string>> OnGameDataUpdated;
@@ -67,12 +69,16 @@ namespace BTD6AutoCommunity
         public event Action<ScriptInstructionInfo> OnCurrentStrategyCompleted;
 
         private System.Timers.Timer levelDataMonitorTimer;
+        private const int RecommendDataReadInterval = 1000;
         private System.Timers.Timer strategyExecutorTimer;
+        private const int RecommendOperationInterval = 200;
+
         private bool IsStrategyExecutionCompleted;
 
         private readonly LogHandler _logs;
 
         public bool ReadyToStart { get; private set; } = true;
+        
 
         public CollectionStrategy(ScriptSettings settings, LogHandler logHandler)
         {
@@ -428,7 +434,10 @@ namespace BTD6AutoCommunity
 
         private void HandleReturnableScreen()
         {
+            returnableScreenCount++;
+            if (returnableScreenCount < 2) return;
             MouseMoveAndLeftClick(_context, 80, 55);
+            returnableScreenCount = 0;
         }
 
         private void HandleThreeChestsScreen()
@@ -599,14 +608,34 @@ namespace BTD6AutoCommunity
 
         private void SetupLevelDataMonitorTimer()
         {
-            levelDataMonitorTimer = new System.Timers.Timer(_settings.DataReadInterval);
+            int interval = _settings.DataReadInterval;
+            if (_settings.EnableRecommendInterval)
+            {
+                interval = RecommendDataReadInterval;
+                _logs.Log($"使用推荐数据读取间隔：{interval}ms", LogLevel.Info);
+            }
+            else
+            {
+                _logs.Log($"使用自定义数据读取间隔：{interval}ms", LogLevel.Info);
+            }
+            levelDataMonitorTimer = new System.Timers.Timer(interval);
             levelDataMonitorTimer.Elapsed += (s, e) => ReadGameData();
             levelDataMonitorTimer.AutoReset = true;
         }
 
         private void SetupStrategyExecutorTimer()
         {
-            strategyExecutorTimer = new System.Timers.Timer(_settings.OperationInterval);
+            int interval = _settings.OperationInterval;
+            if (_settings.EnableRecommendInterval)
+            {
+                interval = RecommendOperationInterval;
+                _logs.Log($"使用推操作间隔：{interval}ms", LogLevel.Info);
+            }
+            else
+            {
+                _logs.Log($"使用自定义操作间隔：{interval}ms", LogLevel.Info);
+            }
+            strategyExecutorTimer = new System.Timers.Timer(interval);
             strategyExecutorTimer.Elapsed += (s, e) => ExecuteStrategy();
             strategyExecutorTimer.AutoReset = true;
         }
