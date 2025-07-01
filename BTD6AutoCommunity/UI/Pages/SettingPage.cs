@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static BTD6AutoCommunity.ScriptSettings;
+using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.ScriptEngine;
 using System.Diagnostics;
 using BTD6AutoCommunity;
 
@@ -190,7 +191,7 @@ namespace BTD6AutoCommunity
 
         private void LoadSettings()
         {
-            scriptSettings = LoadJsonSettings();
+            scriptSettings = ScriptSettings.LoadJsonSettings();
             GetGameDataIntervalUD.Value = scriptSettings.DataReadInterval;
             ExecuteIntervalUD.Value = scriptSettings.OperationInterval;
             GameDpiCB.SelectedIndex = scriptSettings.GameDpi;

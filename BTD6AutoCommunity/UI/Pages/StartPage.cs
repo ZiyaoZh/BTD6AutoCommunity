@@ -10,7 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
-using static BTD6AutoCommunity.Constants;
+using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.ScriptEngine;
+using BTD6AutoCommunity.Strategies;
 
 namespace BTD6AutoCommunity
 {
@@ -45,7 +47,7 @@ namespace BTD6AutoCommunity
             {
                 DataRow dr = dt.NewRow();
                 dr["Value"] = item;
-                dr["FunctionName"] = GetTypeName(item);
+                dr["FunctionName"] = Constants.GetTypeName(item);
                 dt.Rows.Add(dr);
             }
             ExecuteModeCB.DataSource = dt;
@@ -64,7 +66,7 @@ namespace BTD6AutoCommunity
                 if (item == LevelDifficulties.Any) continue;
                 DataRow dr = dt.NewRow();
                 dr["Value"] = item;
-                dr["DifficultyName"] = GetTypeName(item);
+                dr["DifficultyName"] = Constants.GetTypeName(item);
                 dt.Rows.Add(dr);
             }
             ExecuteDifficultyCB.DataSource = dt;
@@ -78,11 +80,11 @@ namespace BTD6AutoCommunity
             DataTable dt = new DataTable();
             dt.Columns.Add("Value", typeof(Maps));
             dt.Columns.Add("MapName", typeof(string));
-            foreach (Maps item in MapsToDisplay)
+            foreach (Maps item in Constants.MapsToDisplay)
             {
                 DataRow dr = dt.NewRow();
                 dr["Value"] = item;
-                dr["MapName"] = GetTypeName(item);
+                dr["MapName"] = Constants.GetTypeName(item);
                 dt.Rows.Add(dr);
             }
             ExecuteMapCB.DataSource = dt;
@@ -508,7 +510,7 @@ namespace BTD6AutoCommunity
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    string sourceFilePath = $@"data\我的脚本\{GetTypeName((Maps)ExecuteMapCB.SelectedValue)}\{GetTypeName((LevelDifficulties)ExecuteDifficultyCB.SelectedValue)}\" + scriptName + ".btd6";
+                    string sourceFilePath = $@"data\我的脚本\{Constants.GetTypeName((Maps)ExecuteMapCB.SelectedValue)}\{Constants.GetTypeName((LevelDifficulties)ExecuteDifficultyCB.SelectedValue)}\" + scriptName + ".btd6";
                     string destinationFilePath = saveFileDialog.FileName;
                     File.Copy(sourceFilePath, destinationFilePath, true);
                 }
@@ -520,7 +522,7 @@ namespace BTD6AutoCommunity
             Maps selectedMap = (Maps)ExecuteMapCB.SelectedValue;
             LevelDifficulties selectedDifficulty = (LevelDifficulties)ExecuteDifficultyCB.SelectedValue;
             string scriptName = ExecuteScriptCB.Text;
-            string filePath = $@"data\我的脚本\{GetTypeName(selectedMap)}\{GetTypeName(selectedDifficulty)}\" + scriptName + ".btd6";
+            string filePath = $@"data\我的脚本\{Constants.GetTypeName(selectedMap)}\{Constants.GetTypeName(selectedDifficulty)}\" + scriptName + ".btd6";
             if (!File.Exists(filePath))
             {
                 MessageBox.Show("请选择脚本！");

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static BTD6AutoCommunity.WindowApiWrapper;
 using System.Diagnostics;
+using static BTD6AutoCommunity.Core.WindowApiWrapper;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.Core
 {
     public class GameContext
     {

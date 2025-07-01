@@ -20,6 +20,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using static OpenCvSharp.Stitcher;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using BTD6AutoCommunity.Core;
 
 namespace BTD6AutoCommunity
 {

@@ -5,11 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static BTD6AutoCommunity.InputSimulator;
-using static BTD6AutoCommunity.GameVisionRecognizer;
-using static BTD6AutoCommunity.GameStateLocalization;
-using static BTD6AutoCommunity.ScriptEditorSuite;
-using static BTD6AutoCommunity.Constants;
+using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.ScriptEngine;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
@@ -17,7 +14,7 @@ using System.Drawing;
 using System.CodeDom.Compiler;
 using OpenCvSharp.ML;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.Strategies
 {
     // 收集策略模式枚举
     public enum CollectionMode
@@ -65,7 +62,7 @@ namespace BTD6AutoCommunity
         private List<string> CurrentGameData; // 0: round, 1: cash, 2: life
         public event Action<List<string>> OnGameDataUpdated;
 
-        private StrategyExecutor strategyExecutor;
+        private InGame.InGameActionExecutor strategyExecutor;
         public event Action<ScriptInstructionInfo> OnCurrentStrategyCompleted;
 
         private System.Timers.Timer levelDataMonitorTimer;
@@ -139,12 +136,12 @@ namespace BTD6AutoCommunity
         // 示例处理函数
         private void HandleMainScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 940);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 940);
         }
 
         private void HandleRaceResultsScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 800);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 800);
             Thread.Sleep(500);
             HandleReturnableScreen();
             Thread.Sleep(500);
@@ -157,7 +154,7 @@ namespace BTD6AutoCommunity
 
         private void HandleBossResultsScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 880);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 880);
             Thread.Sleep(500);
             HandleReturnableScreen();
             Thread.Sleep(500);
@@ -170,28 +167,28 @@ namespace BTD6AutoCommunity
 
         private void HandleLevelSelection()
         {
-            MouseMoveAndLeftClick(_context, 80, 170);
+            InputSimulator.MouseMoveAndLeftClick(_context, 80, 170);
             _logs.Log("已进入地图选择界面，开始选择收集额外地图", LogLevel.Info);
         }
 
         private void HandleChestCollection()
         {
-            MouseMoveAndLeftClick(_context, 960, 680);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 680);
             _logs.Log("收集宝箱可打开，开始开箱", LogLevel.Info);
         }
 
         private void HandleLevelSearch()
         {
-            MouseMoveAndLeftClick(_context, 1350, 45); // 收集
-            //MouseMoveAndLeftClick(_context, 1275, 45); // 猴子小队
+            InputSimulator.MouseMoveAndLeftClick(_context, 1350, 45); // 收集
+            //InputSimulator.MouseMoveAndLeftClick(_context, 1275, 45); // 猴子小队
         }
 
         private void HandleLevelSearched()
         {
-            currentMapId = RecognizeMapId(_context);
+            currentMapId = GameVisionRecognizer.RecognizeMapId(_context);
             //Debug.WriteLine("MapId: " + currentMapId);
-            MouseMoveAndLeftClick(_context, 540, 650);
-            _logs.Log($"已识别到地图：{GetTypeName((Maps)currentMapId)}", LogLevel.Info);
+            InputSimulator.MouseMoveAndLeftClick(_context, 540, 650);
+            _logs.Log($"已识别到地图：{Constants.GetTypeName((Maps)currentMapId)}", LogLevel.Info);
         }
 
         private void HandleLevelDifficultySelection()
@@ -205,17 +202,17 @@ namespace BTD6AutoCommunity
             switch (mapDifficulties[currentMapId])
             {
                 case 0:
-                    MouseMoveAndLeftClick(_context, 630, 400);
+                    InputSimulator.MouseMoveAndLeftClick(_context, 630, 400);
                     break;
                 case 1:
-                    MouseMoveAndLeftClick(_context, 970, 400);
+                    InputSimulator.MouseMoveAndLeftClick(_context, 970, 400);
                     break;
                 case 2:
-                    MouseMoveAndLeftClick(_context, 1300, 400);
+                    InputSimulator.MouseMoveAndLeftClick(_context, 1300, 400);
                     break;
             }
             // 加载脚本
-            ScriptEditorSuite = LoadScript(collectionScripts[currentMapId]);
+            ScriptEditorSuite = ScriptEditorSuite.LoadScript(collectionScripts[currentMapId]);
             ScriptEditorSuite.Compile(_settings);
             OnScriptLoaded?.Invoke(ScriptEditorSuite);
             _logs.Log($"已加载脚本：{collectionScripts[currentMapId]}", LogLevel.Info);
@@ -230,7 +227,7 @@ namespace BTD6AutoCommunity
                 return;
             }
             if (ScriptEditorSuite.SelectedMode != LevelMode.Standard &&
-                LevelModeToDifficulty[ScriptEditorSuite.SelectedMode] != LevelDifficulties.Easy)
+                Constants.LevelModeToDifficulty[ScriptEditorSuite.SelectedMode] != LevelDifficulties.Easy)
             {
                 HandleReturnableScreen();
                 _logs.Log("当前模式不是简单模式，无法进入简单模式，返回", LogLevel.Error);
@@ -240,12 +237,12 @@ namespace BTD6AutoCommunity
             {
                 IsHeroSelectionComplete = false;
 
-                Point point = GetLevelModePos(ScriptEditorSuite.SelectedMode);
-                MouseMoveAndLeftClick(_context, point.X, point.Y);
+                Point point = Constants.GetLevelModePos(ScriptEditorSuite.SelectedMode);
+                InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
             }
             else
             {
-                MouseMoveAndLeftClick(_context, 100, 1000);
+                InputSimulator.MouseMoveAndLeftClick(_context, 100, 1000);
             }
             levelChallengingCount = 0;
         }
@@ -259,7 +256,7 @@ namespace BTD6AutoCommunity
                 return;
             }
             if (ScriptEditorSuite.SelectedMode != LevelMode.Standard &&
-                LevelModeToDifficulty[ScriptEditorSuite.SelectedMode] != LevelDifficulties.Medium)
+                Constants.LevelModeToDifficulty[ScriptEditorSuite.SelectedMode] != LevelDifficulties.Medium)
             {
                 HandleReturnableScreen();
                 _logs.Log("当前模式不是中级模式，无法进入中级模式，返回", LogLevel.Error);
@@ -268,12 +265,12 @@ namespace BTD6AutoCommunity
             if (IsHeroSelectionComplete)
             {
                 IsHeroSelectionComplete = false;
-                Point point = GetLevelModePos(ScriptEditorSuite.SelectedMode);
-                MouseMoveAndLeftClick(_context, point.X, point.Y);
+                Point point = Constants.GetLevelModePos(ScriptEditorSuite.SelectedMode);
+                InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
             }
             else
             {
-                MouseMoveAndLeftClick(_context, 100, 1000);
+                InputSimulator.MouseMoveAndLeftClick(_context, 100, 1000);
             }
             levelChallengingCount = 0;
         }
@@ -287,7 +284,7 @@ namespace BTD6AutoCommunity
                 return;
             }
             if (ScriptEditorSuite.SelectedMode != LevelMode.Standard &&
-                LevelModeToDifficulty[ScriptEditorSuite.SelectedMode] != LevelDifficulties.Hard)
+                Constants.LevelModeToDifficulty[ScriptEditorSuite.SelectedMode] != LevelDifficulties.Hard)
             {
                 HandleReturnableScreen();
                 _logs.Log("当前模式不是困难模式，无法进入困难模式，返回", LogLevel.Error);
@@ -296,12 +293,12 @@ namespace BTD6AutoCommunity
             if (IsHeroSelectionComplete)
             {
                 IsHeroSelectionComplete = false;
-                Point point = GetLevelModePos(ScriptEditorSuite.SelectedMode);
-                MouseMoveAndLeftClick(_context, point.X, point.Y);
+                Point point = Constants.GetLevelModePos(ScriptEditorSuite.SelectedMode);
+                InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
             }
             else
             {
-                MouseMoveAndLeftClick(_context, 100, 1000);
+                InputSimulator.MouseMoveAndLeftClick(_context, 100, 1000);
             }
             levelChallengingCount = 0;
         }
@@ -320,12 +317,12 @@ namespace BTD6AutoCommunity
                 _logs.Log("英雄选择已完成，返回", LogLevel.Error);
                 return;
             }
-            Point heroPosition = GetHeroPosition(_context, ScriptEditorSuite.SelectedHero);
+            Point heroPosition = GameVisionRecognizer.GetHeroPosition(_context, ScriptEditorSuite.SelectedHero);
             
             for (int i = 0; i < 5 && heroPosition.X == -1; i++)
             {
-                heroPosition = GetHeroPosition(_context, ScriptEditorSuite.SelectedHero);
-                MouseWheel(-10);
+                heroPosition = GameVisionRecognizer.GetHeroPosition(_context, ScriptEditorSuite.SelectedHero);
+                InputSimulator.MouseWheel(-10);
                 Thread.Sleep(500);
             }
             if (heroPosition.X == -1)
@@ -336,19 +333,19 @@ namespace BTD6AutoCommunity
                 return;
             }
             //Debug.WriteLine("HeroPosition: " + heroPosition.ToString());
-            MouseMoveAndLeftClick(_context, heroPosition.X, heroPosition.Y);
+            InputSimulator.MouseMoveAndLeftClick(_context, heroPosition.X, heroPosition.Y);
             Thread.Sleep(500);
-            MouseMoveAndLeftClick(_context, 1120, 620);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1120, 620);
             Thread.Sleep(500);
-            MouseMoveAndLeftClick(_context, 80, 55);
+            InputSimulator.MouseMoveAndLeftClick(_context, 80, 55);
             IsHeroSelectionComplete = true;
 
-            _logs.Log($"已选择英雄：{GetTypeName(ScriptEditorSuite.SelectedHero)}", LogLevel.Info);
+            _logs.Log($"已选择英雄：{Constants.GetTypeName(ScriptEditorSuite.SelectedHero)}", LogLevel.Info);
         }
 
         private void HandleLevelTipScreen()
         {
-            MouseMoveAndLeftClick(_context, 1140, 730);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1140, 730);
         }
 
         private void HandleLevelChallengingScreen()
@@ -356,9 +353,9 @@ namespace BTD6AutoCommunity
             levelChallengingCount++;
             if (ScriptEditorSuite == null)
             {
-                MouseMoveAndLeftClick(_context, 1600, 40);
+                InputSimulator.MouseMoveAndLeftClick(_context, 1600, 40);
                 Thread.Sleep(500);
-                MouseMoveAndLeftClick(_context, 850, 850);
+                InputSimulator.MouseMoveAndLeftClick(_context, 850, 850);
                 _logs.Log("脚本未加载，无法进入战斗，返回", LogLevel.Error);
                 return;
             }
@@ -382,7 +379,7 @@ namespace BTD6AutoCommunity
             if (strategyExecutorTimer == null)
             {
                 IsStrategyExecutionCompleted = false;
-                strategyExecutor = new StrategyExecutor( _context, ScriptEditorSuite);
+                strategyExecutor = new InGame.InGameActionExecutor( _context, ScriptEditorSuite);
                 SetupStrategyExecutorTimer();
                 strategyExecutorTimer.Start();
                 _logs.Log("开始执行关卡策略...", LogLevel.Info);
@@ -391,24 +388,24 @@ namespace BTD6AutoCommunity
 
         private void HandleLevelChallengingWithTipScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 760);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 760);
         }
 
         private void HandleLevelPassScreen()
         {
             if (strategyExecutor != null && strategyExecutor.IsStartFreePlay)
             {
-                MouseMoveAndLeftClick(_context, 1200, 850);
+                InputSimulator.MouseMoveAndLeftClick(_context, 1200, 850);
                 strategyExecutor.StartFreePlayFinished = true;
                 _logs.Log("自由游戏已开启，开始下一关", LogLevel.Info);
                 return;
             }
-            MouseMoveAndLeftClick(_context, 720, 850);
+            InputSimulator.MouseMoveAndLeftClick(_context, 720, 850);
         }
 
         private void HandleLevelSettlementScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 910);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 910);
             if (strategyExecutor != null && strategyExecutor.IsStartFreePlay) return;
             StopLevelTimer();
             if (IsStrategyExecutionCompleted)
@@ -420,15 +417,15 @@ namespace BTD6AutoCommunity
 
         private void HandleLevelUpgradingScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 980);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 980);
             _logs.Log("检测到升级界面，点击确认", LogLevel.Info);
         }
 
         private void HandleLevelFailedScreen()
         {
             StopLevelTimer();
-            Point returnPos = GetFailedScreenReturnPosition(_context);
-            MouseMoveAndLeftClick(_context, returnPos.X, returnPos.Y);
+            Point returnPos = GameVisionRecognizer.GetFailedScreenReturnPosition(_context);
+            InputSimulator.MouseMoveAndLeftClick(_context, returnPos.X, returnPos.Y);
             _logs.Log("检测到关卡失败界面，回到主页", LogLevel.Info);
         }
 
@@ -436,48 +433,48 @@ namespace BTD6AutoCommunity
         {
             returnableScreenCount++;
             if (returnableScreenCount < 2) return;
-            MouseMoveAndLeftClick(_context, 80, 55);
+            InputSimulator.MouseMoveAndLeftClick(_context, 80, 55);
             returnableScreenCount = 0;
         }
 
         private void HandleThreeChestsScreen()
         {
-            MouseMoveAndLeftClick(_context, 660, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 660, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 660, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 660, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 960, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 960, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 1260, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1260, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 1260, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1260, 540);
             Thread.Sleep(1000);
             _logs.Log("获得3个insta", LogLevel.Info);
         }
 
         private void HandleTwoChestsScreen()
         {
-            MouseMoveAndLeftClick(_context, 810, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 810, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 810, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 810, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 1110, 540); 
+            InputSimulator.MouseMoveAndLeftClick(_context, 1110, 540); 
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 1110, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1110, 540);
             Thread.Sleep(1000);
             _logs.Log("获得2个insta", LogLevel.Info);
         }
 
         private void HandleInstaScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 540);
         }
 
         private void HandleChestsOpenedScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 1000);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 1000);
         }
 
 
@@ -500,16 +497,16 @@ namespace BTD6AutoCommunity
             {
                 collectionMode = CollectionMode.SimpleCollection;
             }
-            _logs.Log($"当前收集模式：{CollectionScripts[collectionMode]}", LogLevel.Info);
+            _logs.Log($"当前收集模式：{Constants.CollectionScripts[collectionMode]}", LogLevel.Info);
 
             for (int mapId = ExpertMapStartId; mapId <= ExpertMapEndId; mapId++)
             {
                 foreach (int dif in new int[] { 0, 1, 2 })
                 {
-                    string scriptPath = ExistScript(
-                        GetTypeName((Maps)mapId), 
-                        GetTypeName((LevelDifficulties)dif), 
-                        CollectionScripts[collectionMode]
+                    string scriptPath = ScriptEditorSuite.ExistScript(
+                        Constants.GetTypeName((Maps)mapId),
+                        Constants.GetTypeName((LevelDifficulties)dif),
+                        Constants.CollectionScripts[collectionMode]
                         );
                     if (scriptPath!= null)
                     {
@@ -555,7 +552,7 @@ namespace BTD6AutoCommunity
                 if (currentState != lastState)
                 {
                     lastState = currentState;
-                    _logs.Log($"当前状态：{GetChineseDescription(currentState)}", LogLevel.Info);
+                    _logs.Log($"当前状态：{GameStateDescription.GetChineseDescription(currentState)}", LogLevel.Info);
                 }
 
                 if (stateHandlers.TryGetValue(currentState, out Action handler))

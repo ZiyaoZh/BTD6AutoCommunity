@@ -7,7 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static BTD6AutoCommunity.Constants;
+using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.ScriptEngine;
 
 namespace BTD6AutoCommunity
 {
@@ -61,16 +62,16 @@ namespace BTD6AutoCommunity
                 {
                     if (dirInfo.Name == "我的脚本")
                     {
-                        foreach (Maps maps in MapsToDisplay)
+                        foreach (Maps maps in Constants.MapsToDisplay)
                         {
-                            string subDirName = GetTypeName(maps);
+                            string subDirName = Constants.GetTypeName(maps);
                             DirectoryInfo subDir = new DirectoryInfo(Path.Combine(dirInfo.FullName, subDirName));
                             TreeNode subNode = new TreeNode(subDirName)
                             {
                                 Tag = subDir
                             };
                             subNode.Nodes.Add(""); // Add dummy node to make it expandable
-                            switch (GetMapType(maps))
+                            switch (Constants.GetMapType(maps))
                             {
                                 case MapTypes.Expert:
                                     subNode.ForeColor = Color.Red;

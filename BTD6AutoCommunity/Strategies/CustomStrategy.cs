@@ -5,22 +5,20 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static BTD6AutoCommunity.InputSimulator;
-using static BTD6AutoCommunity.GameVisionRecognizer;
-using static BTD6AutoCommunity.GameStateLocalization;
-using static BTD6AutoCommunity.ScriptEditorSuite;
-using static BTD6AutoCommunity.Constants;
+using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.ScriptEngine;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Drawing;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.Strategies
 {
-    public class RaceStrategy
+    public class CustomStrategy // 自定义
     {
         private readonly GameContext _context;
         private readonly ScriptSettings _settings;
+        private readonly UserSelection _userSelection;
         public GameContext Context => _context;
         private readonly GameStateMachine stateMachine;
 
@@ -41,23 +39,22 @@ namespace BTD6AutoCommunity
         private List<string> CurrentGameData; // 0: round, 1: cash, 2: life
         public event Action<List<string>> OnGameDataUpdated;
 
-        private StrategyExecutor strategyExecutor;
+        private InGame.InGameActionExecutor strategyExecutor;
         public event Action<ScriptInstructionInfo> OnCurrentStrategyCompleted;
 
         private System.Timers.Timer levelDataMonitorTimer;
-        private const int RecommendDataReadInterval = 500;
         private System.Timers.Timer strategyExecutorTimer;
-        private const int RecommendOperationInterval = 50;
         private bool IsStrategyExecutionCompleted;
 
         private readonly LogHandler _logs;
 
         public bool ReadyToStart { get; private set; } = true;
 
-        public RaceStrategy(ScriptSettings settings, LogHandler logHandler, UserSelection userSelection)
+        public CustomStrategy(ScriptSettings settings, LogHandler logHandler, UserSelection userSelection)
         {
             _logs = logHandler;
             _context = new GameContext();
+            _userSelection = userSelection;
             if (_context.IsValid)
             {
                 _logs.Log(_context.ToString(), LogLevel.Info);
@@ -66,11 +63,12 @@ namespace BTD6AutoCommunity
                 stateMachine = new GameStateMachine(_context);
 
                 InitializeHandlers();
-                LoadStrategyScript(userSelection);
+                LoadStrategyScript(_userSelection);
                 SetupGameStateTimer();
             }
             else
             {
+                //OnStopTriggered?.Invoke();
                 ReadyToStart = false;
                 _logs.Log("游戏窗口未找到，请确认游戏是否已启动", LogLevel.Error);
             }
@@ -78,9 +76,9 @@ namespace BTD6AutoCommunity
 
         private void LoadStrategyScript(UserSelection userSelection)
         {
-            string scriptPath = ExistScript(
-                    GetTypeName(userSelection.selectedMap),
-                    GetTypeName(userSelection.selectedDifficulty),
+            string scriptPath = ScriptEditorSuite.ExistScript(
+                    Constants.GetTypeName(userSelection.selectedMap),
+                    Constants.GetTypeName(userSelection.selectedDifficulty),
                     userSelection.selectedScript
                 );
             //Debug.WriteLine($"map: {GetTypeName((Maps)userSelection.selectedMap)} diff: {GetTypeName((LevelDifficulties)userSelection.selectedDifficulty)} script: {userSelection.selectedScript}");
@@ -92,7 +90,7 @@ namespace BTD6AutoCommunity
             }
             try
             {
-                ScriptEditorSuite = LoadScript(scriptPath);
+                ScriptEditorSuite = ScriptEditorSuite.LoadScript(scriptPath);
                 ScriptEditorSuite.Compile(_settings);
                 OnScriptLoaded?.Invoke(ScriptEditorSuite.Displayinstructions);
 
@@ -145,12 +143,11 @@ namespace BTD6AutoCommunity
 
         private void HandleMainScreen()
         {
-            HandleIrrelevantScreen();
         }
 
         private void HandleRaceResultsScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 800);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 800);
             Thread.Sleep(500);
             HandleReturnableScreen();
             Thread.Sleep(500);
@@ -163,7 +160,7 @@ namespace BTD6AutoCommunity
 
         private void HandleBossResultsScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 880);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 880);
             Thread.Sleep(500);
             HandleReturnableScreen();
             Thread.Sleep(500);
@@ -176,63 +173,56 @@ namespace BTD6AutoCommunity
 
         private void HandleEventsScreen()
         {
-            HandleIrrelevantScreen();
+            InputSimulator.MouseMoveAndLeftClick(_context, 420, 350);
         }
 
         private void HandleEventInfoScreen()
         {
-            HandleIrrelevantScreen();
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 860);
+            levelChallengingCount = 0;
         }
 
         private void HandleLevelSelection()
         {
-            HandleIrrelevantScreen();
         }
 
         private void HandleChestCollection()
         {
-            MouseMoveAndLeftClick(_context, 960, 680);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 680);
             _logs.Log("收集宝箱可打开，开始开箱", LogLevel.Info);
         }
 
         private void HandleLevelSearch()
         {
-            HandleIrrelevantScreen();
         }
 
         private void HandleLevelSearched()
         {
-            HandleIrrelevantScreen();
         }
 
         private void HandleLevelDifficultySelection()
         {
-            HandleIrrelevantScreen();
         }
 
         private void HandleLevelEasyModeSelection()
         {
-            HandleIrrelevantScreen();
         }
 
         private void HandleLevelMediumModeSelection()
         {
-            HandleIrrelevantScreen();
         }
 
         private void HandleLevelHardModeSelection()
         {
-            HandleIrrelevantScreen();
         }
 
         private void HandleHeroSelection()
         {
-            HandleIrrelevantScreen();
         }
 
         private void HandleLevelTipScreen()
         {
-            HandleIrrelevantScreen();
+            InputSimulator.MouseMoveAndLeftClick(_context, 1140, 730);
         }
 
         private void HandleLevelChallengingScreen()
@@ -240,10 +230,10 @@ namespace BTD6AutoCommunity
             levelChallengingCount++;
             if (ScriptEditorSuite == null)
             {
-                MouseMoveAndLeftClick(_context, 1600, 40);
+                InputSimulator.MouseMoveAndLeftClick(_context, 1600, 40);
                 Thread.Sleep(500);
-                MouseMoveAndLeftClick(_context, 850, 850);
-                _logs.Log("脚本未加载，无法进入战斗，终止凹竞速", LogLevel.Error);
+                InputSimulator.MouseMoveAndLeftClick(_context, 850, 850);
+                _logs.Log("脚本未加载，无法进入战斗", LogLevel.Error);
                 Stop();
                 return;
             }
@@ -256,6 +246,100 @@ namespace BTD6AutoCommunity
                 StopLevelTimer();
                 return;
             }
+        }
+
+        private void HandleLevelChallengingWithTipScreen()
+        {
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 760);
+        }
+
+        private void HandleLevelPassScreen()
+        {
+            if (strategyExecutor != null && strategyExecutor.IsStartFreePlay)
+            {
+                InputSimulator.MouseMoveAndLeftClick(_context, 1200, 850);
+                strategyExecutor.StartFreePlayFinished = true;
+                _logs.Log("自由游戏已开启，开始下一关", LogLevel.Info);
+                return;
+            }
+            InputSimulator.MouseMoveAndLeftClick(_context, 720, 850);
+        }
+
+        private void HandleLevelSettlementScreen()
+        {
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 910);
+            if (strategyExecutor != null && strategyExecutor.IsStartFreePlay) return;
+            StopLevelTimer();
+            if (IsStrategyExecutionCompleted)
+            {
+                IsStrategyExecutionCompleted = false;
+            }
+            _logs.Log($"进入关卡结算界面，挑战成功，停止策略执行, 本关用时：{(int)(levelChallengingCount * 1.5 / 60)}分{(int)(levelChallengingCount * 1.5 % 60)}秒", LogLevel.Info);
+        }
+
+        private void HandleLevelUpgradingScreen()
+        {
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 980);
+            _logs.Log("检测到升级界面，点击确认", LogLevel.Info);
+        }
+
+        private void HandleLevelFailedScreen()
+        {
+            StopLevelTimer();
+            Point returnPos = GameVisionRecognizer.GetFailedScreenReturnPosition(_context);
+            InputSimulator.MouseMoveAndLeftClick(_context, returnPos.X, returnPos.Y);
+            _logs.Log("检测到关卡失败界面，回到主页", LogLevel.Info);
+        }
+
+        private void HandleReturnableScreen()
+        {
+            InputSimulator.MouseMoveAndLeftClick(_context, 80, 55);
+        }
+
+        private void HandleThreeChestsScreen()
+        {
+            InputSimulator.MouseMoveAndLeftClick(_context, 660, 540);
+            Thread.Sleep(1000);
+            InputSimulator.MouseMoveAndLeftClick(_context, 660, 540);
+            Thread.Sleep(1000);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 540);
+            Thread.Sleep(1000);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 540);
+            Thread.Sleep(1000);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1260, 540);
+            Thread.Sleep(1000);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1260, 540);
+            Thread.Sleep(1000);
+            _logs.Log("获得3个insta", LogLevel.Info);
+        }
+
+        private void HandleTwoChestsScreen()
+        {
+            InputSimulator.MouseMoveAndLeftClick(_context, 810, 540);
+            Thread.Sleep(1000);
+            InputSimulator.MouseMoveAndLeftClick(_context, 810, 540);
+            Thread.Sleep(1000);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1110, 540);
+            Thread.Sleep(1000);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1110, 540);
+            Thread.Sleep(1000);
+            _logs.Log("获得2个insta", LogLevel.Info);
+        }
+
+        private void HandleInstaScreen()
+        {
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 540);
+        }
+
+        private void HandleChestsOpenedScreen()
+        {
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 1000);
+        }
+
+        public void Start()
+        {
+            _logs.Log($"开始自定义策略...", LogLevel.Info);
+            checkGameStateTimer.Start();
             if (levelDataMonitorTimer == null)
             {
                 CurrentGameData = new List<string>() { "0", "0", "0" };
@@ -267,108 +351,13 @@ namespace BTD6AutoCommunity
             if (strategyExecutorTimer == null)
             {
                 IsStrategyExecutionCompleted = false;
-                strategyExecutor = new StrategyExecutor(_context, ScriptEditorSuite);
+                strategyExecutor = new InGame.InGameActionExecutor(_context, ScriptEditorSuite);
                 SetupStrategyExecutorTimer();
+                // 从选择的指令开始执行
+                strategyExecutor.currentFirstIndex = _userSelection.selectedIndex;
                 strategyExecutorTimer.Start();
                 _logs.Log("开始执行关卡策略...", LogLevel.Info);
             }
-        }
-
-        private void HandleLevelChallengingWithTipScreen()
-        {
-            MouseMoveAndLeftClick(_context, 960, 760);
-        }
-
-        private void HandleLevelPassScreen()
-        {
-            MouseMoveAndLeftClick(_context, 720, 850);
-        }
-
-        private void HandleLevelSettlementScreen()
-        {
-            StopLevelTimer();
-            MouseMoveAndLeftClick(_context, 1340, 860);
-            Thread.Sleep(300);
-            MouseMoveAndLeftClick(_context, 1140, 730);
-            if (IsStrategyExecutionCompleted)
-            {
-                IsStrategyExecutionCompleted = false;
-            }
-            _logs.Log($"进入关卡结算界面，挑战成功, 本关用时：{(int)(levelChallengingCount * 1.5 / 60)}分{(int)(levelChallengingCount * 1.5 % 60)}秒", LogLevel.Info);
-        }
-
-        private void HandleLevelUpgradingScreen()
-        {
-            MouseMoveAndLeftClick(_context, 960, 980);
-            _logs.Log("检测到升级界面，点击确认", LogLevel.Info);
-        }
-
-        private void HandleLevelFailedScreen()
-        {
-            StopLevelTimer();
-            Point restartPos = GetRestartPos(_context);
-            MouseMoveAndLeftClick(_context, restartPos.X, restartPos.Y);
-            Thread.Sleep(300);
-            MouseMoveAndLeftClick(_context, 1140, 730);
-
-            _logs.Log("检测到关卡失败界面，重新开始", LogLevel.Info);
-        }
-
-        private void HandleReturnableScreen()
-        {
-            MouseMoveAndLeftClick(_context, 80, 55);
-        }
-
-        private void HandleThreeChestsScreen()
-        {
-            MouseMoveAndLeftClick(_context, 660, 540);
-            Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 660, 540);
-            Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 960, 540);
-            Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 960, 540);
-            Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 1260, 540);
-            Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 1260, 540);
-            Thread.Sleep(1000);
-            _logs.Log("获得3个insta", LogLevel.Info);
-        }
-
-        private void HandleTwoChestsScreen()
-        {
-            MouseMoveAndLeftClick(_context, 810, 540);
-            Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 810, 540);
-            Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 1110, 540);
-            Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 1110, 540);
-            Thread.Sleep(1000);
-            _logs.Log("获得2个insta", LogLevel.Info);
-        }
-
-        private void HandleInstaScreen()
-        {
-            MouseMoveAndLeftClick(_context, 960, 540);
-        }
-
-        private void HandleChestsOpenedScreen()
-        {
-            MouseMoveAndLeftClick(_context, 960, 1000);
-        }
-
-        private void HandleIrrelevantScreen() // 无关的界面
-        {
-            _logs.Log("检测到无关的界面，请进入竞速关卡再启动", LogLevel.Warning);
-            Stop();
-        }
-
-        public void Start()
-        {
-            _logs.Log($"开始凹竞速...", LogLevel.Info);
-            checkGameStateTimer.Start();
         }
 
         public void Stop()
@@ -380,7 +369,7 @@ namespace BTD6AutoCommunity
                 _isProcessing = false;
             }
             OnStopTriggered?.Invoke();
-            _logs.Log("凹竞速模式已停止...", LogLevel.Info);
+            _logs.Log("自定义模式已停止...", LogLevel.Info);
         }
 
         private void CheckGameState()
@@ -395,17 +384,17 @@ namespace BTD6AutoCommunity
             try
             {
                 var currentState = stateMachine.GetCurrentState();
-                //Debug.WriteLine("Current State: " + GetChineseDescription(currentState));
                 if (currentState != lastState)
                 {
                     lastState = currentState;
-                    _logs.Log($"当前状态：{GetChineseDescription(currentState)}", LogLevel.Info);
+                    _logs.Log($"当前状态：{GameStateDescription.GetChineseDescription(currentState)}", LogLevel.Info);
                 }
 
-                if (stateHandlers.TryGetValue(currentState, out Action handler))
-                {
-                    handler.Invoke();
-                }
+                //if (stateHandlers.TryGetValue(currentState, out Action handler))
+                //{
+
+                //    handler.Invoke();
+                //}
             }
             finally
             {
@@ -418,6 +407,7 @@ namespace BTD6AutoCommunity
 
         private void ExecuteStrategy()
         {
+
             int currentRound = Int32.TryParse(CurrentGameData[0], out int rt) ? rt : 0;
             int currentCash = Int32.TryParse(CurrentGameData[1], out int ct) ? ct : 0;
 
@@ -426,6 +416,8 @@ namespace BTD6AutoCommunity
                 if (IsStrategyExecutionCompleted == false)
                 {
                     IsStrategyExecutionCompleted = true;
+                    Stop();
+                    OnStopTriggered.Invoke();
                     _logs.Log("策略执行完毕!", LogLevel.Info);
                 }
             }
@@ -450,34 +442,14 @@ namespace BTD6AutoCommunity
 
         private void SetupLevelDataMonitorTimer()
         {
-            int interval = _settings.DataReadInterval;
-            if (_settings.EnableRecommendInterval)
-            {
-                interval = RecommendDataReadInterval;
-                _logs.Log($"使用推荐数据读取间隔：{interval}ms", LogLevel.Info);
-            }
-            else
-            {
-                _logs.Log($"使用自定义数据读取间隔：{interval}ms", LogLevel.Info);
-            }
-            levelDataMonitorTimer = new System.Timers.Timer(interval);
+            levelDataMonitorTimer = new System.Timers.Timer(_settings.DataReadInterval);
             levelDataMonitorTimer.Elapsed += (s, e) => ReadGameData();
             levelDataMonitorTimer.AutoReset = true;
         }
 
         private void SetupStrategyExecutorTimer()
         {
-            int interval = _settings.OperationInterval;
-            if (_settings.EnableRecommendInterval)
-            {
-                interval = RecommendOperationInterval;
-                _logs.Log($"使用推操作间隔：{interval}ms", LogLevel.Info);
-            }
-            else
-            {
-                _logs.Log($"使用自定义操作间隔：{interval}ms", LogLevel.Info);
-            }
-            strategyExecutorTimer = new System.Timers.Timer(interval);
+            strategyExecutorTimer = new System.Timers.Timer(_settings.OperationInterval);
             strategyExecutorTimer.Elapsed += (s, e) => ExecuteStrategy();
             strategyExecutorTimer.AutoReset = true;
         }
@@ -497,5 +469,6 @@ namespace BTD6AutoCommunity
                 strategyExecutorTimer = null;
             }
         }
+
     }
 }
