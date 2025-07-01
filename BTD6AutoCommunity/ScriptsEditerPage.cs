@@ -603,8 +603,7 @@ namespace BTD6AutoCommunity
             }
             catch
             {
-                MessageBox.Show("请设置空白点！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                MyInstructions.AnchorCoords = (860, 540);
             }
             MyInstructions.ScriptName = ScriptNameTB.Text;
         }
@@ -1045,6 +1044,16 @@ namespace BTD6AutoCommunity
             catch
             {
                 MessageBox.Show("脚本名异常！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            if (IsStartPageEditButtonClicked)
+            {
+                StartPrgramTC.SelectedIndex = 0;
+                IsStartPageEditButtonClicked = false;
+                ExecuteScriptCB_SelectedIndexChanged(null, null);
+            }
+            else
+            {
+                StartPrgramTC.SelectedIndex = 3;
             }
         }
 

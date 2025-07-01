@@ -161,6 +161,8 @@ namespace BTD6AutoCommunity
         LastResort = 78,
         // 魔法林地
         EnchantedGlade = 79,
+        //日落峡谷
+        SunsetGulch = 80,
 
         // 专家图
         // 冰河之径
@@ -292,6 +294,7 @@ namespace BTD6AutoCommunity
         TackShooter = 3,         // 图钉塔
         IceMonkey = 4,           // 冰猴
         GlueGunner = 5,          // 胶水猴
+        Desperado = 6,           // 亡命猴
 
         SniperMonkey = 10,       // 狙击猴
         MonkeySub = 11,    // 潜水艇猴
@@ -681,6 +684,7 @@ namespace BTD6AutoCommunity
             { Monkeys.TackShooter, "图钉塔" },
             { Monkeys.IceMonkey, "冰猴" },
             { Monkeys.GlueGunner, "胶水猴" },
+            { Monkeys.Desperado, "亡命猴" },
             { Monkeys.SniperMonkey, "狙击猴" },
             { Monkeys.MonkeySub, "潜水艇猴" },
             { Monkeys.MonkeyBuccaneer, "海盗猴" },
@@ -766,6 +770,7 @@ namespace BTD6AutoCommunity
             Maps.Chutes,
             Maps.Rake,
             Maps.SpiceIslands,
+            Maps.SunsetGulch,
             Maps.EnchantedGlade,
             Maps.LastResort,
             Maps.AncientPortal,
@@ -869,6 +874,7 @@ namespace BTD6AutoCommunity
             { Maps.AncientPortal, "古代传送门" },
             { Maps.LastResort, "破釜沉舟" },
             { Maps.EnchantedGlade, "魔法林地" },
+            { Maps.SunsetGulch, "日落峡谷" },
             { Maps.GlacialTrail, "冰河之径" },
             { Maps.DarkDungeon, "黑暗地下城" },
             { Maps.Sanctuary, "避难所" },
@@ -970,6 +976,7 @@ namespace BTD6AutoCommunity
             { Maps.AncientPortal, MapTypes.Advanced },
             { Maps.LastResort, MapTypes.Advanced },
             { Maps.EnchantedGlade, MapTypes.Advanced },
+            { Maps.SunsetGulch, MapTypes.Advanced },
             { Maps.GlacialTrail, MapTypes.Expert },
             { Maps.DarkDungeon, MapTypes.Expert },
             { Maps.Sanctuary, MapTypes.Expert },

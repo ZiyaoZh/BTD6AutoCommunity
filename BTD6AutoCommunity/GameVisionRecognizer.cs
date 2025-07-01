@@ -277,12 +277,12 @@ namespace BTD6AutoCommunity
 
         public static bool IsLeftUpgrading(GameContext context)
         {
-            return CheckColor(context, 415, 200, 0xb6844c) && CheckColor(context, 415, 870, 0xb6844c);
+            return CheckColor(context, 415, 120, 0xbe925a) && CheckColor(context, 415, 870, 0xb48149);
         }
 
         public static bool IsRightUpgrading(GameContext context)
         {
-            return CheckColor(context, 1260, 200, 0xb6844c) && CheckColor(context, 1260, 870, 0xb6844c);
+            return CheckColor(context, 1260, 200, 0xbe925a) && CheckColor(context, 1260, 870, 0xb48149);
         }
 
         public static int AbilityRgbSum(GameContext context, int index)

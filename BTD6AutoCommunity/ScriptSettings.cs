@@ -44,6 +44,7 @@ namespace BTD6AutoCommunity
             { Monkeys.TackShooter, new HotKey(Keys.R) },
             { Monkeys.IceMonkey, new HotKey(Keys.T) },
             { Monkeys.GlueGunner, new HotKey(Keys.Y) },
+            { Monkeys.Desperado, new HotKey(Keys.None) },
             { Monkeys.SniperMonkey, new HotKey(Keys.Z) },
             { Monkeys.MonkeySub, new HotKey(Keys.X) },
             { Monkeys.MonkeyBuccaneer, new HotKey(Keys.C) },
@@ -259,6 +260,7 @@ namespace BTD6AutoCommunity
 
         public override string ToString()
         {
+            if (MainKey == Keys.None) return "未设置";
             var sb = new StringBuilder();
             if (Control) sb.Append("Ctrl+");
             if (Shift) sb.Append("Shift+");
