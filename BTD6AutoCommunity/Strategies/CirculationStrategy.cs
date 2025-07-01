@@ -5,19 +5,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static BTD6AutoCommunity.InputSimulator;
-using static BTD6AutoCommunity.GameVisionRecognizer;
-using static BTD6AutoCommunity.GameStateLocalization;
-using static BTD6AutoCommunity.ScriptEditorSuite;
-using static BTD6AutoCommunity.Constants;
+using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.ScriptEngine;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Drawing;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.Strategies
 {
-    public class EventsStrategy
+    public class CirculationStrategy
     {
         private readonly GameContext _context;
         private readonly ScriptSettings _settings;
@@ -32,27 +29,37 @@ namespace BTD6AutoCommunity
         private Dictionary<GameState, Action> stateHandlers;
         private GameState lastState = GameState.UnKnown;
 
+        private Maps currentMap;
+        private bool IsMapSelectionComplete;
+        private bool IsHeroSelectionComplete;
+
         private ScriptEditorSuite ScriptEditorSuite;
         public event Action<List<string>> OnScriptLoaded;
 
         private int levelChallengingCount = 0;
 
+        private int returnableScreenCount = 0;
+
+
         private LevelDataMonitor levelDataMonitor;
         private List<string> CurrentGameData; // 0: round, 1: cash, 2: life
         public event Action<List<string>> OnGameDataUpdated;
 
-        private StrategyExecutor strategyExecutor;
+        private InGame.InGameActionExecutor strategyExecutor;
         public event Action<ScriptInstructionInfo> OnCurrentStrategyCompleted;
 
         private System.Timers.Timer levelDataMonitorTimer;
+        private const int RecommendDataReadInterval = 1000; 
         private System.Timers.Timer strategyExecutorTimer;
+        private const int RecommendOperationInterval = 200;
+
         private bool IsStrategyExecutionCompleted;
 
         private readonly LogHandler _logs;
 
         public bool ReadyToStart { get; private set; } = true;
 
-        public EventsStrategy(ScriptSettings settings, LogHandler logHandler, UserSelection userSelection)
+        public CirculationStrategy(ScriptSettings settings, LogHandler logHandler, UserSelection userSelection)
         {
             _logs = logHandler;
             _context = new GameContext();
@@ -76,9 +83,9 @@ namespace BTD6AutoCommunity
 
         private void LoadStrategyScript(UserSelection userSelection)
         {
-            string scriptPath = ExistScript(
-                    GetTypeName((Maps)userSelection.selectedMap),
-                    GetTypeName((LevelDifficulties)userSelection.selectedDifficulty),
+            string scriptPath = ScriptEditorSuite.ExistScript(
+                    Constants.GetTypeName((Maps)userSelection.selectedMap),
+                    Constants.GetTypeName((LevelDifficulties)userSelection.selectedDifficulty),
                     userSelection.selectedScript
                 );
             //Debug.WriteLine($"map: {GetTypeName((Maps)userSelection.selectedMap)} diff: {GetTypeName((LevelDifficulties)userSelection.selectedDifficulty)} script: {userSelection.selectedScript}");
@@ -90,10 +97,11 @@ namespace BTD6AutoCommunity
             }
             try
             {
-                ScriptEditorSuite = LoadScript(scriptPath);
+                ScriptEditorSuite = ScriptEditorSuite.LoadScript(scriptPath);
                 ScriptEditorSuite.Compile(_settings);
                 OnScriptLoaded?.Invoke(ScriptEditorSuite.Displayinstructions);
 
+                currentMap = (Maps)ScriptEditorSuite.SelectedMap;
                 _logs.Log($"已加载脚本：{scriptPath}", LogLevel.Info);
             }
             catch
@@ -111,8 +119,6 @@ namespace BTD6AutoCommunity
                 { GameState.GameMainScreen, HandleMainScreen },
                 { GameState.RaceResultsScreen, HandleRaceResultsScreen },
                 { GameState.BossResultsScreen, HandleBossResultsScreen },
-                { GameState.EventsScreen, HandleEventsScreen },
-                { GameState.EventInfoScreen, HandleEventInfoScreen },
                 { GameState.LevelSelectionScreen, HandleLevelSelection },
                 { GameState.LevelSearchScreen, HandleLevelSearch },
                 { GameState.LevelSearchedScreen, HandleLevelSearched },
@@ -124,6 +130,7 @@ namespace BTD6AutoCommunity
                 { GameState.LevelTipScreen, HandleLevelTipScreen },
                 { GameState.LevelChallengingScreen, HandleLevelChallengingScreen },
                 { GameState.LevelChallengingWithTipScreen, HandleLevelChallengingWithTipScreen },
+                { GameState.LevelSettingScreen, HandleLevelSettingScreen },
                 { GameState.LevelPassedScreen, HandleLevelPassScreen },
                 { GameState.LevelSettlementScreen, HandleLevelSettlementScreen },
                 { GameState.LevelFailedScreen,  HandleLevelFailedScreen },
@@ -135,6 +142,7 @@ namespace BTD6AutoCommunity
                 { GameState.TwoChestsScreen, HandleTwoChestsScreen },
                 { GameState.InstaScreen, HandleInstaScreen },
                 { GameState.ChestsOpenedScreen, HandleChestsOpenedScreen }
+                //{ GameState.UnKnown, HandleReturnableScreen }
 
                 // 添加更多状态处理...
             };
@@ -142,12 +150,12 @@ namespace BTD6AutoCommunity
         
         private void HandleMainScreen()
         {
-            MouseMoveAndLeftClick(_context, 1340, 610);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 940);
         }
 
         private void HandleRaceResultsScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 800);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 800);
             Thread.Sleep(500);
             HandleReturnableScreen();
             Thread.Sleep(500);
@@ -160,7 +168,7 @@ namespace BTD6AutoCommunity
 
         private void HandleBossResultsScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 880);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 880);
             Thread.Sleep(500);
             HandleReturnableScreen();
             Thread.Sleep(500);
@@ -169,68 +177,226 @@ namespace BTD6AutoCommunity
             HandleReturnableScreen();
             Thread.Sleep(500);
             HandleReturnableScreen();
-        }
-
-        private void HandleEventsScreen()
-        {
-            MouseMoveAndLeftClick(_context, 420, 350);
-        }
-
-        private void HandleEventInfoScreen()
-        {
-            MouseMoveAndLeftClick(_context, 960, 860);
-            levelChallengingCount = 0;
         }
 
         private void HandleLevelSelection()
         {
-            HandleReturnableScreen();
+            MapTypes mapType = Constants.GetMapType(currentMap);
+            Point mapTypePos = Constants.GetMapTypePos(mapType);
+            Point mapPos = GameVisionRecognizer.GetMapPos(_context, (int)currentMap);
+            int reTryCount = 0;
+            while (mapPos.X == -1)
+            {
+                if (reTryCount > 8)
+                {
+                    _logs.Log("未找到地图位置，请确认地图是否已解锁", LogLevel.Error);
+                    Stop();
+                    return;
+                }
+                reTryCount++;
+                InputSimulator.MouseMoveAndLeftClick(_context, mapTypePos.X, mapTypePos.Y);
+                Thread.Sleep(500);
+                mapPos = GameVisionRecognizer.GetMapPos(_context, (int)currentMap);
+            }
+            InputSimulator.MouseMoveAndLeftClick(_context, mapPos.X, mapPos.Y);
+            IsMapSelectionComplete = true;
+            _logs.Log($"已选择地图：{Constants.GetTypeName(currentMap)}", LogLevel.Info);
         }
 
         private void HandleChestCollection()
         {
-            MouseMoveAndLeftClick(_context, 960, 680);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 680);
             _logs.Log("收集宝箱可打开，开始开箱", LogLevel.Info);
         }
 
         private void HandleLevelSearch()
         {
-            HandleReturnableScreen();
+            InputSimulator.MouseMoveAndLeftClick(_context, 80, 170);
         }
 
         private void HandleLevelSearched()
         {
-            HandleReturnableScreen();
+            InputSimulator.MouseMoveAndLeftClick(_context, 80, 170);
         }
 
         private void HandleLevelDifficultySelection()
         {
-            HandleReturnableScreen();
+            if (ScriptEditorSuite == null)
+            {
+                HandleReturnableScreen();
+                _logs.Log("脚本未加载，无法选择难度，终止刷循环", LogLevel.Error);
+                Stop();
+                return;
+            }
+            if (!IsMapSelectionComplete)
+            {
+                HandleReturnableScreen();
+                _logs.Log("地图选择未完成，无法选择难度，返回", LogLevel.Error);
+                return;
+            }
+            switch (ScriptEditorSuite.SelectedDifficulty)
+            {
+                case LevelDifficulties.Easy:
+                    InputSimulator.MouseMoveAndLeftClick(_context, 630, 400);
+                    break;
+                case LevelDifficulties.Medium:
+                    InputSimulator.MouseMoveAndLeftClick(_context, 970, 400);
+                    break;
+                case LevelDifficulties.Hard:
+                    InputSimulator.MouseMoveAndLeftClick(_context, 1300, 400);
+                    break;
+            }
         }
 
         private void HandleLevelEasyModeSelection()
         {
-            HandleReturnableScreen();
+            if (ScriptEditorSuite == null)
+            {
+                HandleReturnableScreen();
+                _logs.Log("脚本未加载，无法进入简单模式，终止刷循环", LogLevel.Error);
+                Stop();
+                return;
+            }
+            if (!IsMapSelectionComplete)
+            {
+                HandleReturnableScreen();
+                _logs.Log("地图选择未完成，无法进入简单模式，返回", LogLevel.Error);
+                return;
+            }
+            if (ScriptEditorSuite.SelectedMode != LevelMode.Standard && 
+                Constants.LevelModeToDifficulty[ScriptEditorSuite.SelectedMode] != LevelDifficulties.Easy)
+            {
+                HandleReturnableScreen();
+                _logs.Log("当前模式不是简单模式，无法进入简单模式，返回", LogLevel.Error);
+                return;
+            }
+            if (IsHeroSelectionComplete)
+            {
+                IsHeroSelectionComplete = false;
+
+                Point point = Constants.GetLevelModePos(ScriptEditorSuite.SelectedMode);
+                InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
+            }
+            else
+            {
+                InputSimulator.MouseMoveAndLeftClick(_context, 100, 1000);
+            }
+            levelChallengingCount = 0;
         }
 
         private void HandleLevelMediumModeSelection()
         {
-            HandleReturnableScreen();
+            if (ScriptEditorSuite == null)
+            {
+                HandleReturnableScreen();
+                _logs.Log("脚本未加载，无法进入中级模式，终止刷循环", LogLevel.Error);
+                Stop();
+                return;
+            }
+            if (!IsMapSelectionComplete)
+            {
+                HandleReturnableScreen();
+                _logs.Log("地图选择未完成，无法进入中级模式，返回", LogLevel.Error);
+                return;
+            }
+            if (ScriptEditorSuite.SelectedMode != LevelMode.Standard &&
+                Constants.LevelModeToDifficulty[ScriptEditorSuite.SelectedMode] != LevelDifficulties.Medium)
+            {
+                HandleReturnableScreen();
+                _logs.Log("当前模式不是中级模式，无法进入中级模式，返回", LogLevel.Error);
+                return;
+            }
+            if (IsHeroSelectionComplete)
+            {
+                IsHeroSelectionComplete = false;
+                Point point = Constants.GetLevelModePos(ScriptEditorSuite.SelectedMode);
+                InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
+            }
+            else
+            {
+                InputSimulator.MouseMoveAndLeftClick(_context, 100, 1000);
+            }
+            levelChallengingCount = 0;
         }
 
         private void HandleLevelHardModeSelection()
         {
-            HandleReturnableScreen();
+            if (ScriptEditorSuite == null)
+            {
+                HandleReturnableScreen();
+                _logs.Log("脚本未加载，无法进入困难模式，终止刷循环", LogLevel.Error);
+                Stop();
+                return;
+            }
+            if (!IsMapSelectionComplete)
+            {
+                HandleReturnableScreen();
+                _logs.Log("地图选择未完成，无法进入困难模式，返回", LogLevel.Error);
+                return;
+            }
+            if (ScriptEditorSuite.SelectedMode != LevelMode.Standard &&
+                Constants.LevelModeToDifficulty[ScriptEditorSuite.SelectedMode] != LevelDifficulties.Hard)
+            {
+                HandleReturnableScreen();
+                _logs.Log("当前模式不是困难模式，无法进入困难模式，返回", LogLevel.Error);
+                return;
+            }
+            if (IsHeroSelectionComplete)
+            {
+                IsHeroSelectionComplete = false;
+                Point point = Constants.GetLevelModePos(ScriptEditorSuite.SelectedMode);
+                InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
+            }
+            else
+            {
+                InputSimulator.MouseMoveAndLeftClick(_context, 100, 1000);
+            }
+            levelChallengingCount = 0;
         }
 
         private void HandleHeroSelection()
         {
-            HandleReturnableScreen();
+            if (ScriptEditorSuite == null)
+            {
+                HandleReturnableScreen();
+                _logs.Log("脚本未加载，无法选择英雄，终止刷循环", LogLevel.Error);
+                Stop();
+                return;
+            }
+            if (IsHeroSelectionComplete || ScriptEditorSuite == null)
+            {
+                HandleReturnableScreen();
+                _logs.Log("英雄选择已完成，返回", LogLevel.Error);
+                return;
+            }
+            Point heroPosition = GameVisionRecognizer.GetHeroPosition(_context, ScriptEditorSuite.SelectedHero);
+
+            for (int i = 0; i < 5 && heroPosition.X == -1; i++)
+            {
+                heroPosition = GameVisionRecognizer.GetHeroPosition(_context, ScriptEditorSuite.SelectedHero);
+                InputSimulator.MouseWheel(-10);
+                Thread.Sleep(500);
+            }
+            if (heroPosition.X == -1)
+            {
+                Stop();
+                //MessageBox.Show("未找到英雄位置！");
+                _logs.Log("未找到英雄位置！收集结束，请卸下英雄皮肤，重新开始", LogLevel.Error);
+                return;
+            }
+            InputSimulator.MouseMoveAndLeftClick(_context, heroPosition.X, heroPosition.Y);
+            Thread.Sleep(500);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1120, 620);
+            Thread.Sleep(500);
+            InputSimulator.MouseMoveAndLeftClick(_context, 80, 55);
+            IsHeroSelectionComplete = true;
+
+            _logs.Log($"已选择英雄：{Constants.GetTypeName(ScriptEditorSuite.SelectedHero)}", LogLevel.Info);
         }
 
         private void HandleLevelTipScreen()
         {
-            MouseMoveAndLeftClick(_context, 1140, 730);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1140, 730);
         }
 
         private void HandleLevelChallengingScreen()
@@ -238,11 +404,19 @@ namespace BTD6AutoCommunity
             levelChallengingCount++;
             if (ScriptEditorSuite == null)
             {
-                MouseMoveAndLeftClick(_context, 1600, 40);
+                InputSimulator.MouseMoveAndLeftClick(_context, 1600, 40);
                 Thread.Sleep(500);
-                MouseMoveAndLeftClick(_context, 850, 850);
-                _logs.Log("脚本未加载，无法进入战斗，终止刷每日挑战", LogLevel.Error);
+                InputSimulator.MouseMoveAndLeftClick(_context, 850, 850);
+                _logs.Log("脚本未加载，无法进入战斗，终止刷循环", LogLevel.Error);
                 Stop();
+                return;
+            }
+            if (!IsMapSelectionComplete)
+            {
+                InputSimulator.MouseMoveAndLeftClick(_context, 1600, 40);
+                Thread.Sleep(500);
+                InputSimulator.MouseMoveAndLeftClick(_context, 850, 850);
+                _logs.Log("地图选择未完成，无法进入战斗，返回", LogLevel.Error);
                 return;
             }
             if (levelChallengingCount < 2)
@@ -265,7 +439,7 @@ namespace BTD6AutoCommunity
             if (strategyExecutorTimer == null)
             {
                 IsStrategyExecutionCompleted = false;
-                strategyExecutor = new StrategyExecutor(_context, ScriptEditorSuite);
+                strategyExecutor = new InGame.InGameActionExecutor(_context, ScriptEditorSuite);
                 SetupStrategyExecutorTimer();
                 strategyExecutorTimer.Start();
                 _logs.Log("开始执行关卡策略...", LogLevel.Info);
@@ -274,24 +448,31 @@ namespace BTD6AutoCommunity
 
         private void HandleLevelChallengingWithTipScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 760);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 760);
+        }
+
+        private void HandleLevelSettingScreen()
+        {
+            InputSimulator.MouseMoveAndLeftClick(_context, 1080, 840);
+            Thread.Sleep(500);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1135, 730);
         }
 
         private void HandleLevelPassScreen()
         {
             if (strategyExecutor != null && strategyExecutor.IsStartFreePlay)
             {
-                MouseMoveAndLeftClick(_context, 1200, 850);
+                InputSimulator.MouseMoveAndLeftClick(_context, 1200, 850);
                 strategyExecutor.StartFreePlayFinished = true;
                 _logs.Log("自由游戏已开启，开始下一关", LogLevel.Info);
                 return;
             }
-            MouseMoveAndLeftClick(_context, 720, 850);
+            InputSimulator.MouseMoveAndLeftClick(_context, 720, 850);
         }
 
         private void HandleLevelSettlementScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 910);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 910);
             if (strategyExecutor != null && strategyExecutor.IsStartFreePlay) return;
             StopLevelTimer();
             if (IsStrategyExecutionCompleted)
@@ -303,66 +484,69 @@ namespace BTD6AutoCommunity
 
         private void HandleLevelUpgradingScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 980);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 980);
             _logs.Log("检测到升级界面，点击确认", LogLevel.Info);
         }
 
         private void HandleLevelFailedScreen()
         {
             StopLevelTimer();
-            Point returnPos = GetFailedScreenReturnPosition(_context);
-            MouseMoveAndLeftClick(_context, returnPos.X, returnPos.Y);
+            Point returnPos = GameVisionRecognizer.GetFailedScreenReturnPosition(_context);
+            InputSimulator.MouseMoveAndLeftClick(_context, returnPos.X, returnPos.Y);
             _logs.Log("检测到关卡失败界面，回到主页", LogLevel.Info);
         }
 
         private void HandleReturnableScreen()
         {
-            MouseMoveAndLeftClick(_context, 80, 55);
+            returnableScreenCount++;
+            if (returnableScreenCount < 2) return;
+            InputSimulator.MouseMoveAndLeftClick(_context, 80, 55);
+            returnableScreenCount = 0;
         }
 
         private void HandleThreeChestsScreen()
         {
-            MouseMoveAndLeftClick(_context, 660, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 660, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 660, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 660, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 960, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 960, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 1260, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1260, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 1260, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1260, 540);
             Thread.Sleep(1000);
             _logs.Log("获得3个insta", LogLevel.Info);
         }
 
         private void HandleTwoChestsScreen()
         {
-            MouseMoveAndLeftClick(_context, 810, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 810, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 810, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 810, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 1110, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1110, 540);
             Thread.Sleep(1000);
-            MouseMoveAndLeftClick(_context, 1110, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 1110, 540);
             Thread.Sleep(1000);
             _logs.Log("获得2个insta", LogLevel.Info);
         }
 
         private void HandleInstaScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 540);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 540);
         }
 
         private void HandleChestsOpenedScreen()
         {
-            MouseMoveAndLeftClick(_context, 960, 1000);
+            InputSimulator.MouseMoveAndLeftClick(_context, 960, 1000);
         }
 
         public void Start()
         {
-            _logs.Log($"开始刷每日挑战...", LogLevel.Info);
+            _logs.Log($"开始循环刷关...", LogLevel.Info);
             checkGameStateTimer.Start();
         }
 
@@ -375,7 +559,7 @@ namespace BTD6AutoCommunity
                 _isProcessing = false;
             }
             OnStopTriggered?.Invoke();
-            _logs.Log("刷每日挑战模式已停止...", LogLevel.Info);
+            _logs.Log("循环刷关模式已停止...", LogLevel.Info);
         }
 
         private void CheckGameState()
@@ -394,7 +578,7 @@ namespace BTD6AutoCommunity
                 if (currentState != lastState)
                 {
                     lastState = currentState;
-                    _logs.Log($"当前状态：{GetChineseDescription(currentState)}", LogLevel.Info);
+                    _logs.Log($"当前状态：{GameStateDescription.GetChineseDescription(currentState)}", LogLevel.Info);
                 }
 
                 if (stateHandlers.TryGetValue(currentState, out Action handler))
@@ -436,6 +620,7 @@ namespace BTD6AutoCommunity
             OnGameDataUpdated?.Invoke(CurrentGameData);
         }
 
+
         private void SetupGameStateTimer()
         {
             checkGameStateTimer = new System.Timers.Timer(1500); // 1.5秒间隔
@@ -445,14 +630,34 @@ namespace BTD6AutoCommunity
 
         private void SetupLevelDataMonitorTimer()
         {
-            levelDataMonitorTimer = new System.Timers.Timer(_settings.DataReadInterval);
+            int interval = _settings.DataReadInterval;
+            if (_settings.EnableRecommendInterval)
+            {
+                interval = RecommendDataReadInterval;
+                _logs.Log($"使用推荐数据读取间隔：{interval}ms", LogLevel.Info);
+            }
+            else
+            {
+                _logs.Log($"使用自定义数据读取间隔：{interval}ms", LogLevel.Info);
+            }
+            levelDataMonitorTimer = new System.Timers.Timer(interval);
             levelDataMonitorTimer.Elapsed += (s, e) => ReadGameData();
             levelDataMonitorTimer.AutoReset = true;
         }
 
         private void SetupStrategyExecutorTimer()
         {
-            strategyExecutorTimer = new System.Timers.Timer(_settings.OperationInterval);
+            int interval = _settings.OperationInterval;
+            if (_settings.EnableRecommendInterval)
+            {
+                interval = RecommendOperationInterval;
+                _logs.Log($"使用推荐操作间隔：{interval}ms", LogLevel.Info);
+            }
+            else
+            {
+                _logs.Log($"使用自定义操作间隔：{interval}ms", LogLevel.Info);
+            }
+            strategyExecutorTimer = new System.Timers.Timer(interval);
             strategyExecutorTimer.Elapsed += (s, e) => ExecuteStrategy();
             strategyExecutorTimer.AutoReset = true;
         }
@@ -472,6 +677,5 @@ namespace BTD6AutoCommunity
                 strategyExecutorTimer = null;
             }
         }
-
     }
 }

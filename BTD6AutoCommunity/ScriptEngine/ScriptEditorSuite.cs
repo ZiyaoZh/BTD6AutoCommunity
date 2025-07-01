@@ -12,10 +12,11 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.InteropServices;
 using System.Diagnostics.Eventing.Reader;
 using System.Windows.Forms;
-using static BTD6AutoCommunity.Constants;
+using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.GameObjects;
 using System.Diagnostics;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.ScriptEngine
 {
 
 
@@ -769,19 +770,19 @@ namespace BTD6AutoCommunity
             switch (type)
             {
                 case ActionTypes.PlaceMonkey: // 放置指令
-                    displayInstruction += GetTypeName((Monkeys)ObjectId[arguments[2]].Item1) + ObjectId[arguments[2]].Item2.ToString();
+                    displayInstruction += Constants.GetTypeName((Monkeys)ObjectId[arguments[2]].Item1) + ObjectId[arguments[2]].Item2.ToString();
                     displayInstruction += "放置";
                     displayInstruction += "于(" + arguments[3].ToString() + ", " + arguments[4].ToString() + ")";
 
                     break;
                 case ActionTypes.UpgradeMonkey: // 升级指令
-                    displayInstruction += GetTypeName((Monkeys)ObjectId[arguments[1]].Item1) + ObjectId[arguments[1]].Item2.ToString();
+                    displayInstruction += Constants.GetTypeName((Monkeys)ObjectId[arguments[1]].Item1) + ObjectId[arguments[1]].Item2.ToString();
                     displayInstruction += "升级至";
                     displayInstruction += objectList[arguments[1]].GetAllUpgradeLevel();
 
                     break;
                 case ActionTypes.SwitchMonkeyTarget: // 切换目标指令
-                    displayInstruction += GetTypeName((Monkeys)ObjectId[arguments[1]].Item1) + ObjectId[arguments[1]].Item2.ToString();
+                    displayInstruction += Constants.GetTypeName((Monkeys)ObjectId[arguments[1]].Item1) + ObjectId[arguments[1]].Item2.ToString();
                     displayInstruction += "目标";
                     displayInstruction += Constants.TargetToChange[arguments[2]];
                     break;
@@ -806,11 +807,11 @@ namespace BTD6AutoCommunity
                     break;
                 case ActionTypes.SellMonkey: // 出售指令
                     displayInstruction += "出售";
-                    displayInstruction += GetTypeName((Monkeys)ObjectId[arguments[1]].Item1) + ObjectId[arguments[1]].Item2.ToString();
+                    displayInstruction += Constants.GetTypeName((Monkeys)ObjectId[arguments[1]].Item1) + ObjectId[arguments[1]].Item2.ToString();
 
                     break;
                 case ActionTypes.SetMonkeyFunction: // 设置猴子功能
-                    displayInstruction += GetTypeName((Monkeys)ObjectId[arguments[1]].Item1) + ObjectId[arguments[1]].Item2.ToString();
+                    displayInstruction += Constants.GetTypeName((Monkeys)ObjectId[arguments[1]].Item1) + ObjectId[arguments[1]].Item2.ToString();
                     displayInstruction += "更改功能";
 
                     if (arguments.Count > 4)
@@ -870,7 +871,7 @@ namespace BTD6AutoCommunity
 
                     break;
                 case ActionTypes.AdjustMonkeyCoordinates:
-                    displayInstruction += "修改" + GetTypeName((Monkeys)ObjectId[arguments[1]].Item1) + ObjectId[arguments[1]].Item2.ToString() + "坐标";
+                    displayInstruction += "修改" + Constants.GetTypeName((Monkeys)ObjectId[arguments[1]].Item1) + ObjectId[arguments[1]].Item2.ToString() + "坐标";
                     displayInstruction += "于(" + arguments[2].ToString() + ", " + arguments[3].ToString() + ")";
 
                     break;
@@ -1401,7 +1402,7 @@ namespace BTD6AutoCommunity
 
         public string SaveToJson(string scriptName)
         {
-            string filePath = $@"data\我的脚本\{GetTypeName(SelectedMap)}\{GetTypeName(SelectedDifficulty)}\" + scriptName + ".btd6";
+            string filePath = $@"data\我的脚本\{Constants.GetTypeName(SelectedMap)}\{Constants.GetTypeName(SelectedDifficulty)}\" + scriptName + ".btd6";
             string directoryPath = Path.GetDirectoryName(filePath);
             //string filePath = "你好.json";
             var partialInfo = new

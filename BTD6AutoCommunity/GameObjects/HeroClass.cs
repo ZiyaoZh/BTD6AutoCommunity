@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.GameObjects
 {
     public class HeroClass
     {

@@ -1,6 +1,6 @@
 ﻿using System;
-using static BTD6AutoCommunity.WindowApiWrapper;
-using static BTD6AutoCommunity.GameVisionRecognizer;
+using static BTD6AutoCommunity.Core.WindowApiWrapper;
+using static BTD6AutoCommunity.Core.GameVisionRecognizer;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Buffers.Text;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.Core
 {
     public enum GameState
     {
@@ -50,7 +50,7 @@ namespace BTD6AutoCommunity
         UnKnown,
     }
 
-    public static class GameStateLocalization
+    public static class GameStateDescription
     {
         public static readonly Dictionary<GameState, string> stateMap = new Dictionary<GameState, string>
         {

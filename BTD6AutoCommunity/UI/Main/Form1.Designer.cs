@@ -273,11 +273,11 @@
             this.EditBT = new System.Windows.Forms.Button();
             this.RunBT = new System.Windows.Forms.Button();
             this.DeleteOperationBT = new System.Windows.Forms.Button();
+            this.OutputBT = new System.Windows.Forms.Button();
             this.OperationsLV = new System.Windows.Forms.ListView();
             this.脚本名 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.AnchorBTTT = new System.Windows.Forms.ToolTip(this.components);
-            this.OutputBT = new System.Windows.Forms.Button();
             this.StartPrgramTC.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -3491,6 +3491,17 @@
             this.DeleteOperationBT.UseVisualStyleBackColor = true;
             this.DeleteOperationBT.Click += new System.EventHandler(this.DeleteOperationBT_Click);
             // 
+            // OutputBT
+            // 
+            this.OutputBT.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.OutputBT.Location = new System.Drawing.Point(3, 524);
+            this.OutputBT.Name = "OutputBT";
+            this.OutputBT.Size = new System.Drawing.Size(210, 29);
+            this.OutputBT.TabIndex = 4;
+            this.OutputBT.Text = "导出";
+            this.OutputBT.UseVisualStyleBackColor = true;
+            this.OutputBT.Click += new System.EventHandler(this.OutputBT_Click);
+            // 
             // OperationsLV
             // 
             this.OperationsLV.BackColor = System.Drawing.SystemColors.Window;
@@ -3521,17 +3532,6 @@
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(688, 633);
             this.treeView1.TabIndex = 0;
-            // 
-            // OutputBT
-            // 
-            this.OutputBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.OutputBT.Location = new System.Drawing.Point(3, 524);
-            this.OutputBT.Name = "OutputBT";
-            this.OutputBT.Size = new System.Drawing.Size(210, 29);
-            this.OutputBT.TabIndex = 4;
-            this.OutputBT.Text = "导出";
-            this.OutputBT.UseVisualStyleBackColor = true;
-            this.OutputBT.Click += new System.EventHandler(this.OutputBT_Click);
             // 
             // BTD6AutoCommunity
             // 

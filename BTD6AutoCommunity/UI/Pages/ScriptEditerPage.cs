@@ -9,7 +9,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Drawing;
 using System.Timers;
-using static BTD6AutoCommunity.Constants;
+using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.ScriptEngine;
 using System.Diagnostics;
 
 namespace BTD6AutoCommunity
@@ -65,7 +66,7 @@ namespace BTD6AutoCommunity
             {
                 DataRow dr = dt.NewRow();
                 dr["Value"] = item;
-                dr["ActionTypeName"] = GetTypeName(item);
+                dr["ActionTypeName"] = Constants.GetTypeName(item);
                 dt.Rows.Add(dr);
             }
             InstructionClassCB.DataSource = dt;
@@ -84,7 +85,7 @@ namespace BTD6AutoCommunity
             {
                 DataRow dr = dt.NewRow();
                 dr["Value"] = item;
-                dr["TypeName"] = GetTypeName(item, type);
+                dr["TypeName"] = Constants.GetTypeName(item, type);
                 dt.Rows.Add(dr);
             }
             Argument1CB.DataSource = dt;
@@ -135,11 +136,11 @@ namespace BTD6AutoCommunity
             DataTable dt = new DataTable();
             dt.Columns.Add("Value", typeof(Maps));
             dt.Columns.Add("MapName", typeof(string));
-            foreach (Maps item in MapsToDisplay)
+            foreach (Maps item in Constants.MapsToDisplay)
             {
                 DataRow dr = dt.NewRow();
                 dr["Value"] = item;
-                dr["MapName"] = GetTypeName(item);
+                dr["MapName"] = Constants.GetTypeName(item);
                 dt.Rows.Add(dr);
             }
             MapCB.DataSource = dt;
@@ -156,7 +157,7 @@ namespace BTD6AutoCommunity
             {
                 DataRow dr = dt.NewRow();
                 dr["Value"] = item;
-                dr["HeroName"] = GetTypeName(item);
+                dr["HeroName"] = Constants.GetTypeName(item);
                 dt.Rows.Add(dr);
             }
             HeroCB.DataSource = dt;
@@ -174,7 +175,7 @@ namespace BTD6AutoCommunity
             {
                 DataRow dr = dt.NewRow();
                 dr["Value"] = item;
-                dr["ModeName"] = GetTypeName(item);
+                dr["ModeName"] = Constants.GetTypeName(item);
                 dt.Rows.Add(dr);
             }
             ModeCB.DataSource = dt;
@@ -193,7 +194,7 @@ namespace BTD6AutoCommunity
                 if (item == LevelDifficulties.Any) continue;
                 DataRow dr = dt.NewRow();
                 dr["Value"] = item;
-                dr["DifficultyName"] = GetTypeName(item);
+                dr["DifficultyName"] = Constants.GetTypeName(item);
                 dt.Rows.Add(dr);
             }
             DifficultyCB.DataSource = dt;
@@ -210,7 +211,7 @@ namespace BTD6AutoCommunity
             {
                 (int, int) item = lst[i];
                 DataRow dr = dt.NewRow();
-                dr["monkey"] = GetTypeName((Monkeys)item.Item1) + item.Item2.ToString();
+                dr["monkey"] = Constants.GetTypeName((Monkeys)item.Item1) + item.Item2.ToString();
                 if (MyInstructions.objectList[i].IsDelete)
                 {
                     dr["monkey"] += "(已删除)";
@@ -450,7 +451,7 @@ namespace BTD6AutoCommunity
                     break;
 
                 case ActionTypes.SwitchHeroTarget:
-                    BindArgument2CB(TargetToChange);
+                    BindArgument2CB(Constants.TargetToChange);
                     Argument2CB.DropDownStyle = ComboBoxStyle.DropDownList;
 
                     Argument1CB.Visible = false;
@@ -577,7 +578,7 @@ namespace BTD6AutoCommunity
                 case ActionTypes.QuickCommandBundle:
                     Argument1CB.DataSource = null;
                     Argument2CB.DataSource = null;
-                    BindArgument1CB(InstructionPackages);
+                    BindArgument1CB(Constants.InstructionPackages);
                     Argument1CB.DropDownStyle = ComboBoxStyle.DropDownList;
 
                     Argument2CB.DropDownStyle = ComboBoxStyle.DropDown;
@@ -627,8 +628,8 @@ namespace BTD6AutoCommunity
             if (!Enum.IsDefined(typeof(LevelMode), ModeCB.SelectedValue) ||
                 !Enum.IsDefined(typeof(Heroes), HeroCB.SelectedValue)) 
                 return;
-            ScriptNameTB.Text = GetTypeName((LevelMode)ModeCB.SelectedValue) + "-" + 
-                GetTypeName((Heroes)HeroCB.SelectedValue) + "-" + Time;
+            ScriptNameTB.Text = Constants.GetTypeName((LevelMode)ModeCB.SelectedValue) + "-" + 
+                Constants.GetTypeName((Heroes)HeroCB.SelectedValue) + "-" + Time;
 
         }
 

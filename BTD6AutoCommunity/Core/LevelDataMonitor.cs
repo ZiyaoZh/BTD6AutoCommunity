@@ -6,11 +6,11 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static BTD6AutoCommunity.GameVisionRecognizer;
+using static BTD6AutoCommunity.Core.GameVisionRecognizer;
 using static System.Net.Mime.MediaTypeNames;
 using System.Diagnostics;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.Core
 {
     public enum NumberType
     {

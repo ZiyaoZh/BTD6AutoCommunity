@@ -10,9 +10,9 @@ using System.IO;
 using System.Diagnostics;
 using System.Runtime.Remoting.Contexts;
 using System.Windows.Forms;
-using static BTD6AutoCommunity.Constants;
+using static BTD6AutoCommunity.Core.Constants;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.Core
 {
     public class GameVisionRecognizer
     {

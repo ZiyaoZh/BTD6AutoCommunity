@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using static BTD6AutoCommunity.InputSimulator;
-using static BTD6AutoCommunity.GameVisionRecognizer;
-using static BTD6AutoCommunity.ScriptEditorSuite;
+using BTD6AutoCommunity.Core;
 using System.Diagnostics;
+using BTD6AutoCommunity.ScriptEngine;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.Strategies.InGame
 {
-    internal class StrategyExecutor
+    internal class InGameActionExecutor
     {
         private readonly GameContext _context;
         private readonly List<List<string>> scriptDirective;
@@ -40,7 +39,7 @@ namespace BTD6AutoCommunity
 
         public bool Finished;
 
-        public StrategyExecutor(GameContext context, ScriptEditorSuite script)
+        public InGameActionExecutor(GameContext context, ScriptEditorSuite script)
         {
             _context = context;
             scriptDirective = script.compilerDirective;
@@ -121,7 +120,7 @@ namespace BTD6AutoCommunity
                 }
                 if (currentSecondIndex == 0)
                 {
-                    instructionInfo = GetScriptInstructionInfo(digitalScript[currentFirstIndex]);
+                    instructionInfo = ScriptEditorSuite.GetScriptInstructionInfo(digitalScript[currentFirstIndex]);
                     instructionInfo.Index = currentFirstIndex;
                     instructionInfo.Content = displayScript[currentFirstIndex];
                     List<int> arguments = scriptDirective[currentFirstIndex][0].Split(' ').Select(Int32.Parse).ToList();
@@ -220,7 +219,7 @@ namespace BTD6AutoCommunity
             else if (arguments[0] == 8)
             {
                 RunCode(arguments);
-                if (IsMonkeyDeploy(_context))
+                if (GameVisionRecognizer.IsMonkeyDeploy(_context))
                 {
                     currentSecondIndex++;
                 }
@@ -228,7 +227,7 @@ namespace BTD6AutoCommunity
             else if (arguments[0] == 26) // 检测放置是否成功
             {
                 Thread.Sleep(80);
-                if (!IsMonkeyDeploy(_context))
+                if (!GameVisionRecognizer.IsMonkeyDeploy(_context))
                 {
                     reDeployFlag = false;
                     currentReDeployIndex = -1;
@@ -276,7 +275,7 @@ namespace BTD6AutoCommunity
                 Debug.WriteLine("Upgrade " + colorIndex + " " + p);
                 if (p == 0) return;
 
-                if (!GetYellowBlockCount(_context, colorIndex, p))
+                if (!GameVisionRecognizer.GetYellowBlockCount(_context, colorIndex, p))
                 {
                     RunCode(arguments);
                     return;
@@ -310,14 +309,14 @@ namespace BTD6AutoCommunity
 
             if (arguments[0] == 24) // 技能释放前rgb
             {
-                abilityRgb = AbilityReady(_context, arguments[1]);
+                abilityRgb = GameVisionRecognizer.AbilityReady(_context, arguments[1]);
                 List<int> keyarguments = new List<int> { 8, arguments[2] };
                 RunCode(keyarguments);
                 currentSecondIndex++;
             }
             else if (arguments[0] == 25) // 技能释放后rgb
             {
-                int currentRgb = AbilityReady(_context, arguments[1]);
+                int currentRgb = GameVisionRecognizer.AbilityReady(_context, arguments[1]);
                 if (Math.Abs(currentRgb - abilityRgb) < 15)
                 {
                     currentSecondIndex--;
@@ -363,7 +362,7 @@ namespace BTD6AutoCommunity
 
             if (arguments[0] == 23) // 找英雄是否可放
             {
-                if (IsHeroDeploy(_context))
+                if (GameVisionRecognizer.IsHeroDeploy(_context))
                 {
                     currentSecondIndex++;
                 }
@@ -424,7 +423,7 @@ namespace BTD6AutoCommunity
             else if (arguments[0] == 26) // 检测放置是否成功
             {
                 Thread.Sleep(80);
-                if (!IsMonkeyDeploy(_context))
+                if (!GameVisionRecognizer.IsMonkeyDeploy(_context))
                 {
                     reDeployFlag = false;
                     currentReDeployIndex = -1;
@@ -547,7 +546,7 @@ namespace BTD6AutoCommunity
 
         private void CheckInGame()
         {
-            if (!IsInGame(_context))
+            if (!GameVisionRecognizer.IsInGame(_context))
             {
                 if (gameRetryCount > 8)
                 {
@@ -557,8 +556,8 @@ namespace BTD6AutoCommunity
                     return;
                 }
                 gameRetryCount++;
-                MouseMove(_context, 75, 60);
-                MouseLeftClick();
+                InputSimulator.MouseMove(_context, 75, 60);
+                InputSimulator.MouseLeftClick();
                 return;
             }
             else
@@ -569,11 +568,11 @@ namespace BTD6AutoCommunity
 
         private int GetColorIndex(int route)
         {
-            if (IsRightUpgrading(_context))
+            if (GameVisionRecognizer.IsRightUpgrading(_context))
             {
                 return route + 3;
             }
-            if (IsLeftUpgrading(_context))
+            if (GameVisionRecognizer.IsLeftUpgrading(_context))
             {
                 return route;
             }
@@ -585,33 +584,33 @@ namespace BTD6AutoCommunity
             switch (arguments[0])
             {
                 case 1:
-                    MouseMove(_context, arguments[1], arguments[2]);
+                    InputSimulator.MouseMove(_context, arguments[1], arguments[2]);
                     break;
                 case 2:
-                    MouseLeftClick();
+                    InputSimulator.MouseLeftClick();
                     break;
                 case 3:
-                    MouseLeftDown();
+                    InputSimulator.MouseLeftDown();
                     break;
                 case 4:
-                    MouseLeftUp();
+                    InputSimulator.MouseLeftUp();
                     break;
                 case 5:
-                    MouseWheel(arguments[1]);
+                    InputSimulator.MouseWheel(arguments[1]);
                     break;
                 case 6:
-                    KeyboardPress((ushort)arguments[1]);
+                    InputSimulator.KeyboardPress((ushort)arguments[1]);
                     break;
                 case 7:
-                    KeyboardRelease((ushort)arguments[1]);
+                    InputSimulator.KeyboardRelease((ushort)arguments[1]);
                     break;
                 case 8:
-                    KeyboardPressAndRelease((ushort)arguments[1]);
+                    InputSimulator.KeyboardPressAndRelease((ushort)arguments[1]);
                     break;
                 case 10: // 空指令
                     break;
                 case 11: // 移动+点击
-                    MouseMoveAndLeftClick(_context, arguments[1], arguments[2]);
+                    InputSimulator.MouseMoveAndLeftClick(_context, arguments[1], arguments[2]);
                     break;
                     // 16 指令跳转
                     // 18 收集识别地图

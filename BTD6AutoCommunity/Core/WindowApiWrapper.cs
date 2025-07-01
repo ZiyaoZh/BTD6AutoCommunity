@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.Core
 {
     public class WindowApiWrapper
     {

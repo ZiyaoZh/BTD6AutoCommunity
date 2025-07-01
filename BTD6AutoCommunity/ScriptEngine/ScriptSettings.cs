@@ -8,8 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using BTD6AutoCommunity.Core;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.ScriptEngine
 {
     public class ScriptSettings
     {

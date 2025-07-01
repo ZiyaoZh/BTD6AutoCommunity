@@ -10,8 +10,9 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BTD6AutoCommunity.Strategies;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.Core
 {
     public enum MapTypes
     { 
