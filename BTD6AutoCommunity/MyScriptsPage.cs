@@ -253,8 +253,43 @@ namespace BTD6AutoCommunity
             {
                 MessageBox.Show("请在左侧选择地图\\难度");
             }
-
         }
+
+
+        private void OutputBT_Click(object sender, EventArgs e)
+        {
+            // 导出脚本
+            if (OperationsLV.SelectedItems.Count > 0)
+            {
+                if (OperationsLV.SelectedItems[0].Tag is string filePath)
+                {
+                    try
+                    {
+                        // 把选择的脚本文件复制导出到本地
+                        using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                        {
+                            saveFileDialog.FileName = Path.GetFileNameWithoutExtension(filePath) + ".btd6";
+                            saveFileDialog.Filter = "脚本文件(*.btd6)|*.btd6";
+                            saveFileDialog.InitialDirectory = currentDirectory;
+                            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                            {
+                                string destinationFilePath = saveFileDialog.FileName;
+                                File.Copy(filePath, destinationFilePath, true);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("文件打开失败！");
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("请选择需要导出脚本的脚本！");
+            }
+        }
+
 
         private void DeleteOperationBT_Click(object sender, EventArgs e)
         {
@@ -342,7 +377,6 @@ namespace BTD6AutoCommunity
             {
                 MessageBox.Show("Treenode not found");
             }
-            StartPrgramTC.SelectedIndex = 3;
         }
 
         private TreeNode FindNodeByPath(TreeNodeCollection nodes, string path)

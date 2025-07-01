@@ -25,6 +25,7 @@ namespace BTD6AutoCommunity
 {
     public partial class BTD6AutoCommunity : Form
     {
+        private bool IsStartPageEditButtonClicked = false;
         public BTD6AutoCommunity()
         {
             InitializeComponent();

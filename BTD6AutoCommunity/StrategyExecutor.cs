@@ -511,6 +511,7 @@ namespace BTD6AutoCommunity
             {
                 IsStartFreePlay = true;
                 if (!StartFreePlayFinished) return;
+                StartFreePlayFinished = false;
                 IsStartFreePlay = false;
                 currentSecondIndex++;
                 return;

@@ -38,6 +38,7 @@ namespace BTD6AutoCommunity
             TackShooterHotkeyBT.Tag = Monkeys.TackShooter;
             IceMonkeyHotkeyBT.Tag = Monkeys.IceMonkey;
             GlueGunnerHotkeyBT.Tag = Monkeys.GlueGunner;
+            DesperadoHotkeyBT.Tag = Monkeys.Desperado;
             SniperMonkeyHotkeyBT.Tag = Monkeys.SniperMonkey;
             MonkeySubHotkeyBT.Tag = Monkeys.MonkeySub;
             MonkeyBuccaneerHotkeyBT.Tag = Monkeys.MonkeyBuccaneer;
@@ -108,6 +109,7 @@ namespace BTD6AutoCommunity
             TackShooterHotkeyBT.Text = scriptSettings.GetHotKeyString(Monkeys.TackShooter);
             IceMonkeyHotkeyBT.Text = scriptSettings.GetHotKeyString(Monkeys.IceMonkey);
             GlueGunnerHotkeyBT.Text = scriptSettings.GetHotKeyString(Monkeys.GlueGunner);
+            DesperadoHotkeyBT.Text = scriptSettings.GetHotKeyString(Monkeys.Desperado);
             SniperMonkeyHotkeyBT.Text = scriptSettings.GetHotKeyString(Monkeys.SniperMonkey);
             MonkeySubHotkeyBT.Text = scriptSettings.GetHotKeyString(Monkeys.MonkeySub);
             MonkeyBuccaneerHotkeyBT.Text = scriptSettings.GetHotKeyString(Monkeys.MonkeyBuccaneer);

@@ -493,6 +493,28 @@ namespace BTD6AutoCommunity
             }
         }
 
+        private void OutputScriptBT_Click(object sender, EventArgs e)
+        {
+            if (ExecuteScriptCB.Text == "")
+            {
+                MessageBox.Show("请选择脚本！");
+                return;
+            }
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                string scriptName = ExecuteScriptCB.Text;
+                saveFileDialog.FileName = scriptName;
+                saveFileDialog.Filter = "脚本文件 (*.btd6)|*.btd6";
+
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string sourceFilePath = $@"data\我的脚本\{GetTypeName((Maps)ExecuteMapCB.SelectedValue)}\{GetTypeName((LevelDifficulties)ExecuteDifficultyCB.SelectedValue)}\" + scriptName + ".btd6";
+                    string destinationFilePath = saveFileDialog.FileName;
+                    File.Copy(sourceFilePath, destinationFilePath, true);
+                }
+            }
+        }
+
         private void EditScriptBT_Click(object sender, EventArgs e)
         {
             Maps selectedMap = (Maps)ExecuteMapCB.SelectedValue;
@@ -515,6 +537,7 @@ namespace BTD6AutoCommunity
                 LoadScriptInfo();
                 BindInstructionsViewTL(MyInstructions.Displayinstructions);
                 StartPrgramTC.SelectedIndex = 1;
+                IsStartPageEditButtonClicked = true;
             }
             catch
             {
