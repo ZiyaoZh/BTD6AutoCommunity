@@ -14,9 +14,9 @@ using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.ScriptEngine;
 using BTD6AutoCommunity.Strategies;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.UI.Main
 {
-    public partial class BTD6AutoCommunity
+    public partial class BTD6AutoUI
     {
         private ScriptEditorSuite ExecuteInstructions;
         public int dpi;
@@ -24,7 +24,6 @@ namespace BTD6AutoCommunity
         CustomStrategy customStrategy;
         CollectionStrategy collectionStrategy;
         CirculationStrategy circulationStrategy;
-        EventsStrategy eventsStrategy;
         RaceStrategy raceStrategy;
         //BlackBorderStrategy blackBorderStrategy;
 
@@ -133,9 +132,6 @@ namespace BTD6AutoCommunity
                         MessageBox.Show("敬请期待！");
                         RunBlackBorderMode();
                         break;
-                    case FunctionTypes.Events:
-                        RunEventsMode(userSelection);
-                        break;
                 }
             }
             else
@@ -146,8 +142,6 @@ namespace BTD6AutoCommunity
                 collectionStrategy = null;
                 circulationStrategy?.Stop();
                 circulationStrategy = null;
-                eventsStrategy?.Stop();
-                eventsStrategy = null;
                 raceStrategy?.Stop();
                 raceStrategy = null;
                 //blackBorderStrategy?.Stop();
@@ -205,23 +199,6 @@ namespace BTD6AutoCommunity
             {
                 StartProgramBT.Text = "终止";
                 circulationStrategy.Start();
-            }
-        }
-
-        private void RunEventsMode(UserSelection userSelection)
-        {
-            logHandler = new LogHandler() { EnableInfoLog = scriptSettings.EnableLogging };
-            logHandler.OnLogMessage += HandleLogMessage;
-
-            eventsStrategy = new EventsStrategy(scriptSettings, logHandler, userSelection);
-            eventsStrategy.OnStopTriggered += HandleStopEvent;
-            eventsStrategy.OnGameDataUpdated += HandleGameDataUpdated;
-            eventsStrategy.OnCurrentStrategyCompleted += HandleCurrentStrategyCompleted;
-
-            if (eventsStrategy.ReadyToStart)
-            {
-                StartProgramBT.Text = "终止";
-                eventsStrategy.Start();
             }
         }
 
@@ -546,24 +523,5 @@ namespace BTD6AutoCommunity
                 MessageBox.Show("文件打开失败！");
             }
         }
-    }
-
-    public enum FunctionTypes
-    { 
-        Custom = 0,
-        Collection = 1,
-        Circulation = 2,
-        Race = 3,
-        BlackBorder = 4,
-        Events = 5
-    }
-
-    public struct UserSelection
-    {
-        public FunctionTypes selectedFunction;
-        public Maps selectedMap;
-        public LevelDifficulties selectedDifficulty;
-        public string selectedScript;
-        public int selectedIndex;
     }
 }

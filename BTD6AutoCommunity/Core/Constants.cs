@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BTD6AutoCommunity.Strategies;
+using BTD6AutoCommunity.ScriptEngine;
 
 namespace BTD6AutoCommunity.Core
 {
@@ -628,8 +629,7 @@ namespace BTD6AutoCommunity.Core
             { FunctionTypes.Collection, "刷收集" },
             { FunctionTypes.Circulation, "循环刷关" },
             { FunctionTypes.Race, "自动凹竞速" },
-            { FunctionTypes.BlackBorder, "刷黑框" },
-            { FunctionTypes.Events, "刷每日挑战" }
+            { FunctionTypes.BlackBorder, "刷黑框" }
         };
 
         public static string GetTypeName(FunctionTypes FunctionTypes)

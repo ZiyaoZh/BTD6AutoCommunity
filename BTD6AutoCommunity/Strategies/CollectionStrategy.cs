@@ -24,26 +24,13 @@ namespace BTD6AutoCommunity.Strategies
         FastPathCollection   // 快速路径收集
     }
 
-    public class CollectionStrategy
+    public class CollectionStrategy : Base.BaseStrategy
     {
         // 收集设置常量
         private const int CollectMapCount = 12;          // 每次运行收集地图数量
         private const int ExpertMapStartId = 90;        // 专家级地图起始ID
         private const int ExpertMapEndId = 101;           // 专家级地图终止ID
 
-        private readonly GameContext _context;
-        private readonly ScriptSettings _settings;
-        public GameContext Context => _context;
-        private readonly GameStateMachine stateMachine;
-
-        private readonly object _checkStateTimerLock = new object();
-        private volatile bool _isProcessing = false;
-        private System.Timers.Timer checkGameStateTimer;
-        public event Action OnStopTriggered;
-
-
-        private Dictionary<GameState, Action> stateHandlers;
-        private GameState lastState = GameState.UnKnown;
 
         private Dictionary<int, string> collectionScripts; // mapId -> 脚本路径
         private Dictionary<int, int> mapDifficulties; // mapId -> 难度
@@ -53,53 +40,61 @@ namespace BTD6AutoCommunity.Strategies
 
         private int levelChallengingCount = 0;
 
-        private ScriptEditorSuite ScriptEditorSuite;
-        public event Action<ScriptEditorSuite> OnScriptLoaded;
-
         private int returnableScreenCount = 0;
 
-        private LevelDataMonitor levelDataMonitor;
-        private List<string> CurrentGameData; // 0: round, 1: cash, 2: life
-        public event Action<List<string>> OnGameDataUpdated;
-
-        private InGame.InGameActionExecutor strategyExecutor;
-        public event Action<ScriptInstructionInfo> OnCurrentStrategyCompleted;
-
-        private System.Timers.Timer levelDataMonitorTimer;
-        private const int RecommendDataReadInterval = 1000;
-        private System.Timers.Timer strategyExecutorTimer;
-        private const int RecommendOperationInterval = 200;
-
-        private bool IsStrategyExecutionCompleted;
-
-        private readonly LogHandler _logs;
-
-        public bool ReadyToStart { get; private set; } = true;
-        
-
         public CollectionStrategy(ScriptSettings settings, LogHandler logHandler)
+            : base(settings, logHandler)
         {
-            _logs = logHandler;
-            _context = new GameContext();
-            if (_context.IsValid)
+            InitializeStateHandlers();
+            currentMapId = 0;
+        }
+
+        protected override void OnPreStart()
+        {
+            _logs.Log($"开始收集...", LogLevel.Info);
+            //Thread.Sleep(3000);
+            mapDifficulties = new Dictionary<int, int>();
+            collectionScripts = new Dictionary<int, string>();
+
+            if (_settings.EnableFastPath)
             {
-                _logs.Log(_context.ToString(), LogLevel.Info);
-                _settings = settings;
-
-                stateMachine = new GameStateMachine(_context);
-
-                InitializeHandlers();
-                SetupGameStateTimer();
-                currentMapId = 0;
+                collectionMode = CollectionMode.FastPathCollection;
+            }
+            else if (_settings.EnableDoubleCoin)
+            {
+                collectionMode = CollectionMode.DoubleCashCollection;
             }
             else
             {
-                ReadyToStart = false;
-                _logs.Log("游戏窗口未找到，请确认游戏是否已启动", LogLevel.Error);
+                collectionMode = CollectionMode.SimpleCollection;
+            }
+            _logs.Log($"当前收集模式：{Constants.CollectionScripts[collectionMode]}", LogLevel.Info);
+
+            for (int mapId = ExpertMapStartId; mapId <= ExpertMapEndId; mapId++)
+            {
+                foreach (int dif in new int[] { 0, 1, 2 })
+                {
+                    string scriptPath = ScriptEditorSuite.ExistScript(
+                        Constants.GetTypeName((Maps)mapId),
+                        Constants.GetTypeName((LevelDifficulties)dif),
+                        Constants.CollectionScripts[collectionMode]
+                        );
+                    if (scriptPath != null)
+                    {
+                        mapDifficulties.Add(mapId, dif);
+                        collectionScripts.Add(mapId, scriptPath);
+                        break;
+                    }
+                }
+            }
+            if (collectionScripts.Count != CollectMapCount)
+            {
+                _logs.Log($"收集脚本不完整！", LogLevel.Error);
+                return;
             }
         }
 
-        private void InitializeHandlers()
+        protected override void InitializeStateHandlers()
         {
             stateHandlers = new Dictionary<GameState, Action>
             {
@@ -212,10 +207,7 @@ namespace BTD6AutoCommunity.Strategies
                     break;
             }
             // 加载脚本
-            ScriptEditorSuite = ScriptEditorSuite.LoadScript(collectionScripts[currentMapId]);
-            ScriptEditorSuite.Compile(_settings);
-            OnScriptLoaded?.Invoke(ScriptEditorSuite);
-            _logs.Log($"已加载脚本：{collectionScripts[currentMapId]}", LogLevel.Info);
+            LoadStrategyScript(collectionScripts[currentMapId]);
         }
 
         private void HandleLevelEasyModeSelection()
@@ -368,22 +360,7 @@ namespace BTD6AutoCommunity.Strategies
             {
                 return;
             }
-            if (levelDataMonitorTimer == null)
-            {
-                CurrentGameData = new List<string>() { "0", "0", "0" };
-                levelDataMonitor = new LevelDataMonitor(_context);
-                SetupLevelDataMonitorTimer();
-                levelDataMonitorTimer.Start();
-                _logs.Log("已开启关卡数据识别", LogLevel.Info);
-            }
-            if (strategyExecutorTimer == null)
-            {
-                IsStrategyExecutionCompleted = false;
-                strategyExecutor = new InGame.InGameActionExecutor( _context, ScriptEditorSuite);
-                SetupStrategyExecutorTimer();
-                strategyExecutorTimer.Start();
-                _logs.Log("开始执行关卡策略...", LogLevel.Info);
-            }
+            StartLevelTimer(0, _settings.EnableRecommendInterval);
         }
 
         private void HandleLevelChallengingWithTipScreen()
@@ -393,10 +370,10 @@ namespace BTD6AutoCommunity.Strategies
 
         private void HandleLevelPassScreen()
         {
-            if (strategyExecutor != null && strategyExecutor.IsStartFreePlay)
+            if (InGameActionExecutor != null && InGameActionExecutor.IsStartFreePlay)
             {
                 InputSimulator.MouseMoveAndLeftClick(_context, 1200, 850);
-                strategyExecutor.StartFreePlayFinished = true;
+                InGameActionExecutor.StartFreePlayFinished = true;
                 _logs.Log("自由游戏已开启，开始下一关", LogLevel.Info);
                 return;
             }
@@ -406,7 +383,7 @@ namespace BTD6AutoCommunity.Strategies
         private void HandleLevelSettlementScreen()
         {
             InputSimulator.MouseMoveAndLeftClick(_context, 960, 910);
-            if (strategyExecutor != null && strategyExecutor.IsStartFreePlay) return;
+            if (InGameActionExecutor != null && InGameActionExecutor.IsStartFreePlay) return;
             StopLevelTimer();
             if (IsStrategyExecutionCompleted)
             {
@@ -476,183 +453,5 @@ namespace BTD6AutoCommunity.Strategies
         {
             InputSimulator.MouseMoveAndLeftClick(_context, 960, 1000);
         }
-
-
-        public void Start()
-        {
-            _logs.Log($"开始收集...", LogLevel.Info);
-            //Thread.Sleep(3000);
-            mapDifficulties = new Dictionary<int, int>();
-            collectionScripts = new Dictionary<int, string>();
-
-            if (_settings.EnableFastPath)
-            {
-                collectionMode = CollectionMode.FastPathCollection;
-            }
-            else if (_settings.EnableDoubleCoin)
-            {
-                collectionMode = CollectionMode.DoubleCashCollection;
-            }
-            else
-            {
-                collectionMode = CollectionMode.SimpleCollection;
-            }
-            _logs.Log($"当前收集模式：{Constants.CollectionScripts[collectionMode]}", LogLevel.Info);
-
-            for (int mapId = ExpertMapStartId; mapId <= ExpertMapEndId; mapId++)
-            {
-                foreach (int dif in new int[] { 0, 1, 2 })
-                {
-                    string scriptPath = ScriptEditorSuite.ExistScript(
-                        Constants.GetTypeName((Maps)mapId),
-                        Constants.GetTypeName((LevelDifficulties)dif),
-                        Constants.CollectionScripts[collectionMode]
-                        );
-                    if (scriptPath!= null)
-                    {
-                        mapDifficulties.Add(mapId, dif);
-                        collectionScripts.Add(mapId, scriptPath);
-                        break;
-                    }
-                }
-            }
-            if (collectionScripts.Count != CollectMapCount)
-            {
-                _logs.Log($"收集脚本不完整！", LogLevel.Error);
-                return;
-            }
-            checkGameStateTimer.Start();
-        }
-
-        public void Stop()
-        {
-            checkGameStateTimer?.Stop();
-            StopLevelTimer();
-            lock (_checkStateTimerLock)
-            {
-                _isProcessing = false; 
-            }
-            OnStopTriggered?.Invoke();
-            _logs.Log("收集模式已停止...", LogLevel.Info);
-        }
-
-        private void CheckGameState()
-        {
-            if (_isProcessing) return;
-
-            lock (_checkStateTimerLock)
-            {
-                if (_isProcessing) return;
-                _isProcessing = true;
-            }
-            try
-            {
-                var currentState = stateMachine.GetCurrentState();
-                //Debug.WriteLine("Current State: " + GetChineseDescription(currentState));
-                if (currentState != lastState)
-                {
-                    lastState = currentState;
-                    _logs.Log($"当前状态：{GameStateDescription.GetChineseDescription(currentState)}", LogLevel.Info);
-                }
-
-                if (stateHandlers.TryGetValue(currentState, out Action handler))
-                {
-                    handler.Invoke();
-                }
-            }
-            finally
-            {
-                lock (_checkStateTimerLock)
-                {
-                    _isProcessing = false;
-                }
-            }
-        }
-
-        private void ExecuteStrategy()
-        {
-            int currentRound = Int32.TryParse(CurrentGameData[0], out int rt) ? rt : 0;
-            int currentCash = Int32.TryParse(CurrentGameData[1], out int ct) ? ct : 0;
-
-            if (strategyExecutor.Finished)
-            {
-                if (IsStrategyExecutionCompleted == false)
-                {
-                    IsStrategyExecutionCompleted = true;
-                    _logs.Log("策略执行完毕!", LogLevel.Info);
-                }
-                return;
-            }
-
-            strategyExecutor.Tick(currentRound, currentCash);
-            //Debug.WriteLine(strategyExecutor.instructionInfo.ToString());
-            OnCurrentStrategyCompleted?.Invoke(strategyExecutor.instructionInfo);
-        }
-
-        private void ReadGameData()
-        {
-            CurrentGameData = levelDataMonitor.GetCurrentGameData();
-            OnGameDataUpdated?.Invoke(CurrentGameData);
-        }
-
-
-        private void SetupGameStateTimer()
-        {
-            checkGameStateTimer = new System.Timers.Timer(1500); // 1.5秒间隔
-            checkGameStateTimer.Elapsed += (s, e) => CheckGameState();
-            checkGameStateTimer.AutoReset = true;
-        }
-
-        private void SetupLevelDataMonitorTimer()
-        {
-            int interval = _settings.DataReadInterval;
-            if (_settings.EnableRecommendInterval)
-            {
-                interval = RecommendDataReadInterval;
-                _logs.Log($"使用推荐数据读取间隔：{interval}ms", LogLevel.Info);
-            }
-            else
-            {
-                _logs.Log($"使用自定义数据读取间隔：{interval}ms", LogLevel.Info);
-            }
-            levelDataMonitorTimer = new System.Timers.Timer(interval);
-            levelDataMonitorTimer.Elapsed += (s, e) => ReadGameData();
-            levelDataMonitorTimer.AutoReset = true;
-        }
-
-        private void SetupStrategyExecutorTimer()
-        {
-            int interval = _settings.OperationInterval;
-            if (_settings.EnableRecommendInterval)
-            {
-                interval = RecommendOperationInterval;
-                _logs.Log($"使用推操作间隔：{interval}ms", LogLevel.Info);
-            }
-            else
-            {
-                _logs.Log($"使用自定义操作间隔：{interval}ms", LogLevel.Info);
-            }
-            strategyExecutorTimer = new System.Timers.Timer(interval);
-            strategyExecutorTimer.Elapsed += (s, e) => ExecuteStrategy();
-            strategyExecutorTimer.AutoReset = true;
-        }
-
-        private void StopLevelTimer()
-        {
-            if (levelDataMonitorTimer != null)
-            {
-                levelDataMonitorTimer.Stop();
-                levelDataMonitorTimer.Dispose();
-                levelDataMonitorTimer = null;
-            }
-            if (strategyExecutorTimer != null)
-            {
-                strategyExecutorTimer.Stop();
-                strategyExecutorTimer.Dispose();
-                strategyExecutorTimer = null;
-            }
-        }
-
-
     }
 }

@@ -13,10 +13,10 @@ using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.ScriptEngine;
 using System.Diagnostics;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.UI.Main
 {
     // 脚本编辑器界面
-    public partial class BTD6AutoCommunity
+    public partial class BTD6AutoUI
     {
         private ScriptEditorSuite MyInstructions;
         private OverlayForm overlayForm;
@@ -1352,7 +1352,6 @@ namespace BTD6AutoCommunity
                 }
             }
         }
-
 
         private void AnchorCoordsBT_Click(object sender, EventArgs e)
         {

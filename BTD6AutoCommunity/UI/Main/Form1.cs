@@ -22,12 +22,12 @@ using static OpenCvSharp.Stitcher;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using BTD6AutoCommunity.Core;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.UI.Main
 {
-    public partial class BTD6AutoCommunity : Form
+    public partial class BTD6AutoUI : Form
     {
         private bool IsStartPageEditButtonClicked = false;
-        public BTD6AutoCommunity()
+        public BTD6AutoUI()
         {
             InitializeComponent();
             InitializeStartPage();

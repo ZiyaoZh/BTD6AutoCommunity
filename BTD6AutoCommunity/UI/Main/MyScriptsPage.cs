@@ -10,10 +10,10 @@ using System.Windows.Forms;
 using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.ScriptEngine;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.UI.Main
 {
     // 我的脚本页面
-    public partial class BTD6AutoCommunity
+    public partial class BTD6AutoUI
     {
         private string currentDirectory;
         private void InitializeMyScriptsPage()

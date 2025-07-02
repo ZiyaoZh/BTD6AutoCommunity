@@ -8,7 +8,7 @@ using BTD6AutoCommunity.ScriptEngine;
 
 namespace BTD6AutoCommunity.Strategies.InGame
 {
-    internal class InGameActionExecutor
+    public class InGameActionExecutor
     {
         private readonly GameContext _context;
         private readonly List<List<string>> scriptDirective;

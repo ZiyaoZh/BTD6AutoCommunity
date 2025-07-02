@@ -1,6 +1,6 @@
-﻿namespace BTD6AutoCommunity
+﻿namespace BTD6AutoCommunity.UI.Main
 {
-    partial class BTD6AutoCommunity
+    partial class BTD6AutoUI
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BTD6AutoCommunity));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BTD6AutoUI));
             this.InstructionClassCB = new System.Windows.Forms.ComboBox();
             this.StartPrgramTC = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();

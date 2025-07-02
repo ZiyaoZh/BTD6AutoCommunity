@@ -11,10 +11,10 @@ using BTD6AutoCommunity.ScriptEngine;
 using System.Diagnostics;
 using BTD6AutoCommunity;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.UI.Main
 {
     // 选项设置页面
-    public partial class BTD6AutoCommunity
+    public partial class BTD6AutoUI
     {
         private ScriptSettings scriptSettings;
         private List<System.Windows.Forms.Button> hotKeysButtonsList;
