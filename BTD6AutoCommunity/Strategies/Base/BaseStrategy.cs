@@ -245,7 +245,6 @@ namespace BTD6AutoCommunity.Strategies.Base
                 var currentState = stateMachine.GetCurrentState();
                 if (currentState != lastState)
                 {
-                    lastState = currentState;
                     _logs.Log($"当前状态：{GameStateDescription.GetChineseDescription(currentState)}", LogLevel.Info);
                 }
 
@@ -253,6 +252,7 @@ namespace BTD6AutoCommunity.Strategies.Base
                 {
                     handler.Invoke();
                 }
+                lastState = currentState;
             }
             finally
             {

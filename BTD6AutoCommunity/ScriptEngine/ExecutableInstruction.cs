@@ -1,7 +1,9 @@
 ﻿using BTD6AutoCommunity.Core;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,6 +38,17 @@ namespace BTD6AutoCommunity.ScriptEngine
         public void Add(MicroInstruction micro)
         {
             MicroInstructions.Add(micro);
+        }
+
+        public void Add(HotKey key)
+        {
+            if (key.Alt) { MicroInstructions.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 18)); }
+            if (key.Control) { MicroInstructions.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 17)); }
+            if (key.Shift) { MicroInstructions.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 16)); }
+            MicroInstructions.Add(new MicroInstruction(MicroInstructionType.KeyboardPressAndRelease, (int)key.MainKey));
+            if (key.Alt) { MicroInstructions.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 18)); }
+            if (key.Control) { MicroInstructions.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 17)); }
+            if (key.Shift) { MicroInstructions.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 16)); }
         }
 
         public MicroInstruction this[int index] => index >= 0 && index < MicroInstructions.Count? MicroInstructions[index] : null;

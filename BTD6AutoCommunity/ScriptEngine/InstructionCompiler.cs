@@ -82,14 +82,7 @@ namespace BTD6AutoCommunity.ScriptEngine
             HotKey hotKey = settings.GetHotKey((Monkeys)inst.Arguments[0]); ;
 
             compiled.Add(new MicroInstruction(MicroInstructionType.MoveMouse, inst.Coordinates.X, inst.Coordinates.Y));
-            // 用虚拟键码替换18
-            if (hotKey.Alt) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 18)); }
-            if (hotKey.Control) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 17)); }
-            if (hotKey.Shift) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 16)); }
-            compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPressAndRelease, (int)hotKey.MainKey));
-            if (hotKey.Alt) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 18)); }
-            if (hotKey.Control) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 17)); }
-            if (hotKey.Shift) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 16)); }
+            compiled.Add(hotKey);
 
             compiled.Add(new MicroInstruction(MicroInstructionType.LeftClick));
             compiled.Add(new MicroInstruction(MicroInstructionType.CheckPlaceSuccess));

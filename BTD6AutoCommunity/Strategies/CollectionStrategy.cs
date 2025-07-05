@@ -174,8 +174,12 @@ namespace BTD6AutoCommunity.Strategies
 
         private void HandleLevelSearch()
         {
+            if (lastState == GameState.LevelSearchScreen)
+            {
+                InputSimulator.MouseMoveAndLeftClick(_context, 1275, 45); // 猴子小队
+                return;
+            }
             InputSimulator.MouseMoveAndLeftClick(_context, 1350, 45); // 收集
-            //InputSimulator.MouseMoveAndLeftClick(_context, 1275, 45); // 猴子小队
         }
 
         private void HandleLevelSearched()

@@ -177,6 +177,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="Assets\指令对照.xlsx" />
     <None Include="Build\BTD6AutoCommunity_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\ScriptSettings.datasource" />
