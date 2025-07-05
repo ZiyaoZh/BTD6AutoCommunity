@@ -1,24 +1,22 @@
-﻿using System;
+﻿using BTD6AutoCommunity.ScriptEngine;
+using BTD6AutoCommunity.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using BTD6AutoCommunity.Core;
 using System.Diagnostics;
-using BTD6AutoCommunity.ScriptEngine;
 
 namespace BTD6AutoCommunity.Strategies.InGame
 {
     public class InGameActionExecutor
     {
         private readonly GameContext _context;
-        private readonly List<List<string>> scriptDirective;
-        private readonly List<string> digitalScript;
-        private readonly List<string> displayScript;
+        private readonly List<ExecutableInstruction> ExecutableInstructions;
 
         private readonly object _checkExecutorLock = new object();
         private volatile bool _isExecuting = false;
 
-        public ScriptInstructionInfo instructionInfo;
+        public ExecutableInstruction currentInstrucion;
         private Dictionary<ActionTypes, Action> actionHandlers;
 
         public int currentFirstIndex;
@@ -30,7 +28,6 @@ namespace BTD6AutoCommunity.Strategies.InGame
         private bool reDeployFlag;
         private int reDeployPace;
 
-        private int gameRetryCount;
         public (int round, int cash) currentTrigger;
         private int abilityRgb;
 
@@ -39,27 +36,15 @@ namespace BTD6AutoCommunity.Strategies.InGame
 
         public bool Finished;
 
-        public InGameActionExecutor(GameContext context, ScriptEditorSuite script)
+        public InGameActionExecutor(GameContext context, List<ExecutableInstruction> instructions)
         {
             _context = context;
-            scriptDirective = script.compilerDirective;
-            digitalScript = script.Digitalinstructions;
-            displayScript = script.Displayinstructions;
-            foreach (var dir in scriptDirective)
-            {
-                foreach (var arg in dir)
-                {
-                    Debug.WriteLine(arg);
-                }
-            }
-            foreach (var dis in displayScript)
-            {
-                Debug.WriteLine(dis);
-            }
+
+            ExecutableInstructions = instructions;
+
             InitActionHandlers();
             currentFirstIndex = 0;
             currentSecondIndex = 0;
-            gameRetryCount = 0;
 
             currentTrigger = (0, 0);
 
@@ -113,40 +98,35 @@ namespace BTD6AutoCommunity.Strategies.InGame
             try
             {
                 //Debug.WriteLine($"currentFirstIndex: {currentFirstIndex} currentSecondIndex: {currentSecondIndex}");
-                if (currentFirstIndex >= digitalScript.Count)
+                if (currentFirstIndex >= ExecutableInstructions.Count)
                 {
                     Finished = true;
                     return;
                 }
                 if (currentSecondIndex == 0)
                 {
-                    instructionInfo = ScriptEditorSuite.GetScriptInstructionInfo(digitalScript[currentFirstIndex]);
-                    instructionInfo.Index = currentFirstIndex;
-                    instructionInfo.Content = displayScript[currentFirstIndex];
-                    List<int> arguments = scriptDirective[currentFirstIndex][0].Split(' ').Select(Int32.Parse).ToList();
-                    currentTrigger = (arguments[1], arguments[2]);
+                    currentInstrucion = ExecutableInstructions[currentFirstIndex];
+                    currentTrigger = (currentInstrucion.RoundTrigger, currentInstrucion.CoinTrigger);
 
                     // 不满足触发条件
-                    if (arguments[1] > currentRound || arguments[2] > currentCash)
+                    if (currentTrigger.round > currentRound || currentTrigger.cash > currentCash)
                     {
-                        if (arguments[1] > currentRound)
+                        if (currentTrigger.round > currentRound)
                         {
-                            instructionInfo.IsRoundMet = false;
+                            currentInstrucion.IsRoundMet = false;
                         }
-                        if (arguments[2] > currentCash)
+                        if (currentTrigger.cash > currentCash)
                         {
-                            instructionInfo.IsCashMet = false;
+                            currentInstrucion.IsCoinMet = false;
                         }
                         return;
                     }
 
-                    currentSecondIndex++;
                     Tick(currentRound, currentCash);
                 }
-                if (actionHandlers.TryGetValue(instructionInfo.Type, out Action handler))
+                if (actionHandlers.TryGetValue(currentInstrucion.Type, out Action handler))
                 {
                     handler.Invoke();
-
                 }
             }
             finally
@@ -158,12 +138,10 @@ namespace BTD6AutoCommunity.Strategies.InGame
 
         private void HandlePlaceMonkey()
         {
-            //CheckInGame();
+            int currentInstructionCount = currentInstrucion.Count;
+            MicroInstruction micro = currentInstrucion[currentSecondIndex];
 
-            int currentInstructionCount = scriptDirective[currentFirstIndex].Count;
-            List<int> arguments = scriptDirective[currentFirstIndex][currentSecondIndex].Split(' ').Select(Int32.Parse).ToList();
-
-            if (arguments[0] == 1) // 移动到猴子放置位置
+            if (micro.Type == MicroInstructionType.MoveMouse) // 移动到猴子放置位置
             {
                 if (reDeployFlag)
                 {
@@ -172,59 +150,59 @@ namespace BTD6AutoCommunity.Strategies.InGame
                         currentReDeployIndex = 0;
                         reDeployPace++;
                     }
-                    int x = arguments[1];
-                    int y = arguments[2];
+                    int x = micro[1];
+                    int y = micro[2];
                     switch (reDeployList[currentReDeployIndex])
                     {
                         case 1: // 上
-                            arguments[2] += reDeployPace;
+                            micro[2] += reDeployPace;
                             break;
                         case 2: // 下
-                            arguments[2] -= reDeployPace;
+                            micro[2] -= reDeployPace;
                             break;
                         case 3: // 左
-                            arguments[1] -= reDeployPace;
+                            micro[1] -= reDeployPace;
                             break;
                         case 4: // 右
-                            arguments[1] += reDeployPace;
+                            micro[1] += reDeployPace;
                             break;
                         case 5: // 左上
-                            arguments[1] -= reDeployPace;
-                            arguments[2] += reDeployPace;
+                            micro[1] -= reDeployPace;
+                            micro[2] += reDeployPace;
                             break;
                         case 6: // 左下
-                            arguments[1] -= reDeployPace;
-                            arguments[2] -= reDeployPace;
+                            micro[1] -= reDeployPace;
+                            micro[2] -= reDeployPace;
                             break;
                         case 7: // 右上
-                            arguments[1] += reDeployPace;
-                            arguments[2] += reDeployPace;
+                            micro[1] += reDeployPace;
+                            micro[2] += reDeployPace;
                             break;
                         case 8: // 右下
-                            arguments[1] += reDeployPace;
-                            arguments[2] -= reDeployPace;
+                            micro[1] += reDeployPace;
+                            micro[2] -= reDeployPace;
                             break;
                     }
-                    RunCode(arguments);
+                    RunCode(micro);
                     currentSecondIndex = currentInstructionCount - 2;
-                    arguments[1] = x;
-                    arguments[2] = y;
+                    micro[1] = x;
+                    micro[2] = y;
                 }
                 else
                 {
-                    RunCode(arguments);
+                    RunCode(micro);
                     currentSecondIndex++;
                 }
             }
-            else if (arguments[0] == 8)
+            else if (micro.Type == MicroInstructionType.KeyboardPressAndRelease)
             {
-                RunCode(arguments);
+                RunCode(micro);
                 if (GameVisionRecognizer.IsMonkeyDeploy(_context))
                 {
                     currentSecondIndex++;
                 }
             }
-            else if (arguments[0] == 26) // 检测放置是否成功
+            else if (micro[0] == 26) // 检测放置是否成功
             {
                 Thread.Sleep(80);
                 if (!GameVisionRecognizer.IsMonkeyDeploy(_context))
@@ -243,7 +221,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
             }
             else
             {
-                RunCode(arguments);
+                RunCode(micro);
                 currentSecondIndex++;
             }
             if (currentSecondIndex == currentInstructionCount)
@@ -259,32 +237,31 @@ namespace BTD6AutoCommunity.Strategies.InGame
         { // 升级指令
             //CheckInGame();
 
-            int currentInstructionCount = scriptDirective[currentFirstIndex].Count;
+            int currentInstructionCount = currentInstrucion.Count;
+            MicroInstruction micro = currentInstrucion[currentSecondIndex];
 
-            List<int> arguments = scriptDirective[currentFirstIndex][currentSecondIndex].Split(' ').Select(Int32.Parse).ToList();
-
-            if (arguments[0] == 8) // 升级猴子
+            if (micro.Type == MicroInstructionType.CheckColorAndHitKey) // 升级猴子
             {
-                int route = instructionInfo.Arguments[2];
+                //int route = instructionInfo.Arguments[2];
 
-                int colorIndex = GetColorIndex(route);
-                //Debug.WriteLine("Upgrade " + colorIndex);
-                if (colorIndex == -1) return; // 未弹出升级界面
+                //int colorIndex = GetColorIndex(route);
+                ////Debug.WriteLine("Upgrade " + colorIndex);
+                //if (colorIndex == -1) return; // 未弹出升级界面
 
-                int p = instructionInfo.Arguments[3];
-                Debug.WriteLine("Upgrade " + colorIndex + " " + p);
-                if (p == 0) return;
+                //int p = instructionInfo.Arguments[3];
+                //Debug.WriteLine("Upgrade " + colorIndex + " " + p);
+                //if (p == 0) return;
 
-                if (!GameVisionRecognizer.GetYellowBlockCount(_context, colorIndex, p))
+                if (!GameVisionRecognizer.GetYellowBlockCount(_context, micro[2], micro[3]))
                 {
-                    RunCode(arguments);
+                    RunCode(micro);
                     return;
                 }
                 currentSecondIndex++;
             }
             else
             {
-                RunCode(arguments);
+                RunCode(micro);
                 currentSecondIndex++;
             }
             if (currentSecondIndex == currentInstructionCount)
@@ -302,41 +279,40 @@ namespace BTD6AutoCommunity.Strategies.InGame
 
         private void HandleUseAbility()
         {
-            int currentInstructionCount = scriptDirective[currentFirstIndex].Count;
+            HandleNormalAction();
+            //int currentInstructionCount = currentInstrucion.Count;
+            //MicroInstruction micro = currentInstrucion[currentSecondIndex];
 
-            List<int> arguments = scriptDirective[currentFirstIndex][currentSecondIndex].Split(' ').Select(Int32.Parse).ToList();
-
-
-            if (arguments[0] == 24) // 技能释放前rgb
-            {
-                abilityRgb = GameVisionRecognizer.AbilityReady(_context, arguments[1]);
-                List<int> keyarguments = new List<int> { 8, arguments[2] };
-                RunCode(keyarguments);
-                currentSecondIndex++;
-            }
-            else if (arguments[0] == 25) // 技能释放后rgb
-            {
-                int currentRgb = GameVisionRecognizer.AbilityReady(_context, arguments[1]);
-                if (Math.Abs(currentRgb - abilityRgb) < 15)
-                {
-                    currentSecondIndex--;
-                }
-                else
-                {
-                    currentSecondIndex++;
-                }
-            }
-            else
-            {
-                RunCode(arguments);
-                currentSecondIndex++;
-            }
-            if (currentSecondIndex == currentInstructionCount)
-            {
-                currentSecondIndex = 0;
-                currentFirstIndex++;
-            }
-            return;
+            //if (micro[0] == 24) // 技能释放前rgb
+            //{
+            //    abilityRgb = GameVisionRecognizer.AbilityReady(_context, arguments[1]);
+            //    List<int> keyarguments = new List<int> { 8, arguments[2] };
+            //    RunCode(keyarguments);
+            //    currentSecondIndex++;
+            //}
+            //else if (arguments[0] == 25) // 技能释放后rgb
+            //{
+            //    int currentRgb = GameVisionRecognizer.AbilityReady(_context, arguments[1]);
+            //    if (Math.Abs(currentRgb - abilityRgb) < 15)
+            //    {
+            //        currentSecondIndex--;
+            //    }
+            //    else
+            //    {
+            //        currentSecondIndex++;
+            //    }
+            //}
+            //else
+            //{
+            //    RunCode(arguments);
+            //    currentSecondIndex++;
+            //}
+            //if (currentSecondIndex == currentInstructionCount)
+            //{
+            //    currentSecondIndex = 0;
+            //    currentFirstIndex++;
+            //}
+            //return;
         }
 
         private void HandleSwitchSpeed()
@@ -356,18 +332,17 @@ namespace BTD6AutoCommunity.Strategies.InGame
 
         private void HandlePlaceHero()
         {
-            int currentInstructionCount = scriptDirective[currentFirstIndex].Count;
+            int currentInstructionCount = currentInstrucion.Count;
+            MicroInstruction micro = currentInstrucion[currentSecondIndex];
 
-            List<int> arguments = scriptDirective[currentFirstIndex][currentSecondIndex].Split(' ').Select(Int32.Parse).ToList();
-
-            if (arguments[0] == 23) // 找英雄是否可放
+            if (micro.Type == MicroInstructionType.IsHeroCanPlace) // 找英雄是否可放
             {
                 if (GameVisionRecognizer.IsHeroDeploy(_context))
                 {
                     currentSecondIndex++;
                 }
             }
-            else if (arguments[0] == 1 && currentSecondIndex == 4) // 移动到英雄放置位置
+            else if (micro.Type == MicroInstructionType.MoveMouse && currentSecondIndex == 4) // 移动到英雄放置位置
             {
                 if (reDeployFlag)
                 {
@@ -376,51 +351,51 @@ namespace BTD6AutoCommunity.Strategies.InGame
                         currentReDeployIndex = 0;
                         reDeployPace++;
                     }
-                    int x = arguments[1];
-                    int y = arguments[2];
+                    int x = micro[1];
+                    int y = micro[2];
                     switch (reDeployList[currentReDeployIndex])
                     {
                         case 1: // 上
-                            arguments[2] += reDeployPace;
+                            micro[2] += reDeployPace;
                             break;
                         case 2: // 下
-                            arguments[2] -= reDeployPace;
+                            micro[2] -= reDeployPace;
                             break;
                         case 3: // 左
-                            arguments[1] -= reDeployPace;
+                            micro[1] -= reDeployPace;
                             break;
                         case 4: // 右
-                            arguments[1] += reDeployPace;
+                            micro[1] += reDeployPace;
                             break;
                         case 5: // 左上
-                            arguments[1] -= reDeployPace;
-                            arguments[2] += reDeployPace;
+                            micro[1] -= reDeployPace;
+                            micro[2] += reDeployPace;
                             break;
                         case 6: // 左下
-                            arguments[1] -= reDeployPace;
-                            arguments[2] -= reDeployPace;
+                            micro[1] -= reDeployPace;
+                            micro[2] -= reDeployPace;
                             break;
                         case 7: // 右上
-                            arguments[1] += reDeployPace;
-                            arguments[2] += reDeployPace;
+                            micro[1] += reDeployPace;
+                            micro[2] += reDeployPace;
                             break;
                         case 8: // 右下
-                            arguments[1] += reDeployPace;
-                            arguments[2] -= reDeployPace;
+                            micro[1] += reDeployPace;
+                            micro[2] -= reDeployPace;
                             break;
                     }
-                    RunCode(arguments);
+                    RunCode(micro);
                     currentSecondIndex = currentInstructionCount - 2;
-                    arguments[1] = x;
-                    arguments[2] = y;
+                    micro[1] = x;
+                    micro[2] = y;
                 }
                 else
                 {
-                    RunCode(arguments);
+                    RunCode(micro);
                     currentSecondIndex++;
                 }
             }
-            else if (arguments[0] == 26) // 检测放置是否成功
+            else if (micro.Type == MicroInstructionType.CheckPlaceSuccess) // 检测放置是否成功
             {
                 Thread.Sleep(80);
                 if (!GameVisionRecognizer.IsMonkeyDeploy(_context))
@@ -439,7 +414,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
             }
             else
             {
-                RunCode(arguments);
+                RunCode(micro);
                 currentSecondIndex++;
             }
             if (currentSecondIndex == currentInstructionCount)
@@ -491,22 +466,19 @@ namespace BTD6AutoCommunity.Strategies.InGame
 
         private void HandleJump()
         {
-            int currentInstructionCount = scriptDirective[currentFirstIndex].Count;
+            MicroInstruction micro = currentInstrucion[currentSecondIndex];
 
-            List<int> arguments = scriptDirective[currentFirstIndex][currentSecondIndex].Split(' ').Select(Int32.Parse).ToList();
-
-            currentFirstIndex = arguments[1] - 1;
+            currentFirstIndex = micro[1] - 1;
             currentSecondIndex = 0;
             return;
         }
 
         private void HandleStartFreeplay()
         {
-            int currentInstructionCount = scriptDirective[currentFirstIndex].Count;
+            int currentInstructionCount = currentInstrucion.Count;
+            MicroInstruction micro = currentInstrucion[currentSecondIndex];
 
-            List<int> arguments = scriptDirective[currentFirstIndex][currentSecondIndex].Split(' ').Select(Int32.Parse).ToList();
-            
-            if (arguments[0] == 21)
+            if (micro.Type == MicroInstructionType.StartAutoRound)
             {
                 IsStartFreePlay = true;
                 if (!StartFreePlayFinished) return;
@@ -515,7 +487,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                 currentSecondIndex++;
                 return;
             }
-            RunCode(arguments);
+            RunCode(micro);
             currentSecondIndex++;
             if (currentSecondIndex == currentInstructionCount)
             {
@@ -532,37 +504,14 @@ namespace BTD6AutoCommunity.Strategies.InGame
         private void HandleNormalAction()
         {
             //Debug.WriteLine($"NormalSecondIndex: {currentSecondIndex}");
-            int currentInstructionCount = scriptDirective[currentFirstIndex].Count;
-
-            List<int> arguments = scriptDirective[currentFirstIndex][currentSecondIndex].Split(' ').Select(Int32.Parse).ToList();
-            RunCode(arguments);
+            int currentInstructionCount = currentInstrucion.Count;
+            MicroInstruction micro = currentInstrucion[currentSecondIndex];
+            RunCode(micro);
             currentSecondIndex++;
             if (currentSecondIndex == currentInstructionCount)
             {
                 currentSecondIndex = 0;
                 currentFirstIndex++;
-            }
-        }
-
-        private void CheckInGame()
-        {
-            if (!GameVisionRecognizer.IsInGame(_context))
-            {
-                if (gameRetryCount > 8)
-                {
-                    gameRetryCount = 0;
-                    currentFirstIndex = 0;
-                    currentSecondIndex = 0;
-                    return;
-                }
-                gameRetryCount++;
-                InputSimulator.MouseMove(_context, 75, 60);
-                InputSimulator.MouseLeftClick();
-                return;
-            }
-            else
-            {
-                gameRetryCount = 0;
             }
         }
 
@@ -579,39 +528,65 @@ namespace BTD6AutoCommunity.Strategies.InGame
             return -1;
         }
 
-        private void RunCode(List<int> arguments)
+        private void RunCode(MicroInstruction micro)
         {
-            switch (arguments[0])
+        //        public enum MicroInstructionType
+        //{
+        //    MoveMouse = 1,
+        //    LeftClick = 2,
+        //    LeftDown = 3,
+        //    LeftUp = 4,
+        //    MouseWheel = 5,
+        //    KeyboardPress = 6,
+        //    KeyboardRelease = 7,
+        //    KeyboardPressAndRelease = 8,
+        //    Empty = 10,
+        //    MoveMouseAndLeftClick = 11,
+        //    JumpTo = 16,
+        //    FindCollectMap = 18,
+        //    FindHero = 19,
+        //    EndFreeGame = 20,
+        //    StartAutoRound = 21,
+        //    FindReplayPosition = 22,
+        //    IsHeroCanPlace = 23,
+        //    SkillReleaseBeforeRgb = 24,
+        //    SkillReleaseAfterRgb = 25,
+        //    CheckPlaceSuccess = 26
+        //}
+            switch (micro.Type)
             {
-                case 1:
-                    InputSimulator.MouseMove(_context, arguments[1], arguments[2]);
+                case MicroInstructionType.MoveMouse:
+                    InputSimulator.MouseMove(_context, micro[1], micro[2]);
                     break;
-                case 2:
+                case MicroInstructionType.LeftClick:
                     InputSimulator.MouseLeftClick();
                     break;
-                case 3:
+                case MicroInstructionType.LeftDown:
                     InputSimulator.MouseLeftDown();
                     break;
-                case 4:
+                case MicroInstructionType.LeftUp:
                     InputSimulator.MouseLeftUp();
                     break;
-                case 5:
-                    InputSimulator.MouseWheel(arguments[1]);
+                case MicroInstructionType.MouseWheel:
+                    InputSimulator.MouseWheel(micro[1]);
                     break;
-                case 6:
-                    InputSimulator.KeyboardPress((ushort)arguments[1]);
+                case MicroInstructionType.KeyboardPress:
+                    InputSimulator.KeyboardPress((ushort)micro[1]);
                     break;
-                case 7:
-                    InputSimulator.KeyboardRelease((ushort)arguments[1]);
+                case MicroInstructionType.KeyboardRelease:
+                    InputSimulator.KeyboardRelease((ushort)micro[1]);
                     break;
-                case 8:
-                    InputSimulator.KeyboardPressAndRelease((ushort)arguments[1]);
+                case MicroInstructionType.KeyboardPressAndRelease:
+                case MicroInstructionType.CheckColorAndHitKey:
+                    InputSimulator.KeyboardPress((ushort)micro[1]);
                     break;
-                case 10: // 空指令
+
+                case MicroInstructionType.Empty: // 空指令
                     break;
-                case 11: // 移动+点击
-                    InputSimulator.MouseMoveAndLeftClick(_context, arguments[1], arguments[2]);
+                case MicroInstructionType.MoveMouseAndLeftClick: // 移动+点击
+                    InputSimulator.MouseMoveAndLeftClick(_context, micro[1], micro[2]);
                     break;
+                    // 9 检测升级并击键
                     // 16 指令跳转
                     // 18 收集识别地图
                     // 19 收集找英雄

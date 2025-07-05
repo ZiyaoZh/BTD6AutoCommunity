@@ -18,40 +18,6 @@ using System.Diagnostics;
 
 namespace BTD6AutoCommunity.ScriptEngine
 {
-
-
-    public struct ScriptInstructionInfo
-    {
-        public int Index { get; set; }  // 指令索引
-        public ActionTypes Type { get; set; }  // 指令类型
-
-        public string Content { get; set; }  // 指令内容
-        public List<int> Arguments { get; set; }    // 指令内容
-        public int RoundTrigger { get; set; }  // 回合触发条件
-        public int CashTrigger { get; set; }   // Cash触发条件
-
-        public bool IsRoundMet { get; set; }  // 是否达到回合触发条件
-
-        public bool IsCashMet { get; set; }   // 是否达到Cash触发条件
-
-        public ScriptInstructionInfo(int index, ActionTypes type, List<int> arguments, string content, int round, int cash)
-        {
-            Index = index;
-            Type = type;
-            Arguments = arguments;
-            Content = content;
-            RoundTrigger = round;
-            CashTrigger = cash;
-            IsRoundMet = true;
-            IsCashMet = true;
-        }
-
-        public override string ToString()
-        {
-            return Content;
-        }
-    }
-
     public class ScriptEditorSuite
     {
         public string ScriptName;
@@ -62,8 +28,6 @@ namespace BTD6AutoCommunity.ScriptEngine
         public Heroes SelectedHero { get; set; }
         public (int, int) AnchorCoords { get; set; }
         public List<int> ObjectCount { get; set; } // 猴子的数量
-
-        public Dictionary<int, string> upgradeCount;
         public List<(int, int)> ObjectId { get; set; } // 猴子的ID
         public List<MonkeyTowerClass> objectList; // 每一个猴子对象
         public HeroClass hero;
@@ -163,7 +127,7 @@ namespace BTD6AutoCommunity.ScriptEngine
 
                     break;
                 case ActionTypes.SellMonkey: // 出售指令
-                    succeeded = objectList[args[0]].Sale();
+                    succeeded = objectList[args[0]].Sell();
                     arguments.Add(args[0]);
 
                     break;
@@ -265,7 +229,7 @@ namespace BTD6AutoCommunity.ScriptEngine
             arguments.Add(roundTriggering);
             if (coinTriggering < 0)
             {
-                arguments.Add(objectList[objectList.Count - 1].GetCurrentDeployCost(-1 * coinTriggering - 1));
+                arguments.Add(0);
             }
             else
             {
@@ -1364,7 +1328,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                     else if (type == ActionTypes.SellMonkey && 
                         monkeyId == arguments[1])
                     {
-                        bool succeeded = objectList[monkeyId].Sale();
+                        bool succeeded = objectList[monkeyId].Sell();
                         if (succeeded == false)
                         {
                             deleteQue.Add(i);
@@ -1385,11 +1349,11 @@ namespace BTD6AutoCommunity.ScriptEngine
             return Digitalinstructions[index].Split(' ').Select(Int32.Parse).ToList();
         }
 
-        public static ScriptInstructionInfo GetScriptInstructionInfo(string digitalInstruction)
+        public static InstructionInfo GetScriptInstructionInfo(string digitalInstruction)
         {
             List<int> arguments = digitalInstruction.Split(' ').Select(Int32.Parse).ToList();
             ActionTypes type = (ActionTypes)arguments[0];
-            return new ScriptInstructionInfo
+            return new InstructionInfo
             {
                 Type = type,
                 Arguments = arguments,
@@ -1430,7 +1394,6 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public void RepairScript()
         {
-            upgradeCount = new Dictionary<int, string>();
             for (int i = 0; i < ObjectId.Count; i++)
             {
                 string jsonString = File.ReadAllText("Monkey.json");
@@ -1449,7 +1412,6 @@ namespace BTD6AutoCommunity.ScriptEngine
                         break;
                     case ActionTypes.UpgradeMonkey:
                         objectList[args[1]].Upgrade(args[2]);
-                        upgradeCount.Add(i, objectList[args[1]].GetAllUpgradeLevel());
 
                         // 修复升级指令，添加具体升级的等级参数
                         if (args.Count() == 5) // 旧版本没有升级等级参数
@@ -1466,7 +1428,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                         }
                         break;
                     case ActionTypes.SellMonkey:
-                        objectList[args[1]].Sale();
+                        objectList[args[1]].Sell();
                         break;
                     case ActionTypes.PlaceHero:
                         hero.exsitence = true;

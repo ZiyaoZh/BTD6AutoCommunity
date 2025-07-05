@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.ScriptEngine;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,40 +11,31 @@ namespace BTD6AutoCommunity.GameObjects
 {
     public class MonkeyTowerClass
     {
-        public string name { get; set; }  // 猴子塔的名字
-        public int deployCost { get; set; }    // 部署价格
-        public List<int> upgradeCosts { get; set; }  // 每条升级路线的价格
+        public Monkeys Type { get; set; }  // 猴子塔名字
         public (int, int) coordinates { get; set; } = ( 0, 0 );  // 部署坐标 (x, y)
         public List<int> upgradeLevels { get; set; } = new List<int> { 0, 0, 0 }; // 每条升级路线的当前等级
         public List<int> routeLock { get; set; } = new List<int> { 0, 0, 0 }; // 升级路线锁定情况
 
         public int upgradeCount = 0;
 
-        public bool exsitence = true;
+        // 是否存在
+        public bool exsitence;
 
-        public bool IsDelete = true;
+        public bool IsDelete;
 
-        public List<double> difficultyCost = new List<double>{ 0.85, 1.0, 1.08, 1.2 };
+        private int monkeyId;
 
-        public List<double> onSale = new List<double> { 1.0, 0.90, 0.85, 0.80, 0.75 };
         // 构造函数
-        public MonkeyTowerClass() { }
-
-
-        // 获取猴子塔名字
-        public string GetName()
+        public MonkeyTowerClass(Monkeys name, int id, (int, int) coords) 
         {
-            return name;
-        }
-
-        // 获取部署价格
-        public int GetDeployCost()
-        {
-            return deployCost;
+            IsDelete = false;
+            exsitence = true;
+            coordinates = coords;
+            monkeyId = id;
         }
 
         // 获取部署坐标
-        public (int, int) GetCoordinates()
+        public (int X, int Y) GetCoordinates()
         {
             return coordinates;
         }
@@ -73,32 +66,15 @@ namespace BTD6AutoCommunity.GameObjects
             return allLevel;
         }
 
-        public int GetCurrentUpgradeCost(int route, int difficulty, int onsale)
+        // 获取升级整数表达
+        public int GetUpgradeInt()
         {
-            int cost;
-            if (routeLock[route] != 1)
+            int upgradeInt = 0;
+            for (int i = 0; i < 3; i++)
             {
-                cost = upgradeCosts[route * 5 + upgradeLevels[route]];
+                upgradeInt += upgradeLevels[i] * (int)Math.Pow(10, 2 - i);
             }
-            else
-            {
-                cost = -1;
-            }
-            if (cost != -1)
-            {
-                cost = ((int)(cost * difficultyCost[difficulty] / 5 + 0.5)) * 5;
-            }
-            if (onsale != 0)
-            {
-                cost = ((int)(cost * onSale[onsale] / 5 + 0.5)) * 5;
-            }
-            return cost;
-        }
-
-        public int GetCurrentDeployCost(int difficulty)
-        {
-            int cost = ((int)(deployCost * difficultyCost[difficulty] / 5 + 0.5)) * 5;
-            return cost;
+            return upgradeInt;
         }
 
         // 路径锁定
@@ -157,10 +133,10 @@ namespace BTD6AutoCommunity.GameObjects
         // 升级
         public bool Upgrade(int route)
         {
-            //if (exsitence == false)
-            //{
-            //    return false;
-            //}
+            if (exsitence == false)
+            {
+                return false;
+            }
             if (routeLock[route] == 0)
             {
                 upgradeLevels[route]++;
@@ -177,8 +153,7 @@ namespace BTD6AutoCommunity.GameObjects
         // 显示猴子塔的状态
         public void DisplayStatus()
         {
-            Console.WriteLine($"Monkey Tower: {name}");
-            Console.WriteLine($"Deploy Cost: {deployCost}");
+            Console.WriteLine($"Monkey Tower: {Type}");
             Console.WriteLine($"Coordinates: ({coordinates.Item1}, {coordinates.Item2})");
             Console.Write("Upgrade Levels: ");
             foreach (int level in upgradeLevels)
@@ -188,7 +163,7 @@ namespace BTD6AutoCommunity.GameObjects
             Console.WriteLine();
         }
 
-        public bool Sale()
+        public bool Sell()
         {
             if (exsitence == false)
             {
@@ -205,11 +180,6 @@ namespace BTD6AutoCommunity.GameObjects
             routeLock.Clear();
             routeLock = new List<int> { 0, 0, 0 };
             return;
-        }
-
-        public override string ToString()
-        {
-            return $"Name: {name}, Deploy Cost: {deployCost}, Upgrade Costs: {string.Join(", ", upgradeCosts)}";
         }
     }
 }

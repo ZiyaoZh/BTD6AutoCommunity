@@ -32,7 +32,7 @@ namespace BTD6AutoCommunity.Strategies.Base
         public event Action OnStopTriggered;
         public event Action<ScriptEditorSuite> OnScriptLoaded;
         public event Action<List<string>> OnGameDataUpdated;
-        public event Action<ScriptInstructionInfo> OnCurrentStrategyCompleted;
+        public event Action<InstructionInfo> OnCurrentStrategyCompleted;
 
         // 脚本系统
         protected ScriptEditorSuite ScriptEditorSuite;

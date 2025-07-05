@@ -186,22 +186,7 @@ namespace BTD6AutoCommunity.Strategies
                 StopLevelTimer();
                 return;
             }
-            if (LevelDataMonitorTimer == null)
-            {
-                CurrentGameData = new List<string>() { "0", "0", "0" };
-                LevelDataMonitor = new LevelDataMonitor(_context);
-                SetupLevelDataMonitorTimer();
-                LevelDataMonitorTimer.Start();
-                _logs.Log("已开启关卡数据识别", LogLevel.Info);
-            }
-            if (InGameActionExecutorTimer == null)
-            {
-                IsStrategyExecutionCompleted = false;
-                InGameActionExecutor = new InGame.InGameActionExecutor(_context, ScriptEditorSuite);
-                SetupStrategyExecutorTimer();
-                InGameActionExecutorTimer.Start();
-                _logs.Log("开始执行关卡策略...", LogLevel.Info);
-            }
+            StartLevelTimer();
         }
 
         private void HandleLevelChallengingWithTipScreen()

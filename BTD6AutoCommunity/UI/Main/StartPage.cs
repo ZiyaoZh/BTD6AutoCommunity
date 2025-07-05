@@ -267,7 +267,7 @@ namespace BTD6AutoCommunity.UI.Main
             }
         }
 
-        private void HandleCurrentStrategyCompleted(ScriptInstructionInfo instructionInfo)
+        private void HandleCurrentStrategyCompleted(InstructionInfo instructionInfo)
         {
             CurrentInstructionLB.Invoke((MethodInvoker)delegate
             {

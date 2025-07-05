@@ -3533,14 +3533,14 @@
             this.treeView1.Size = new System.Drawing.Size(688, 633);
             this.treeView1.TabIndex = 0;
             // 
-            // BTD6AutoCommunity
+            // BTD6AutoUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(702, 673);
             this.Controls.Add(this.StartPrgramTC);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "BTD6AutoCommunity";
+            this.Name = "BTD6AutoUI";
             this.Text = "BTD6AutoCommunity";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BTD6AutoCommunity_FormClosing);
             this.Load += new System.EventHandler(this.BTD6AutoCommunity_Load);
