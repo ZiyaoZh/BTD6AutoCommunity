@@ -23,7 +23,7 @@ namespace BTD6AutoCommunity.Strategies
             : base(settings, logHandler)
         {
             InitializeStateHandlers();
-            LoadStrategyScript(userSelection);
+            GetExecutableInstructions(userSelection);
         }
 
         protected override void OnPreStart()
@@ -168,7 +168,7 @@ namespace BTD6AutoCommunity.Strategies
         private void HandleLevelChallengingScreen()
         {
             levelChallengingCount++;
-            if (ScriptEditorSuite == null)
+            if (executableInstructions == null || scriptMetadata == null)
             {
                 InputSimulator.MouseMoveAndLeftClick(_context, 1600, 40);
                 Thread.Sleep(500);

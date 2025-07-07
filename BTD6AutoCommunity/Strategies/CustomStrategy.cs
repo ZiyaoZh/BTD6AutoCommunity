@@ -25,7 +25,7 @@ namespace BTD6AutoCommunity.Strategies
             DefaultOperationInterval = settings.OperationInterval;
             startIndex = userSelection.selectedIndex;
             InitializeStateHandlers();
-            LoadStrategyScript(userSelection);
+            GetExecutableInstructions(userSelection);
         }
 
         protected override void InitializeStateHandlers()

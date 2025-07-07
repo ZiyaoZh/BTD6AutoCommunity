@@ -1012,7 +1012,7 @@ namespace BTD6AutoCommunity.Core
             { LevelMode.DoubleHpMoabs, "双倍生命值MOAB" },
             { LevelMode.HalfCash, "现金减半" },
             { LevelMode.AlternateBloonsRounds, "代替气球回合" },
-            { LevelMode.Impoppable, "极难模式" },
+            { LevelMode.Impoppable, "极难模式" },                                                                                           
             { LevelMode.CHIMPS, "点击" }
         };
 

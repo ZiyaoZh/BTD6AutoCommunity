@@ -111,11 +111,15 @@
   <ItemGroup>
     <Compile Include="ScriptEngine\ExecutableInstruction.cs" />
     <Compile Include="ScriptEngine\Instruction.cs" />
-    <Compile Include="ScriptEngine\InstructionCompiler.cs" />
+    <Compile Include="ScriptEngine\ScriptCompiler.cs" />
     <Compile Include="ScriptEngine\InstructionFactory.cs" />
     <Compile Include="ScriptEngine\InstructionInfo.cs" />
     <Compile Include="ScriptEngine\InstructionSequence.cs" />
     <Compile Include="ScriptEngine\MicroInstruction.cs" />
+    <Compile Include="ScriptEngine\ScriptEditorCore.cs" />
+    <Compile Include="ScriptEngine\ScriptFileManager.cs" />
+    <Compile Include="ScriptEngine\ScriptMetadata.cs" />
+    <Compile Include="ScriptEngine\ScriptModel.cs" />
     <Compile Include="ScriptEngine\UserSelection.cs" />
     <Compile Include="Strategies\Base\BaseStrategy.cs" />
     <Compile Include="Strategies\BlackBorderStrategy.cs" />

@@ -8,7 +8,7 @@ namespace BTD6AutoCommunity.ScriptEngine
 {
     public enum MicroInstructionType
     {
-        MoveMouse = 1,
+        MouseMove = 1,
         LeftClick = 2,
         LeftDown = 3,
         LeftUp = 4,
@@ -33,6 +33,7 @@ namespace BTD6AutoCommunity.ScriptEngine
 
     public class MicroInstruction
     {
+        public List<int> AllArguments { get; private set; } = new List<int>(6);
         public MicroInstructionType Type { get => (MicroInstructionType)AllArguments[0]; set => AllArguments[0] = (int)value; }
 
         // 用AllArguments替代之前的5个字段
@@ -42,22 +43,14 @@ namespace BTD6AutoCommunity.ScriptEngine
         public int Argument4 { get => AllArguments[4]; set => AllArguments[4] = value; }
         public int Argument5 { get => AllArguments[5]; set => AllArguments[5] = value; }
 
-        public List<int> AllArguments;
 
         public MicroInstruction(MicroInstructionType type, int arg1 = -1, int arg2 = -1, int arg3 = -1, int arg4 = -1, int arg5 = -1)
         {
-            Type = type;
-            Argument1 = arg1;
-            Argument2 = arg2;
-            Argument3 = arg3;
-            Argument4 = arg4;
-            Argument5 = arg5;
-            AllArguments = new List<int> { (int)Type, arg1, arg2, arg3, arg4, arg5 };
+            AllArguments = new List<int> { (int)type, arg1, arg2, arg3, arg4, arg5 };
         }
 
         public MicroInstruction(List<int> arguments)
         {
-            Type = (MicroInstructionType)arguments[0];
             AllArguments = arguments;
         }
 

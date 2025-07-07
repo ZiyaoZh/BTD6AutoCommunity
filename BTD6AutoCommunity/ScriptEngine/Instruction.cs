@@ -9,12 +9,13 @@ namespace BTD6AutoCommunity.ScriptEngine
 {
     public class Instruction
     {
+        public List<int> AllArguments { get; set; } = new List<int>(11);
         public ActionTypes Type { get => (ActionTypes)AllArguments[0]; set => AllArguments[0] = (int)value; }
         public List<int> Arguments { get => AllArguments.GetRange(1, 7); set => SetArguments(value); }
-        public int RoundTrigger { get => AllArguments[8]; set => AllArguments[8] = value; }
-        public int CoinTrigger { get => AllArguments[9]; set => AllArguments[9] = value; }
-        public (int X, int Y) Coordinates { get => (AllArguments[10], AllArguments[11]); set => SetCoordinates(value.X, value.Y); }
-        public List<int> AllArguments { get; set; } = new List<int>();
+        public (int X, int Y) Coordinates { get => (AllArguments[8], AllArguments[9]); set => SetCoordinates(value.X, value.Y); }
+        public int RoundTrigger { get => AllArguments[10]; set => AllArguments[10] = value; }
+        public int CoinTrigger { get => AllArguments[11]; set => AllArguments[11] = value; }
+
 
         public Instruction(
             ActionTypes type,
@@ -24,6 +25,10 @@ namespace BTD6AutoCommunity.ScriptEngine
             (int, int) coordinates
             )
         {
+            AllArguments = new List<int>(11) { (int)type }
+               .Concat(arguments)
+               .Concat(new List<int> { roundTrigger, coinTrigger, coordinates.Item1, coordinates.Item2 })
+               .ToList();
             Type = type;
             Arguments = arguments;
             RoundTrigger = roundTrigger;
@@ -51,7 +56,8 @@ namespace BTD6AutoCommunity.ScriptEngine
                 Type == ActionTypes.UpgradeMonkey || 
                 Type == ActionTypes.SwitchMonkeyTarget || 
                 Type == ActionTypes.SellMonkey || 
-                Type == ActionTypes.SetMonkeyFunction
+                Type == ActionTypes.SetMonkeyFunction ||
+                Type == ActionTypes.AdjustMonkeyCoordinates
                 )
                 return true;
             return false;
@@ -70,7 +76,7 @@ namespace BTD6AutoCommunity.ScriptEngine
             return false;
         }
 
-        public override string ToString()
+        public  override string ToString()
         {
             string content = "";
             switch (Type)
@@ -78,11 +84,11 @@ namespace BTD6AutoCommunity.ScriptEngine
                 case ActionTypes.PlaceMonkey: // 放置指令
                     content += Constants.GetTypeName((Monkeys)Arguments[0]) + Arguments[5].ToString();
                     content += "放置";
-                    content += "于(" + Coordinates.ToString() + ")";
+                    content += "于" + Coordinates.ToString();
                     break;
                 case ActionTypes.UpgradeMonkey: // 升级指令
-                    content += Constants.GetTypeName((Monkeys)Arguments[0]) + Arguments[5].ToString();
-                    if (Arguments[6] == -1)
+                    content += Constants.GetTypeName((Monkeys)Arguments[2]) + Arguments[3].ToString();
+                    if (Arguments[4] == -1)
                     {
                         if (Arguments[1] == 0) content += "升级上路";
                         else if (Arguments[1] == 1) content += "升级中路";
@@ -91,11 +97,11 @@ namespace BTD6AutoCommunity.ScriptEngine
                     else
                     {
                         content += "升级至";
-                        content += Arguments[6].ToString().PadLeft(3, '0');
+                        content += Arguments[4].ToString().PadLeft(3, '0');
                     }
                     break;
                 case ActionTypes.SwitchMonkeyTarget: // 切换目标指令
-                    content += Constants.GetTypeName((Monkeys)Arguments[0]) + Arguments[5].ToString();
+                    content += Constants.GetTypeName((Monkeys)Arguments[2]) + Arguments[3].ToString();
                     content += "目标";
                     content += Constants.TargetToChange[Arguments[1]];
                     break;
@@ -103,7 +109,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                     content += "释放技能";
                     content += Constants.AbilityToDisplay[Arguments[0]];
                     if (Coordinates.X != -1)
-                        content += "于(" + Coordinates.ToString() + ")";
+                        content += "于" + Coordinates.ToString();
                     break;
                 case ActionTypes.SwitchSpeed: // 倍速指令
                     if (Arguments[0] == 0)
@@ -113,17 +119,17 @@ namespace BTD6AutoCommunity.ScriptEngine
                     break;
                 case ActionTypes.SellMonkey: // 出售指令
                     content += "出售";
-                    content += Constants.GetTypeName((Monkeys)Arguments[0]) + Arguments[5].ToString();
+                    content += Constants.GetTypeName((Monkeys)Arguments[2]) + Arguments[3].ToString();
                     break;
                 case ActionTypes.SetMonkeyFunction: // 设置猴子功能
-                    content += Constants.GetTypeName((Monkeys)Arguments[0]) + Arguments[5].ToString();
+                    content += Constants.GetTypeName((Monkeys)Arguments[2]) + Arguments[3].ToString();
                     content += "更改功能";
                     if (Coordinates.X != -1)
-                        content += "于(" + Coordinates.ToString() + ")";
+                        content += "于" + Coordinates.ToString();
                     break;
                 case ActionTypes.PlaceHero:
                     content += "放置英雄";
-                    content += "于(" + Coordinates.ToString() + ")";
+                    content += "于" + Coordinates.ToString();
                     break;
                 case ActionTypes.UpgradeHero:
                     content += "升级英雄";
@@ -132,7 +138,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                     content += "放置英雄技能面板物品";
                     content += Arguments[0].ToString();
                     if (Coordinates.X != -1)
-                        content += "于(" + Coordinates.ToString() + ")";
+                        content += "于" + Coordinates.ToString();
                     break;
                 case ActionTypes.SwitchHeroTarget:
                     content += "英雄目标";
@@ -145,19 +151,19 @@ namespace BTD6AutoCommunity.ScriptEngine
                     else
                         content += "功能1";
                     if (Coordinates.X != -1)
-                        content += "于(" + Coordinates.ToString() + ")";
+                        content += "于" + Coordinates.ToString();
                     break;
                 case ActionTypes.SellHero:
                     content += "出售英雄";
                     break;
                 case ActionTypes.MouseClick:
                     content += "鼠标点击";
-                    content += "(" + Coordinates.ToString() + ")";
+                    content += Coordinates.ToString();
                     content += Arguments[0].ToString() + "次";
                     break;
                 case ActionTypes.AdjustMonkeyCoordinates:
                     content += "修改" + Constants.GetTypeName((Monkeys)Arguments[0]) + Arguments[5].ToString() + "坐标";
-                    content += "于(" + Coordinates.ToString() + ")";
+                    content += "于" + Coordinates.ToString();
                     break;
                 case ActionTypes.WaitMilliseconds:
                     content += "等待" + Arguments[0].ToString() + "ms";
@@ -178,22 +184,23 @@ namespace BTD6AutoCommunity.ScriptEngine
         // 为Arguments实现set接口
         private void SetArguments(List<int> value)
         {
-            Arguments = value;
-            AllArguments[1] = Arguments[0];
-            AllArguments[2] = Arguments[1];
-            AllArguments[3] = Arguments[2];
-            AllArguments[4] = Arguments[3];
-            AllArguments[5] = Arguments[4];
-            AllArguments[6] = Arguments[5];
+            //Arguments = value;
+            AllArguments[1] = value[0];
+            AllArguments[2] = value[1];
+            AllArguments[3] = value[2];
+            AllArguments[4] = value[3];
+            AllArguments[5] = value[4];
+            AllArguments[6] = value[5];
         }
 
         // 为Coordinates实现set接口
         private void SetCoordinates(int x, int y)
         {
-            Coordinates = (x, y);
             AllArguments[8] = x;
             AllArguments[9] = y;
         }
+
+        public int this[int index] { get => AllArguments[index]; set => AllArguments[index] = value; }
     }
 }
 

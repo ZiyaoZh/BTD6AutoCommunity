@@ -211,19 +211,19 @@ namespace BTD6AutoCommunity.Strategies
                     break;
             }
             // 加载脚本
-            LoadStrategyScript(collectionScripts[currentMapId]);
+            GetExecutableInstructions(collectionScripts[currentMapId]);
         }
 
         private void HandleLevelEasyModeSelection()
         {
-            if (ScriptEditorSuite == null)
+            if (executableInstructions == null || scriptMetadata == null)
             {
                 HandleReturnableScreen();
                 _logs.Log("脚本未加载，无法进入简单模式，返回", LogLevel.Error);
                 return;
             }
-            if (ScriptEditorSuite.SelectedMode != LevelMode.Standard &&
-                Constants.LevelModeToDifficulty[ScriptEditorSuite.SelectedMode] != LevelDifficulties.Easy)
+            if (scriptMetadata.SelectedMode != LevelMode.Standard &&
+                Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Easy)
             {
                 HandleReturnableScreen();
                 _logs.Log("当前模式不是简单模式，无法进入简单模式，返回", LogLevel.Error);
@@ -233,7 +233,7 @@ namespace BTD6AutoCommunity.Strategies
             {
                 IsHeroSelectionComplete = false;
 
-                Point point = Constants.GetLevelModePos(ScriptEditorSuite.SelectedMode);
+                Point point = Constants.GetLevelModePos(scriptMetadata.SelectedMode);
                 InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
             }
             else
@@ -245,14 +245,14 @@ namespace BTD6AutoCommunity.Strategies
 
         private void HandleLevelMediumModeSelection()
         {
-            if (ScriptEditorSuite == null)
-            {
+            if (executableInstructions == null || scriptMetadata == null)
+                {
                 HandleReturnableScreen();
                 _logs.Log("脚本未加载，无法进入中级模式，返回", LogLevel.Error);
                 return;
             }
-            if (ScriptEditorSuite.SelectedMode != LevelMode.Standard &&
-                Constants.LevelModeToDifficulty[ScriptEditorSuite.SelectedMode] != LevelDifficulties.Medium)
+            if (scriptMetadata.SelectedMode != LevelMode.Standard &&
+                Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Medium)
             {
                 HandleReturnableScreen();
                 _logs.Log("当前模式不是中级模式，无法进入中级模式，返回", LogLevel.Error);
@@ -261,7 +261,7 @@ namespace BTD6AutoCommunity.Strategies
             if (IsHeroSelectionComplete)
             {
                 IsHeroSelectionComplete = false;
-                Point point = Constants.GetLevelModePos(ScriptEditorSuite.SelectedMode);
+                Point point = Constants.GetLevelModePos(scriptMetadata.SelectedMode);
                 InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
             }
             else
@@ -273,14 +273,14 @@ namespace BTD6AutoCommunity.Strategies
 
         private void HandleLevelHardModeSelection()
         {
-            if (ScriptEditorSuite == null)
-            {
+            if (executableInstructions == null || scriptMetadata == null)
+                {
                 HandleReturnableScreen();
                 _logs.Log("脚本未加载，无法进入困难模式，返回", LogLevel.Error);
                 return;
             }
-            if (ScriptEditorSuite.SelectedMode != LevelMode.Standard &&
-                Constants.LevelModeToDifficulty[ScriptEditorSuite.SelectedMode] != LevelDifficulties.Hard)
+            if (scriptMetadata.SelectedMode != LevelMode.Standard &&
+                Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Hard)
             {
                 HandleReturnableScreen();
                 _logs.Log("当前模式不是困难模式，无法进入困难模式，返回", LogLevel.Error);
@@ -289,7 +289,7 @@ namespace BTD6AutoCommunity.Strategies
             if (IsHeroSelectionComplete)
             {
                 IsHeroSelectionComplete = false;
-                Point point = Constants.GetLevelModePos(ScriptEditorSuite.SelectedMode);
+                Point point = Constants.GetLevelModePos(scriptMetadata.SelectedMode);
                 InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
             }
             else
@@ -301,23 +301,23 @@ namespace BTD6AutoCommunity.Strategies
 
         private void HandleHeroSelection()
         {
-            if (ScriptEditorSuite == null)
+            if (executableInstructions == null || scriptMetadata == null)
             {
                 HandleReturnableScreen();
                 _logs.Log("脚本未加载，返回", LogLevel.Error);
                 return;
             }
-            if (IsHeroSelectionComplete || ScriptEditorSuite == null)
+            if (IsHeroSelectionComplete || scriptMetadata == null)
             {
                 HandleReturnableScreen();
                 _logs.Log("英雄选择已完成，返回", LogLevel.Error);
                 return;
             }
-            Point heroPosition = GameVisionRecognizer.GetHeroPosition(_context, ScriptEditorSuite.SelectedHero);
+            Point heroPosition = GameVisionRecognizer.GetHeroPosition(_context, scriptMetadata.SelectedHero);
             
             for (int i = 0; i < 5 && heroPosition.X == -1; i++)
             {
-                heroPosition = GameVisionRecognizer.GetHeroPosition(_context, ScriptEditorSuite.SelectedHero);
+                heroPosition = GameVisionRecognizer.GetHeroPosition(_context, scriptMetadata.SelectedHero);
                 InputSimulator.MouseWheel(-10);
                 Thread.Sleep(500);
             }
@@ -336,7 +336,7 @@ namespace BTD6AutoCommunity.Strategies
             InputSimulator.MouseMoveAndLeftClick(_context, 80, 55);
             IsHeroSelectionComplete = true;
 
-            _logs.Log($"已选择英雄：{Constants.GetTypeName(ScriptEditorSuite.SelectedHero)}", LogLevel.Info);
+            _logs.Log($"已选择英雄：{Constants.GetTypeName(scriptMetadata.SelectedHero)}", LogLevel.Info);
         }
 
         private void HandleLevelTipScreen()
@@ -347,7 +347,7 @@ namespace BTD6AutoCommunity.Strategies
         private void HandleLevelChallengingScreen()
         {
             levelChallengingCount++;
-            if (ScriptEditorSuite == null)
+            if (executableInstructions == null || scriptMetadata == null)
             {
                 InputSimulator.MouseMoveAndLeftClick(_context, 1600, 40);
                 Thread.Sleep(500);

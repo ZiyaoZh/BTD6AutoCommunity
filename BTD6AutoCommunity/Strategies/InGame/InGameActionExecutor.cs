@@ -141,7 +141,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
             int currentInstructionCount = currentInstrucion.Count;
             MicroInstruction micro = currentInstrucion[currentSecondIndex];
 
-            if (micro.Type == MicroInstructionType.MoveMouse) // 移动到猴子放置位置
+            if (micro.Type == MicroInstructionType.MouseMove) // 移动到猴子放置位置
             {
                 if (reDeployFlag)
                 {
@@ -342,7 +342,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                     currentSecondIndex++;
                 }
             }
-            else if (micro.Type == MicroInstructionType.MoveMouse && currentSecondIndex == 4) // 移动到英雄放置位置
+            else if (micro.Type == MicroInstructionType.MouseMove && currentSecondIndex == 4) // 移动到英雄放置位置
             {
                 if (reDeployFlag)
                 {
@@ -555,7 +555,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
         //}
             switch (micro.Type)
             {
-                case MicroInstructionType.MoveMouse:
+                case MicroInstructionType.MouseMove:
                     InputSimulator.MouseMove(_context, micro[1], micro[2]);
                     break;
                 case MicroInstructionType.LeftClick:

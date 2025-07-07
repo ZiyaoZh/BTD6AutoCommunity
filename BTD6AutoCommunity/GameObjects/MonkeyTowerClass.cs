@@ -23,7 +23,7 @@ namespace BTD6AutoCommunity.GameObjects
 
         public bool IsDelete;
 
-        private int monkeyId;
+        public int monkeyId;
 
         // 构造函数
         public MonkeyTowerClass(Monkeys name, int id, (int, int) coords) 
@@ -31,6 +31,7 @@ namespace BTD6AutoCommunity.GameObjects
             IsDelete = false;
             exsitence = true;
             coordinates = coords;
+            Type = name;
             monkeyId = id;
         }
 

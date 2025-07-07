@@ -30,12 +30,14 @@ namespace BTD6AutoCommunity.Strategies.Base
 
         // 事件
         public event Action OnStopTriggered;
-        public event Action<ScriptEditorSuite> OnScriptLoaded;
+        public event Action<ScriptMetadata> OnScriptLoaded;
         public event Action<List<string>> OnGameDataUpdated;
-        public event Action<InstructionInfo> OnCurrentStrategyCompleted;
+        public event Action<ExecutableInstruction> OnCurrentStrategyCompleted;
 
-        // 脚本系统
-        protected ScriptEditorSuite ScriptEditorSuite;
+        // 脚本编译结果
+        protected List<ExecutableInstruction> executableInstructions;
+        //脚本元数据
+        protected ScriptMetadata scriptMetadata;
 
         // 执行引擎
         protected InGame.InGameActionExecutor InGameActionExecutor;
@@ -72,7 +74,7 @@ namespace BTD6AutoCommunity.Strategies.Base
             SetupGameStateTimer();
         }
 
-        protected void LoadStrategyScript(UserSelection userSelection)
+        protected void GetExecutableInstructions(UserSelection userSelection)
         {
             string scriptPath = ScriptEditorSuite.ExistScript(
                     Constants.GetTypeName((Maps)userSelection.selectedMap),
@@ -87,9 +89,9 @@ namespace BTD6AutoCommunity.Strategies.Base
             }
             try
             {
-                ScriptEditorSuite = ScriptEditorSuite.LoadScript(scriptPath);
-                ScriptEditorSuite.Compile(_settings);
-                // OnScriptLoaded?.Invoke(ScriptEditorSuite);
+                ScriptModel scriptModel = LoadScript(scriptPath);
+                scriptMetadata = scriptModel.Metadata;
+                executableInstructions = CompileScript(scriptModel);
 
                 _logs.Log($"已加载脚本：{scriptPath}", LogLevel.Info);
             }
@@ -102,7 +104,7 @@ namespace BTD6AutoCommunity.Strategies.Base
             }
         }
 
-        protected void LoadStrategyScript(string scriptPath)
+        protected void GetExecutableInstructions(string scriptPath)
         {
             if (scriptPath == null)
             {
@@ -112,9 +114,12 @@ namespace BTD6AutoCommunity.Strategies.Base
             }
             try
             {
-                ScriptEditorSuite = ScriptEditorSuite.LoadScript(scriptPath);
-                ScriptEditorSuite.Compile(_settings);
-                OnScriptLoaded?.Invoke(ScriptEditorSuite);
+                ScriptModel scriptModel = LoadScript(scriptPath);
+
+                scriptMetadata = scriptModel.Metadata;
+                executableInstructions = CompileScript(scriptModel);
+
+                OnScriptLoaded?.Invoke(scriptModel.Metadata);
 
                 _logs.Log($"已加载脚本：{scriptPath}", LogLevel.Info);
             }
@@ -124,6 +129,24 @@ namespace BTD6AutoCommunity.Strategies.Base
                 _logs.Log("脚本加载失败，请确认脚本是否正确", LogLevel.Error);
                 return;
             }
+        }
+        
+        // 加载脚本
+        protected ScriptModel LoadScript(string scriptPath)
+        {
+            ScriptFileManager fileManager = new ScriptFileManager();
+            return fileManager.LoadScript(scriptPath);
+        }
+
+        // 编译脚本
+        protected List<ExecutableInstruction> CompileScript(ScriptModel scriptModel)
+        {
+            InstructionSequence instructionSequence;
+            ScriptCompiler compiler = new ScriptCompiler(_settings);
+
+            instructionSequence = InstructionSequence.BuildByScriptModel(scriptModel);
+
+            return compiler.Compile(instructionSequence, scriptModel.Metadata);
         }
 
         public virtual void Start()
@@ -213,7 +236,7 @@ namespace BTD6AutoCommunity.Strategies.Base
             if (InGameActionExecutorTimer == null)
             {
                 IsStrategyExecutionCompleted = false;
-                InGameActionExecutor = new InGame.InGameActionExecutor(_context, ScriptEditorSuite);
+                InGameActionExecutor = new InGame.InGameActionExecutor(_context, executableInstructions);
                 SetupStrategyExecutorTimer(useRecommendInterval);
                 InGameActionExecutor.currentFirstIndex = startIndex;
                 InGameActionExecutorTimer.Start();
@@ -279,7 +302,7 @@ namespace BTD6AutoCommunity.Strategies.Base
             int round = int.TryParse(CurrentGameData[0], out var rt) ? rt : 0;
             int cash = int.TryParse(CurrentGameData[1], out var ct) ? ct : 0;
             InGameActionExecutor.Tick(round, cash);
-            OnCurrentStrategyCompleted?.Invoke(InGameActionExecutor.instructionInfo);
+            OnCurrentStrategyCompleted?.Invoke(InGameActionExecutor.currentInstrucion);
         }
 
         protected virtual void OnGameActionFinished()
