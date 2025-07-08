@@ -10,16 +10,17 @@ using System.Windows.Forms;
 using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.ScriptEngine;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.UI.Main
 {
     // 我的脚本页面
-    public partial class BTD6AutoCommunity
+    public partial class BTD6AutoUI
     {
         private string currentDirectory;
         private void InitializeMyScriptsPage()
         {
             LoadDirectoryTree();
         }
+
         private void LoadDirectoryTree()
         {
             OperationsTV.Nodes.Clear();
@@ -186,19 +187,15 @@ namespace BTD6AutoCommunity
                     // 双击编辑
                     try
                     {
-                        MyInstructions.Clear();
-
-                        string jsonString = File.ReadAllText(filePath);
-                        MyInstructions = JsonConvert.DeserializeObject<ScriptEditorSuite>(jsonString);
-                        MyInstructions.ScriptName = Path.GetFileNameWithoutExtension(filePath);
-                        MyInstructions.RepairScript();
-                        LoadScriptInfo();
-                        BindInstructionsViewTL(MyInstructions.Displayinstructions);
+                        myScript.ClearInstructions();
+                        myScript.LoadInstructionsFromFile(filePath);
+                        BindInstructionsViewLB();
+                        LoadScriptMetaData();
                         StartPrgramTC.SelectedIndex = 1;
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("请选择正确的脚本文件！");
+                        MessageBox.Show("请选择正确的脚本文件！" + ex.Message);
                     }
                 }
             }
@@ -291,7 +288,6 @@ namespace BTD6AutoCommunity
             }
         }
 
-
         private void DeleteOperationBT_Click(object sender, EventArgs e)
         {
             if (OperationsLV.SelectedItems.Count > 0)
@@ -342,19 +338,15 @@ namespace BTD6AutoCommunity
                 {
                     try
                     {
-                        MyInstructions.Clear();
-                        string jsonString = File.ReadAllText(filePath);
-
-                        MyInstructions = JsonConvert.DeserializeObject<ScriptEditorSuite>(jsonString);
-                        MyInstructions.ScriptName = Path.GetFileNameWithoutExtension(filePath);
-                        MyInstructions.RepairScript();
-                        LoadScriptInfo();
-                        BindInstructionsViewTL(MyInstructions.Displayinstructions);
+                        myScript.ClearInstructions();
+                        myScript.LoadInstructionsFromFile(filePath);
+                        BindInstructionsViewLB();
+                        LoadScriptMetaData();
                         StartPrgramTC.SelectedIndex = 1;
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("文件打开失败！");
+                        MessageBox.Show("请选择正确的脚本文件！" + ex.Message);
                     }
                 }
             }
@@ -388,13 +380,6 @@ namespace BTD6AutoCommunity
                 // 确保仅在需要时或适当时加载
                 if (node.Tag is DirectoryInfo dirInfo)
                 {
-
-                    // 显示当前节点路径和目标路径
-                    //if (dirInfo != null)
-                    //{
-                    //    MessageBox.Show("当前节点路径: " + dirInfo.FullName + "\n目标路径: " + path);
-                    //}
-                    // 这样只在第一次调用时加载子目录，避免重复加载
                     LoadSubDirectories(node, dirInfo);
 
                     // 检查路径

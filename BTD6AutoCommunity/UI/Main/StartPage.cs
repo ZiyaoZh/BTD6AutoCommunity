@@ -14,17 +14,16 @@ using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.ScriptEngine;
 using BTD6AutoCommunity.Strategies;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.UI.Main
 {
-    public partial class BTD6AutoCommunity
+    public partial class BTD6AutoUI
     {
-        private ScriptEditorSuite ExecuteInstructions;
+        private ScriptEditorCore ExecuteScript = new ScriptEditorCore();
         public int dpi;
 
         CustomStrategy customStrategy;
         CollectionStrategy collectionStrategy;
         CirculationStrategy circulationStrategy;
-        EventsStrategy eventsStrategy;
         RaceStrategy raceStrategy;
         //BlackBorderStrategy blackBorderStrategy;
 
@@ -56,6 +55,7 @@ namespace BTD6AutoCommunity
             ExecuteModeCB.SelectedValueChanged += ExecuteModeCB_SelectedValueChanged;
 
         }
+
         private void BindSelectedDifficulty()
         {
             DataTable dt = new DataTable();
@@ -93,11 +93,12 @@ namespace BTD6AutoCommunity
             ExecuteMapCB.SelectedValueChanged += ExecuteDifficultyCB_SelectedValueChanged;
         }
 
-        private void BindPreviewLB(List<string> lst)
+        private void BindPreviewLB(List<Instruction> lst)
         {
+            List<string> lstStr = lst.Select(x => x.ToString()).ToList();
             BindingSource bs = new BindingSource
             {
-                DataSource = lst
+                DataSource = lstStr
             };
             PreviewLB.DataSource = bs;
         }
@@ -133,9 +134,6 @@ namespace BTD6AutoCommunity
                         MessageBox.Show("敬请期待！");
                         RunBlackBorderMode();
                         break;
-                    case FunctionTypes.Events:
-                        RunEventsMode(userSelection);
-                        break;
                 }
             }
             else
@@ -146,8 +144,6 @@ namespace BTD6AutoCommunity
                 collectionStrategy = null;
                 circulationStrategy?.Stop();
                 circulationStrategy = null;
-                eventsStrategy?.Stop();
-                eventsStrategy = null;
                 raceStrategy?.Stop();
                 raceStrategy = null;
                 //blackBorderStrategy?.Stop();
@@ -205,23 +201,6 @@ namespace BTD6AutoCommunity
             {
                 StartProgramBT.Text = "终止";
                 circulationStrategy.Start();
-            }
-        }
-
-        private void RunEventsMode(UserSelection userSelection)
-        {
-            logHandler = new LogHandler() { EnableInfoLog = scriptSettings.EnableLogging };
-            logHandler.OnLogMessage += HandleLogMessage;
-
-            eventsStrategy = new EventsStrategy(scriptSettings, logHandler, userSelection);
-            eventsStrategy.OnStopTriggered += HandleStopEvent;
-            eventsStrategy.OnGameDataUpdated += HandleGameDataUpdated;
-            eventsStrategy.OnCurrentStrategyCompleted += HandleCurrentStrategyCompleted;
-
-            if (eventsStrategy.ReadyToStart)
-            {
-                StartProgramBT.Text = "终止";
-                eventsStrategy.Start();
             }
         }
 
@@ -290,11 +269,11 @@ namespace BTD6AutoCommunity
             }
         }
 
-        private void HandleCurrentStrategyCompleted(ScriptInstructionInfo instructionInfo)
+        private void HandleCurrentStrategyCompleted(ExecutableInstruction executableInstruction)
         {
             CurrentInstructionLB.Invoke((MethodInvoker)delegate
             {
-                CurrentInstructionLB.Text = "当前指令：\n" + instructionInfo.Content;
+                CurrentInstructionLB.Text = "当前指令：\n" + executableInstruction.Content;
             });
             CurrentTriggerLB.Invoke((MethodInvoker)delegate
             {
@@ -306,14 +285,14 @@ namespace BTD6AutoCommunity
                 CurrentTriggerLB.AppendText("触发条件：\n");
 
                 // 回合条件
-                bool isRoundMet = instructionInfo.IsRoundMet;
+                bool isRoundMet = executableInstruction.IsRoundMet;
                 string roundIcon = isRoundMet ? "✅" : "❌";
                 CurrentTriggerLB.SelectionFont = isRoundMet
                     ? new Font(CurrentTriggerLB.Font, FontStyle.Regular)
                     : new Font(CurrentTriggerLB.Font, FontStyle.Bold);
 
                 CurrentTriggerLB.SelectionColor = isRoundMet ? Color.Blue : Color.Red;
-                CurrentTriggerLB.AppendText($"第{instructionInfo.RoundTrigger}回合后{roundIcon}");
+                CurrentTriggerLB.AppendText($"第{executableInstruction.RoundTrigger}回合后{roundIcon}");
 
                 // 分隔符
                 CurrentTriggerLB.SelectionFont = new Font(CurrentTriggerLB.Font, FontStyle.Regular);
@@ -321,43 +300,35 @@ namespace BTD6AutoCommunity
                 CurrentTriggerLB.AppendText(" / ");
 
                 // 金币条件
-                bool isCashMet = instructionInfo.IsCashMet;
+                bool isCashMet = executableInstruction.IsCoinMet;
                 string cashIcon = isCashMet ? "✅" : "❌";
                 CurrentTriggerLB.SelectionFont = isCashMet
                     ? new Font(CurrentTriggerLB.Font, FontStyle.Regular)
                     : new Font(CurrentTriggerLB.Font, FontStyle.Bold);
 
                 CurrentTriggerLB.SelectionColor = isCashMet ? Color.Blue : Color.Red;
-                CurrentTriggerLB.AppendText($"{instructionInfo.CashTrigger}金币{cashIcon}");
+                CurrentTriggerLB.AppendText($"{executableInstruction.CoinTrigger}金币{cashIcon}");
             });
             PreviewLB.Invoke((MethodInvoker)delegate
             {
-                PreviewLB.SelectedIndex = instructionInfo.Index;
+                PreviewLB.SelectedIndex = executableInstruction.Index;
             });
         }
 
-        private void HandleScriptLoaded(ScriptEditorSuite scriptEditorSuite)
+        private void HandleScriptLoaded(ScriptMetadata scriptMetadata)
         {
-            PreviewLB.Invoke((MethodInvoker)delegate
-            {
-                BindingSource bs = new BindingSource
-                {
-                    DataSource = scriptEditorSuite.Displayinstructions
-                };
-                PreviewLB.DataSource = bs;
-            });
             ExecuteMapCB.Invoke((MethodInvoker)delegate
             {
-                ExecuteMapCB.SelectedValue = scriptEditorSuite.SelectedMap;
+                ExecuteMapCB.SelectedValue = scriptMetadata.SelectedMap;
             });
             ExecuteDifficultyCB.Invoke((MethodInvoker)delegate
             {
-                ExecuteDifficultyCB.SelectedValue = scriptEditorSuite.SelectedDifficulty;
+                ExecuteDifficultyCB.SelectedValue = scriptMetadata.SelectedDifficulty;
                 ExecuteDifficultyCB_SelectedValueChanged(ExecuteDifficultyCB, EventArgs.Empty);
             });
             ExecuteScriptCB.Invoke((MethodInvoker)delegate
             {
-                ExecuteScriptCB.SelectedIndex = ExecuteScriptCB.FindString(scriptEditorSuite.ScriptName);
+                ExecuteScriptCB.SelectedIndex = ExecuteScriptCB.FindString(scriptMetadata.ScriptName);
             });
         }
 
@@ -408,7 +379,6 @@ namespace BTD6AutoCommunity
             }
         }
 
-
         private void ExecuteDifficultyCB_SelectedValueChanged(object sender, EventArgs e)
         {
             string selectDir1 = ExecuteMapCB.Text;
@@ -433,9 +403,9 @@ namespace BTD6AutoCommunity
             if (File.Exists(filePath1) || File.Exists(filePath2))
             {
                 string filePath = File.Exists(filePath1) ? filePath1 : filePath2;
-                string jsonString = File.ReadAllText(filePath);
-                ExecuteInstructions = JsonConvert.DeserializeObject<ScriptEditorSuite>(jsonString);
-                BindPreviewLB(ExecuteInstructions.Displayinstructions);
+                ExecuteScript.LoadInstructionsFromFile(filePath);
+
+                BindPreviewLB(ExecuteScript.Instructions.Instructions);
             }
         }
 
@@ -469,28 +439,27 @@ namespace BTD6AutoCommunity
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string sourceFilePath = openFileDialog.FileName;
+                    ScriptFileManager scriptFileManager;
+                    ScriptModel scriptModel;
+
                     if (Path.GetExtension(sourceFilePath) != ".btd6")
                     {
                         MessageBox.Show("脚本格式错误！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    ScriptEditorSuite scriptEditorSuite = new ScriptEditorSuite();
-                    string jsonString = File.ReadAllText(sourceFilePath);
                     try
                     {
-                        scriptEditorSuite = JsonConvert.DeserializeObject<ScriptEditorSuite>(jsonString);
-                        scriptEditorSuite.ScriptName = Path.GetFileNameWithoutExtension(sourceFilePath);
-                        scriptEditorSuite.RepairScript();
+                        scriptFileManager = new ScriptFileManager();
+                        scriptModel = scriptFileManager.LoadScript(sourceFilePath);
+                        ExecuteMapCB.SelectedValue = scriptModel.Metadata.SelectedMap;
+                        ExecuteDifficultyCB.SelectedValue = scriptModel.Metadata.SelectedDifficulty;
+                        ExecuteDifficultyCB_SelectedValueChanged(ExecuteDifficultyCB, EventArgs.Empty);
+                        ExecuteScriptCB.SelectedIndex = ExecuteScriptCB.FindString(scriptModel.Metadata.ScriptName);
                     }
                     catch
                     {
                         MessageBox.Show("脚本内容错误！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    //File.Copy(sourceFilePath, destinationFilePath, true);
-                    ExecuteMapCB.SelectedValue = scriptEditorSuite.SelectedMap;
-                    ExecuteDifficultyCB.SelectedValue = scriptEditorSuite.SelectedDifficulty;
-                    ExecuteDifficultyCB_SelectedValueChanged(ExecuteDifficultyCB, EventArgs.Empty);
-                    ExecuteScriptCB.SelectedIndex = ExecuteScriptCB.FindString(scriptEditorSuite.ScriptName);
                 }
             }
         }
@@ -530,40 +499,17 @@ namespace BTD6AutoCommunity
             }
             try
             {
-                MyInstructions.Clear();
-                string jsonString = File.ReadAllText(filePath);
-
-                MyInstructions = JsonConvert.DeserializeObject<ScriptEditorSuite>(jsonString);
-                MyInstructions.ScriptName = Path.GetFileNameWithoutExtension(filePath);
-                MyInstructions.RepairScript();
-                LoadScriptInfo();
-                BindInstructionsViewTL(MyInstructions.Displayinstructions);
+                myScript.ClearInstructions();
+                myScript.LoadInstructionsFromFile(filePath);
+                BindInstructionsViewLB();
+                LoadScriptMetaData();
                 StartPrgramTC.SelectedIndex = 1;
                 IsStartPageEditButtonClicked = true;
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("文件打开失败！");
+                MessageBox.Show("请选择正确的脚本文件！" + ex.Message);
             }
         }
-    }
-
-    public enum FunctionTypes
-    { 
-        Custom = 0,
-        Collection = 1,
-        Circulation = 2,
-        Race = 3,
-        BlackBorder = 4,
-        Events = 5
-    }
-
-    public struct UserSelection
-    {
-        public FunctionTypes selectedFunction;
-        public Maps selectedMap;
-        public LevelDifficulties selectedDifficulty;
-        public string selectedScript;
-        public int selectedIndex;
     }
 }

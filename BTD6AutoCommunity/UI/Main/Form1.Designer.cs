@@ -1,6 +1,6 @@
-﻿namespace BTD6AutoCommunity
+﻿namespace BTD6AutoCommunity.UI.Main
 {
-    partial class BTD6AutoCommunity
+    partial class BTD6AutoUI
     {
         /// <summary>
         /// 必需的设计器变量。
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BTD6AutoCommunity));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BTD6AutoUI));
             this.InstructionClassCB = new System.Windows.Forms.ComboBox();
             this.StartPrgramTC = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -92,10 +92,8 @@
             this.label15 = new System.Windows.Forms.Label();
             this.Argument1CB = new System.Windows.Forms.ComboBox();
             this.CoordsChosingBT = new System.Windows.Forms.Button();
-            this.CoinTriggeringCB = new System.Windows.Forms.ComboBox();
             this.AddInstructionBT = new System.Windows.Forms.Button();
             this.Argument2CB = new System.Windows.Forms.ComboBox();
-            this.RoundTriggeringCB = new System.Windows.Forms.ComboBox();
             this.InstructionLB = new System.Windows.Forms.Label();
             this.tableLayoutPanel13 = new System.Windows.Forms.TableLayoutPanel();
             this.CoordsXLB = new System.Windows.Forms.Label();
@@ -106,15 +104,17 @@
             this.CoinTriggeringLB = new System.Windows.Forms.Label();
             this.ChangeInstructionBT = new System.Windows.Forms.Button();
             this.InsertInstructionBT = new System.Windows.Forms.Button();
+            this.RoundTriggerTB = new System.Windows.Forms.TextBox();
+            this.CoinTriggerTB = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel10 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
-            this.UpBT = new System.Windows.Forms.Button();
-            this.DownBT = new System.Windows.Forms.Button();
-            this.SaveInstructionBT = new System.Windows.Forms.Button();
+            this.InstructionsViewLB = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel12 = new System.Windows.Forms.TableLayoutPanel();
             this.DeleteInstructionBT = new System.Windows.Forms.Button();
-            this.ClearInstructionBT = new System.Windows.Forms.Button();
-            this.InstructionsViewTL = new System.Windows.Forms.ListBox();
+            this.DownBT = new System.Windows.Forms.Button();
+            this.UpBT = new System.Windows.Forms.Button();
+            this.ClearInstructionsBT = new System.Windows.Forms.Button();
+            this.SaveInstructionsBT = new System.Windows.Forms.Button();
+            this.BuildInstructionsBT = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tableLayoutPanel20 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel18 = new System.Windows.Forms.TableLayoutPanel();
@@ -306,7 +306,6 @@
             this.tableLayoutPanel9.SuspendLayout();
             this.tableLayoutPanel13.SuspendLayout();
             this.tableLayoutPanel10.SuspendLayout();
-            this.tableLayoutPanel11.SuspendLayout();
             this.tableLayoutPanel12.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tableLayoutPanel20.SuspendLayout();
@@ -1106,16 +1105,16 @@
             this.tableLayoutPanel9.Controls.Add(this.InstructionClassCB, 0, 2);
             this.tableLayoutPanel9.Controls.Add(this.Argument1CB, 0, 4);
             this.tableLayoutPanel9.Controls.Add(this.CoordsChosingBT, 0, 11);
-            this.tableLayoutPanel9.Controls.Add(this.CoinTriggeringCB, 0, 9);
             this.tableLayoutPanel9.Controls.Add(this.AddInstructionBT, 0, 14);
             this.tableLayoutPanel9.Controls.Add(this.Argument2CB, 0, 5);
-            this.tableLayoutPanel9.Controls.Add(this.RoundTriggeringCB, 0, 7);
             this.tableLayoutPanel9.Controls.Add(this.InstructionLB, 0, 1);
             this.tableLayoutPanel9.Controls.Add(this.tableLayoutPanel13, 0, 10);
             this.tableLayoutPanel9.Controls.Add(this.RoundTriggeringLB, 0, 6);
             this.tableLayoutPanel9.Controls.Add(this.CoinTriggeringLB, 0, 8);
             this.tableLayoutPanel9.Controls.Add(this.ChangeInstructionBT, 0, 12);
             this.tableLayoutPanel9.Controls.Add(this.InsertInstructionBT, 0, 13);
+            this.tableLayoutPanel9.Controls.Add(this.RoundTriggerTB, 0, 7);
+            this.tableLayoutPanel9.Controls.Add(this.CoinTriggerTB, 0, 9);
             this.tableLayoutPanel9.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.tableLayoutPanel9.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel9.Location = new System.Drawing.Point(0, 0);
@@ -1136,6 +1135,7 @@
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel9.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel9.Size = new System.Drawing.Size(143, 631);
             this.tableLayoutPanel9.TabIndex = 1;
             // 
@@ -1171,23 +1171,6 @@
             this.CoordsChosingBT.UseVisualStyleBackColor = true;
             this.CoordsChosingBT.Click += new System.EventHandler(this.CoordsChosingBT_Click);
             // 
-            // CoinTriggeringCB
-            // 
-            this.CoinTriggeringCB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CoinTriggeringCB.FormattingEnabled = true;
-            this.CoinTriggeringCB.Items.AddRange(new object[] {
-            "自定义",
-            "无折扣",
-            "10%折扣",
-            "15%折扣",
-            "20%折扣",
-            "25%折扣"});
-            this.CoinTriggeringCB.Location = new System.Drawing.Point(3, 390);
-            this.CoinTriggeringCB.Name = "CoinTriggeringCB";
-            this.CoinTriggeringCB.Size = new System.Drawing.Size(137, 28);
-            this.CoinTriggeringCB.TabIndex = 13;
-            this.CoinTriggeringCB.SelectedIndexChanged += new System.EventHandler(this.CoinTriggeringCB_SelectedIndexChanged);
-            // 
             // AddInstructionBT
             // 
             this.AddInstructionBT.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -1210,19 +1193,6 @@
             this.Argument2CB.TabIndex = 15;
             this.Argument2CB.Text = "参数2";
             this.Argument2CB.SelectedIndexChanged += new System.EventHandler(this.Argument2CB_SelectedIndexChanged);
-            // 
-            // RoundTriggeringCB
-            // 
-            this.RoundTriggeringCB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.RoundTriggeringCB.FormattingEnabled = true;
-            this.RoundTriggeringCB.Items.AddRange(new object[] {
-            "自定义",
-            "无"});
-            this.RoundTriggeringCB.Location = new System.Drawing.Point(3, 304);
-            this.RoundTriggeringCB.Name = "RoundTriggeringCB";
-            this.RoundTriggeringCB.Size = new System.Drawing.Size(137, 28);
-            this.RoundTriggeringCB.TabIndex = 16;
-            this.RoundTriggeringCB.SelectedIndexChanged += new System.EventHandler(this.RoundTriggeringCB_SelectedIndexChanged);
             // 
             // InstructionLB
             // 
@@ -1319,7 +1289,6 @@
             // ChangeInstructionBT
             // 
             this.ChangeInstructionBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ChangeInstructionBT.Enabled = false;
             this.ChangeInstructionBT.Location = new System.Drawing.Point(3, 513);
             this.ChangeInstructionBT.Name = "ChangeInstructionBT";
             this.ChangeInstructionBT.Size = new System.Drawing.Size(137, 34);
@@ -1339,52 +1308,84 @@
             this.InsertInstructionBT.UseVisualStyleBackColor = true;
             this.InsertInstructionBT.Click += new System.EventHandler(this.InsertInstructionBT_Click);
             // 
+            // RoundTriggerTB
+            // 
+            this.RoundTriggerTB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.RoundTriggerTB.Location = new System.Drawing.Point(3, 304);
+            this.RoundTriggerTB.Name = "RoundTriggerTB";
+            this.RoundTriggerTB.Size = new System.Drawing.Size(137, 30);
+            this.RoundTriggerTB.TabIndex = 23;
+            // 
+            // CoinTriggerTB
+            // 
+            this.CoinTriggerTB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CoinTriggerTB.Location = new System.Drawing.Point(3, 390);
+            this.CoinTriggerTB.Name = "CoinTriggerTB";
+            this.CoinTriggerTB.Size = new System.Drawing.Size(137, 30);
+            this.CoinTriggerTB.TabIndex = 24;
+            // 
             // tableLayoutPanel10
             // 
             this.tableLayoutPanel10.ColumnCount = 1;
             this.tableLayoutPanel10.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel10.Controls.Add(this.tableLayoutPanel11, 0, 1);
-            this.tableLayoutPanel10.Controls.Add(this.SaveInstructionBT, 0, 3);
-            this.tableLayoutPanel10.Controls.Add(this.tableLayoutPanel12, 0, 2);
-            this.tableLayoutPanel10.Controls.Add(this.InstructionsViewTL, 0, 0);
+            this.tableLayoutPanel10.Controls.Add(this.InstructionsViewLB, 0, 0);
+            this.tableLayoutPanel10.Controls.Add(this.tableLayoutPanel12, 0, 1);
             this.tableLayoutPanel10.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel10.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel10.Name = "tableLayoutPanel10";
-            this.tableLayoutPanel10.RowCount = 4;
+            this.tableLayoutPanel10.RowCount = 2;
             this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
-            this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
-            this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel10.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 125F));
             this.tableLayoutPanel10.Size = new System.Drawing.Size(388, 631);
             this.tableLayoutPanel10.TabIndex = 2;
             // 
-            // tableLayoutPanel11
+            // InstructionsViewLB
             // 
-            this.tableLayoutPanel11.ColumnCount = 2;
-            this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel11.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel11.Controls.Add(this.UpBT, 0, 0);
-            this.tableLayoutPanel11.Controls.Add(this.DownBT, 1, 0);
-            this.tableLayoutPanel11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel11.Location = new System.Drawing.Point(3, 506);
-            this.tableLayoutPanel11.Name = "tableLayoutPanel11";
-            this.tableLayoutPanel11.RowCount = 1;
-            this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel11.Size = new System.Drawing.Size(382, 38);
-            this.tableLayoutPanel11.TabIndex = 1;
+            this.InstructionsViewLB.ColumnWidth = 5;
+            this.InstructionsViewLB.Cursor = System.Windows.Forms.Cursors.Default;
+            this.InstructionsViewLB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.InstructionsViewLB.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.InstructionsViewLB.FormattingEnabled = true;
+            this.InstructionsViewLB.ItemHeight = 25;
+            this.InstructionsViewLB.Location = new System.Drawing.Point(3, 3);
+            this.InstructionsViewLB.Name = "InstructionsViewLB";
+            this.InstructionsViewLB.Size = new System.Drawing.Size(382, 500);
+            this.InstructionsViewLB.TabIndex = 5;
+            this.InstructionsViewLB.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.InstructionsViewTL_DrawItem);
+            this.InstructionsViewLB.SelectedIndexChanged += new System.EventHandler(this.InstructionsViewLB_SelectedIndexChanged);
             // 
-            // UpBT
+            // tableLayoutPanel12
             // 
-            this.UpBT.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.UpBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.UpBT.Location = new System.Drawing.Point(3, 3);
-            this.UpBT.Name = "UpBT";
-            this.UpBT.Size = new System.Drawing.Size(185, 32);
-            this.UpBT.TabIndex = 0;
-            this.UpBT.Text = "上移";
-            this.UpBT.UseVisualStyleBackColor = true;
-            this.UpBT.Click += new System.EventHandler(this.UpBT_Click);
+            this.tableLayoutPanel12.ColumnCount = 2;
+            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel12.Controls.Add(this.DeleteInstructionBT, 0, 1);
+            this.tableLayoutPanel12.Controls.Add(this.DownBT, 1, 0);
+            this.tableLayoutPanel12.Controls.Add(this.UpBT, 0, 0);
+            this.tableLayoutPanel12.Controls.Add(this.ClearInstructionsBT, 1, 1);
+            this.tableLayoutPanel12.Controls.Add(this.SaveInstructionsBT, 1, 2);
+            this.tableLayoutPanel12.Controls.Add(this.BuildInstructionsBT, 0, 2);
+            this.tableLayoutPanel12.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel12.Location = new System.Drawing.Point(3, 509);
+            this.tableLayoutPanel12.Name = "tableLayoutPanel12";
+            this.tableLayoutPanel12.RowCount = 3;
+            this.tableLayoutPanel12.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel12.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel12.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
+            this.tableLayoutPanel12.Size = new System.Drawing.Size(382, 119);
+            this.tableLayoutPanel12.TabIndex = 4;
+            // 
+            // DeleteInstructionBT
+            // 
+            this.DeleteInstructionBT.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.DeleteInstructionBT.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DeleteInstructionBT.Location = new System.Drawing.Point(3, 43);
+            this.DeleteInstructionBT.Name = "DeleteInstructionBT";
+            this.DeleteInstructionBT.Size = new System.Drawing.Size(185, 34);
+            this.DeleteInstructionBT.TabIndex = 0;
+            this.DeleteInstructionBT.Text = "删除";
+            this.DeleteInstructionBT.UseVisualStyleBackColor = true;
+            this.DeleteInstructionBT.Click += new System.EventHandler(this.DeleteInstructionBT_Click);
             // 
             // DownBT
             // 
@@ -1392,77 +1393,58 @@
             this.DownBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DownBT.Location = new System.Drawing.Point(194, 3);
             this.DownBT.Name = "DownBT";
-            this.DownBT.Size = new System.Drawing.Size(185, 32);
+            this.DownBT.Size = new System.Drawing.Size(185, 34);
             this.DownBT.TabIndex = 1;
             this.DownBT.Text = "下移";
             this.DownBT.UseVisualStyleBackColor = true;
             this.DownBT.Click += new System.EventHandler(this.DownBT_Click);
             // 
-            // SaveInstructionBT
+            // UpBT
             // 
-            this.SaveInstructionBT.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.SaveInstructionBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SaveInstructionBT.Location = new System.Drawing.Point(3, 594);
-            this.SaveInstructionBT.Name = "SaveInstructionBT";
-            this.SaveInstructionBT.Size = new System.Drawing.Size(382, 34);
-            this.SaveInstructionBT.TabIndex = 3;
-            this.SaveInstructionBT.Text = "保存";
-            this.SaveInstructionBT.UseVisualStyleBackColor = true;
-            this.SaveInstructionBT.Click += new System.EventHandler(this.SaveInstructionBT_Click);
+            this.UpBT.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.UpBT.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.UpBT.Location = new System.Drawing.Point(3, 3);
+            this.UpBT.Name = "UpBT";
+            this.UpBT.Size = new System.Drawing.Size(185, 34);
+            this.UpBT.TabIndex = 0;
+            this.UpBT.Text = "上移";
+            this.UpBT.UseVisualStyleBackColor = true;
+            this.UpBT.Click += new System.EventHandler(this.UpBT_Click);
             // 
-            // tableLayoutPanel12
+            // ClearInstructionsBT
             // 
-            this.tableLayoutPanel12.ColumnCount = 2;
-            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel12.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel12.Controls.Add(this.DeleteInstructionBT, 0, 0);
-            this.tableLayoutPanel12.Controls.Add(this.ClearInstructionBT, 1, 0);
-            this.tableLayoutPanel12.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel12.Location = new System.Drawing.Point(3, 550);
-            this.tableLayoutPanel12.Name = "tableLayoutPanel12";
-            this.tableLayoutPanel12.RowCount = 1;
-            this.tableLayoutPanel12.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel12.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel12.Size = new System.Drawing.Size(382, 38);
-            this.tableLayoutPanel12.TabIndex = 4;
+            this.ClearInstructionsBT.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ClearInstructionsBT.Location = new System.Drawing.Point(194, 43);
+            this.ClearInstructionsBT.Name = "ClearInstructionsBT";
+            this.ClearInstructionsBT.Size = new System.Drawing.Size(185, 34);
+            this.ClearInstructionsBT.TabIndex = 1;
+            this.ClearInstructionsBT.Text = "清空";
+            this.ClearInstructionsBT.UseVisualStyleBackColor = true;
+            this.ClearInstructionsBT.Click += new System.EventHandler(this.ClearInstructionsBT_Click);
             // 
-            // DeleteInstructionBT
+            // SaveInstructionsBT
             // 
-            this.DeleteInstructionBT.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.DeleteInstructionBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DeleteInstructionBT.Location = new System.Drawing.Point(3, 3);
-            this.DeleteInstructionBT.Name = "DeleteInstructionBT";
-            this.DeleteInstructionBT.Size = new System.Drawing.Size(185, 32);
-            this.DeleteInstructionBT.TabIndex = 0;
-            this.DeleteInstructionBT.Text = "删除";
-            this.DeleteInstructionBT.UseVisualStyleBackColor = true;
-            this.DeleteInstructionBT.Click += new System.EventHandler(this.DeleteInstructionBT_Click);
+            this.SaveInstructionsBT.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.SaveInstructionsBT.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SaveInstructionsBT.Location = new System.Drawing.Point(194, 83);
+            this.SaveInstructionsBT.Name = "SaveInstructionsBT";
+            this.SaveInstructionsBT.Size = new System.Drawing.Size(185, 34);
+            this.SaveInstructionsBT.TabIndex = 3;
+            this.SaveInstructionsBT.Text = "保存";
+            this.SaveInstructionsBT.UseVisualStyleBackColor = true;
+            this.SaveInstructionsBT.Click += new System.EventHandler(this.SaveInstructionBT_Click);
             // 
-            // ClearInstructionBT
+            // BuildInstructionsBT
             // 
-            this.ClearInstructionBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ClearInstructionBT.Location = new System.Drawing.Point(194, 3);
-            this.ClearInstructionBT.Name = "ClearInstructionBT";
-            this.ClearInstructionBT.Size = new System.Drawing.Size(185, 32);
-            this.ClearInstructionBT.TabIndex = 1;
-            this.ClearInstructionBT.Text = "清空";
-            this.ClearInstructionBT.UseVisualStyleBackColor = true;
-            this.ClearInstructionBT.Click += new System.EventHandler(this.ClearInstructionBT_Click);
-            // 
-            // InstructionsViewTL
-            // 
-            this.InstructionsViewTL.ColumnWidth = 5;
-            this.InstructionsViewTL.Cursor = System.Windows.Forms.Cursors.Default;
-            this.InstructionsViewTL.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.InstructionsViewTL.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
-            this.InstructionsViewTL.FormattingEnabled = true;
-            this.InstructionsViewTL.ItemHeight = 25;
-            this.InstructionsViewTL.Location = new System.Drawing.Point(3, 3);
-            this.InstructionsViewTL.Name = "InstructionsViewTL";
-            this.InstructionsViewTL.Size = new System.Drawing.Size(382, 497);
-            this.InstructionsViewTL.TabIndex = 5;
-            this.InstructionsViewTL.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.InstructionsViewTL_DrawItem);
-            this.InstructionsViewTL.SelectedIndexChanged += new System.EventHandler(this.InstructionsViewTL_SelectedIndexChanged);
+            this.BuildInstructionsBT.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.BuildInstructionsBT.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.BuildInstructionsBT.Location = new System.Drawing.Point(3, 83);
+            this.BuildInstructionsBT.Name = "BuildInstructionsBT";
+            this.BuildInstructionsBT.Size = new System.Drawing.Size(185, 34);
+            this.BuildInstructionsBT.TabIndex = 4;
+            this.BuildInstructionsBT.Text = "刷新";
+            this.BuildInstructionsBT.UseVisualStyleBackColor = true;
+            this.BuildInstructionsBT.Click += new System.EventHandler(this.BuildInstructionsBT_Click);
             // 
             // tabPage3
             // 
@@ -3533,14 +3515,14 @@
             this.treeView1.Size = new System.Drawing.Size(688, 633);
             this.treeView1.TabIndex = 0;
             // 
-            // BTD6AutoCommunity
+            // BTD6AutoUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(702, 673);
             this.Controls.Add(this.StartPrgramTC);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "BTD6AutoCommunity";
+            this.Name = "BTD6AutoUI";
             this.Text = "BTD6AutoCommunity";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.BTD6AutoCommunity_FormClosing);
             this.Load += new System.EventHandler(this.BTD6AutoCommunity_Load);
@@ -3581,7 +3563,6 @@
             this.tableLayoutPanel13.ResumeLayout(false);
             this.tableLayoutPanel13.PerformLayout();
             this.tableLayoutPanel10.ResumeLayout(false);
-            this.tableLayoutPanel11.ResumeLayout(false);
             this.tableLayoutPanel12.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tableLayoutPanel20.ResumeLayout(false);
@@ -3629,7 +3610,6 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel9;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel10;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel11;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel12;
         private System.Windows.Forms.Label InstructionLB;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel13;
@@ -3732,20 +3712,18 @@
         internal System.Windows.Forms.ComboBox DifficultyCB;
         internal System.Windows.Forms.ComboBox ModeCB;
         internal System.Windows.Forms.ComboBox HeroCB;
-        internal System.Windows.Forms.ComboBox CoinTriggeringCB;
-        internal System.Windows.Forms.ComboBox RoundTriggeringCB;
         internal System.Windows.Forms.TextBox CoordsXTB;
         internal System.Windows.Forms.TextBox CoordsYTB;
         internal System.Windows.Forms.TextBox AnchorXTB;
         internal System.Windows.Forms.TextBox AnchorYTB;
         internal System.Windows.Forms.ComboBox InstructionClassCB;
-        internal System.Windows.Forms.ListBox InstructionsViewTL;
+        internal System.Windows.Forms.ListBox InstructionsViewLB;
         internal System.Windows.Forms.TabControl StartPrgramTC;
         internal System.Windows.Forms.Button CoordsChosingBT;
         internal System.Windows.Forms.Button AddInstructionBT;
         internal System.Windows.Forms.Button UpBT;
         internal System.Windows.Forms.Button DownBT;
-        internal System.Windows.Forms.Button SaveInstructionBT;
+        internal System.Windows.Forms.Button SaveInstructionsBT;
         internal System.Windows.Forms.Button DeleteInstructionBT;
         internal System.Windows.Forms.Label CoordsXLB;
         internal System.Windows.Forms.Label CoordsYLB;
@@ -3753,7 +3731,7 @@
         internal System.Windows.Forms.Button AnchorCoordsBT;
         internal System.Windows.Forms.Label AnchorXLB;
         internal System.Windows.Forms.Label AnchorYLB;
-        internal System.Windows.Forms.Button ClearInstructionBT;
+        internal System.Windows.Forms.Button ClearInstructionsBT;
         internal System.Windows.Forms.Button InsertInstructionBT;
         internal System.Windows.Forms.ComboBox GameDpiCB;
         private System.Windows.Forms.GroupBox groupBox3;
@@ -3852,6 +3830,9 @@
         private System.Windows.Forms.Button DesperadoHotkeyBT;
         private System.Windows.Forms.Button OutputScriptBT;
         private System.Windows.Forms.Button OutputBT;
+        private System.Windows.Forms.TextBox RoundTriggerTB;
+        private System.Windows.Forms.TextBox CoinTriggerTB;
+        private System.Windows.Forms.Button BuildInstructionsBT;
     }
 }
 

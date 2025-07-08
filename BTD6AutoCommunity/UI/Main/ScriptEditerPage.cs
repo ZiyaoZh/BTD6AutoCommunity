@@ -12,13 +12,14 @@ using System.Timers;
 using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.ScriptEngine;
 using System.Diagnostics;
+using BTD6AutoCommunity.GameObjects;
 
-namespace BTD6AutoCommunity
+namespace BTD6AutoCommunity.UI.Main
 {
     // 脚本编辑器界面
-    public partial class BTD6AutoCommunity
+    public partial class BTD6AutoUI
     {
-        private ScriptEditorSuite MyInstructions;
+        private ScriptEditorCore myScript;
         private OverlayForm overlayForm;
         private WindowApiWrapper.POINT mousePos;
         private System.Timers.Timer DisplayMouseTimer;
@@ -30,8 +31,10 @@ namespace BTD6AutoCommunity
             BindScriptDifficulty();
             BindMode();
             ModeAndHero_SelectedIndexChanged(null, null);
-            MyInstructions = new ScriptEditorSuite();
             AnchorBTTT.SetToolTip(AnchorCoordsBT, "空白点即为完成升级点击的空白区域\n回车（Enter）自动输入坐标");
+            
+            myScript = new ScriptEditorCore();
+            //myScript.Instructions.InstructionBuild += BindInstructionsViewLB;
         }
 
         private void BindActionClassCB()
@@ -79,12 +82,12 @@ namespace BTD6AutoCommunity
         private void BindArgument1CB(Type type)
         {
             DataTable dt = new DataTable();
-            dt.Columns.Add("Value", type);
+            dt.Columns.Add("Value", typeof(int));
             dt.Columns.Add("TypeName", typeof(string));
             foreach (var item in Enum.GetValues(type))
             {
                 DataRow dr = dt.NewRow();
-                dr["Value"] = item;
+                dr["Value"] = (int)item;
                 dr["TypeName"] = Constants.GetTypeName(item, type);
                 dt.Rows.Add(dr);
             }
@@ -112,13 +115,34 @@ namespace BTD6AutoCommunity
             Argument1CB.DisplayMember = "object";
         }
 
+        private void BindArgument1CB(List<int> monkeyIds)
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add(new DataColumn("value", typeof(int)));
+            dt.Columns.Add(new DataColumn("monkey", typeof(string)));
+            foreach (var id in monkeyIds)
+            {
+                int monkeyIdNumber = id / 100;
+                Monkeys monkeyType = (Monkeys)(id % 100);
+                DataRow dr = dt.NewRow();
+                dr["value"] = id;
+                dr["monkey"] = Constants.GetTypeName(monkeyType) + monkeyIdNumber.ToString();
+                //if (i.Value.IsDelete)
+                //{
+                //    dr["monkey"] += "(已删除)";
+                //}
+                dt.Rows.Add(dr);
+            }
+            Argument1CB.DataSource = dt;
+            Argument1CB.ValueMember = "value";
+            Argument1CB.DisplayMember = "monkey";
+        }
+
         private void BindArgument2CB(Dictionary<int, string> dic)
         {
             DataTable dt = new DataTable();
-            DataColumn dc1 = new DataColumn("id");
-            DataColumn dc2 = new DataColumn("object");
-            dt.Columns.Add(dc1);
-            dt.Columns.Add(dc2);
+            dt.Columns.Add(new DataColumn("id", typeof(int)));
+            dt.Columns.Add(new DataColumn("object", typeof(string)));
             foreach (var item in dic)
             {
                 DataRow dr = dt.NewRow();
@@ -130,6 +154,8 @@ namespace BTD6AutoCommunity
             Argument2CB.ValueMember = "id";
             Argument2CB.DisplayMember = "object";
         }
+
+
 
         private void BindScriptMap()
         {
@@ -202,41 +228,34 @@ namespace BTD6AutoCommunity
             DifficultyCB.DisplayMember = "DifficultyName";
         }
 
-        private void BindArgument1CB(List<(int, int)> lst)
+
+
+        private void BindInstructionsViewLB()
         {
-            DataTable dt = new DataTable();
-            DataColumn dc1 = new DataColumn("monkey");
-            dt.Columns.Add(dc1);
-            for (int i = 0; i < lst.Count; i++)
+            InstructionsViewLB.Items.Clear();
+            foreach (var item in myScript.Instructions.Instructions)
             {
-                (int, int) item = lst[i];
-                DataRow dr = dt.NewRow();
-                dr["monkey"] = Constants.GetTypeName((Monkeys)item.Item1) + item.Item2.ToString();
-                if (MyInstructions.objectList[i].IsDelete)
-                {
-                    dr["monkey"] += "(已删除)";
-                }
-                dt.Rows.Add(dr);
+                InstructionsViewLB.Items.Add(item.ToString());
             }
-            Argument1CB.DataSource = dt;
-            Argument1CB.DisplayMember = "monkey";
         }
 
-        private void BindInstructionsViewTL(List<string> lst)
+        private void Argument2CB_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BindingSource bs = new BindingSource
+            if ((Argument2CB.SelectedIndex == 0 || Argument2CB.SelectedIndex == 2)
+                && Argument2CB.Text.Contains("无坐标选择"))
             {
-                DataSource = lst
-            };
-
-            InstructionsViewTL.BeginUpdate();
-            InstructionsViewTL.DataSource = null;
-            InstructionsViewTL.DataSource = bs;
-            InstructionsViewTL.EndUpdate();
+                HideCoordsChoosing();
+            }
+            if ((Argument2CB.SelectedIndex == 1 || Argument2CB.SelectedIndex == 3)
+                && Argument2CB.Text.Contains("有坐标选择"))
+            {
+                ShowCoordsChoosing();
+            }
         }
 
         private void HideCoordsChoosing()
         {
+            if (CoordsXTB.Visible == false) return;
             CoordsXTB.Visible = false;
             CoordsXLB.Visible = false;
             CoordsYTB.Visible = false;
@@ -246,54 +265,12 @@ namespace BTD6AutoCommunity
 
         private void ShowCoordsChoosing()
         {
+            if (CoordsXTB.Visible == true) return;
             CoordsXTB.Visible = true;
             CoordsXLB.Visible = true;
             CoordsYTB.Visible = true;
             CoordsYLB.Visible = true;
             CoordsChosingBT.Visible = true;
-        }
-
-        private void SetCoinTriggeringCB(int mode)
-        {
-            if (mode == 1)
-            {
-                if (CoinTriggeringCB.FindString("10%折扣") == -1)
-                {
-                    CoinTriggeringCB.Items.Add("10%折扣");
-                }
-                if (CoinTriggeringCB.FindString("15%折扣") == -1)
-                {
-                    CoinTriggeringCB.Items.Add("15%折扣");
-                }
-                if (CoinTriggeringCB.FindString("20%折扣") == -1)
-                {
-                    CoinTriggeringCB.Items.Add("20%折扣");
-                }
-                if (CoinTriggeringCB.FindString("25%折扣") == -1)
-                {
-                    CoinTriggeringCB.Items.Add("25%折扣");
-                }
-            }
-            if (mode == 0)
-            {
-                if (CoinTriggeringCB.FindString("10%折扣") != -1)
-                {
-                    CoinTriggeringCB.Items.Remove("10%折扣");
-                }
-                if (CoinTriggeringCB.FindString("15%折扣") != -1)
-                {
-                    CoinTriggeringCB.Items.Remove("15%折扣");
-                }
-                if (CoinTriggeringCB.FindString("20%折扣") != -1)
-                {
-                    CoinTriggeringCB.Items.Remove("20%折扣");
-                }
-                if (CoinTriggeringCB.FindString("25%折扣") != -1)
-                {
-                    CoinTriggeringCB.Items.Remove("25%折扣");
-                }
-            }
-
         }
         
         private void SetInstructionVision(ActionTypes actionType)
@@ -305,12 +282,11 @@ namespace BTD6AutoCommunity
                     Argument1CB.DropDownStyle = ComboBoxStyle.DropDownList;
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = false;
-                    SetCoinTriggeringCB(0);
                     ShowCoordsChoosing();
                     break;
 
                 case ActionTypes.UpgradeMonkey:
-                    BindArgument1CB(MyInstructions.ObjectId);
+                    BindArgument1CB(myScript.Instructions.GetMonkeyIds());
                     Argument1CB.DropDownStyle = ComboBoxStyle.DropDownList;
 
                     Argument2CB.DataSource = null;
@@ -319,26 +295,26 @@ namespace BTD6AutoCommunity
                     Argument2CB.Items.Add("上路");
                     Argument2CB.Items.Add("中路");
                     Argument2CB.Items.Add("下路");
+                    Argument2CB.Items.Add("上路(仅一次)");
+                    Argument2CB.Items.Add("中路(仅一次)");
+                    Argument2CB.Items.Add("下路(仅一次)");
+                    // 设置value
                     Argument2CB.SelectedIndex = 0;
 
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = true;
 
-                    SetCoinTriggeringCB(1);
-
                     HideCoordsChoosing();
                     break;
 
                 case ActionTypes.SwitchMonkeyTarget:
-                    BindArgument1CB(MyInstructions.ObjectId);
+                    BindArgument1CB(myScript.Instructions.GetMonkeyIds());
                     Argument1CB.DropDownStyle = ComboBoxStyle.DropDownList;
                     BindArgument2CB(Constants.TargetToChange);
                     Argument2CB.DropDownStyle = ComboBoxStyle.DropDownList;
 
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = true;
-
-                    SetCoinTriggeringCB(0);
 
                     HideCoordsChoosing();
                     break;
@@ -357,7 +333,6 @@ namespace BTD6AutoCommunity
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = true;
 
-                    SetCoinTriggeringCB(0);
                     break;
 
                 case ActionTypes.SwitchSpeed:
@@ -374,36 +349,36 @@ namespace BTD6AutoCommunity
                     break;
 
                 case ActionTypes.SellMonkey:
-                    BindArgument1CB(MyInstructions.ObjectId);
+                    BindArgument1CB(myScript.Instructions.GetMonkeyIds());
 
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = false;
                     HideCoordsChoosing();
 
-                    SetCoinTriggeringCB(0);
                     break;
 
                 case ActionTypes.SetMonkeyFunction:
-                    BindArgument1CB(MyInstructions.ObjectId);
+                    BindArgument1CB(myScript.Instructions.GetMonkeyIds());
                     Argument1CB.DropDownStyle = ComboBoxStyle.DropDownList;
 
                     Argument2CB.DataSource = null;
                     Argument2CB.Items.Clear();
-                    Argument2CB.Items.Add("无坐标选择");
-                    Argument2CB.Items.Add("有坐标选择");
+                    Argument2CB.Items.Add("功能1无坐标选择");
+                    Argument2CB.Items.Add("功能1有坐标选择");
+                    Argument2CB.Items.Add("功能2无坐标选择");
+                    Argument2CB.Items.Add("功能2有坐标选择");
+
                     Argument2CB.DropDownStyle = ComboBoxStyle.DropDownList;
                     Argument2CB.SelectedIndex = 0;
 
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = true;
 
-                    SetCoinTriggeringCB(0);
                     break;
                 case ActionTypes.PlaceHero:
                     Argument1CB.Visible = false;
                     Argument2CB.Visible = false;
 
-                    SetCoinTriggeringCB(0);
 
                     ShowCoordsChoosing();
                     break;
@@ -411,7 +386,6 @@ namespace BTD6AutoCommunity
                     Argument1CB.Visible = false;
                     Argument2CB.Visible = false;
 
-                    SetCoinTriggeringCB(0);
 
                     HideCoordsChoosing();
                     break;
@@ -447,7 +421,6 @@ namespace BTD6AutoCommunity
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = true;
 
-                    SetCoinTriggeringCB(0);
                     break;
 
                 case ActionTypes.SwitchHeroTarget:
@@ -456,8 +429,6 @@ namespace BTD6AutoCommunity
 
                     Argument1CB.Visible = false;
                     Argument2CB.Visible = true;
-
-                    SetCoinTriggeringCB(0);
 
                     HideCoordsChoosing();
                     break;
@@ -479,14 +450,12 @@ namespace BTD6AutoCommunity
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = true;
 
-                    SetCoinTriggeringCB(0);
                     break;
                 case ActionTypes.SellHero:
                     Argument1CB.Visible = false;
                     Argument2CB.Visible = false;
                     HideCoordsChoosing();
 
-                    SetCoinTriggeringCB(0);
                     break;
                 case ActionTypes.MouseClick:
                     Argument1CB.DataSource = null;
@@ -508,16 +477,13 @@ namespace BTD6AutoCommunity
                     Argument2CB.Visible = false;
                     ShowCoordsChoosing();
 
-                    SetCoinTriggeringCB(0);
                     break;
                 case ActionTypes.AdjustMonkeyCoordinates:
-                    BindArgument1CB(MyInstructions.ObjectId);
+                    BindArgument1CB(myScript.Instructions.GetMonkeyIds());
                     Argument1CB.DropDownStyle = ComboBoxStyle.DropDownList;
 
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = false;
-
-                    SetCoinTriggeringCB(0);
 
                     ShowCoordsChoosing();
                     break;
@@ -532,8 +498,6 @@ namespace BTD6AutoCommunity
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = false;
 
-                    SetCoinTriggeringCB(0);
-
                     HideCoordsChoosing();
                     break;
 
@@ -545,8 +509,6 @@ namespace BTD6AutoCommunity
                     Argument1CB.Visible = false;
                     Argument2CB.Visible = false;
 
-                    SetCoinTriggeringCB(0);
-
                     HideCoordsChoosing();
                     break;
 
@@ -556,8 +518,6 @@ namespace BTD6AutoCommunity
 
                     Argument1CB.Visible = false;
                     Argument2CB.Visible = false;
-
-                    SetCoinTriggeringCB(0);
 
                     HideCoordsChoosing();
                     break;
@@ -571,7 +531,6 @@ namespace BTD6AutoCommunity
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = false;
 
-                    SetCoinTriggeringCB(0);
                     HideCoordsChoosing();
                     break;
 
@@ -586,38 +545,38 @@ namespace BTD6AutoCommunity
 
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = true;
-                    SetCoinTriggeringCB(0);
                     HideCoordsChoosing();
                     break;
             }
         }
         
-        public void GetGameInfo()
+        public void GetMetaData()
         {
-            MyInstructions.SelectedMap = (Maps)MapCB.SelectedValue;
-            MyInstructions.SelectedDifficulty = (LevelDifficulties)DifficultyCB.SelectedValue;
-            MyInstructions.SelectedMode = (LevelMode)ModeCB.SelectedValue;
-            MyInstructions.SelectedHero = (Heroes)HeroCB.SelectedValue;
-            try
+            (int X, int Y) anchorCoords = (860, 540);
+            if (int.TryParse(AnchorXTB.Text, out int x) && int.TryParse(AnchorYTB.Text, out int y))
             {
-                MyInstructions.AnchorCoords = (Int32.Parse(AnchorXTB.Text), Int32.Parse(AnchorYTB.Text));
+                anchorCoords = (x, y);
             }
-            catch
-            {
-                MyInstructions.AnchorCoords = (860, 540);
-            }
-            MyInstructions.ScriptName = ScriptNameTB.Text;
+            ScriptMetadata metadata = new ScriptMetadata(
+                ScriptNameTB.Text,
+                (Maps)MapCB.SelectedValue,
+                (LevelDifficulties)DifficultyCB.SelectedValue,
+                (LevelMode)ModeCB.SelectedValue,
+                (Heroes)HeroCB.SelectedValue,
+                anchorCoords
+                );
+            myScript.SetMetadata(metadata);
         }
 
-        public void LoadScriptInfo()
+        public void LoadScriptMetaData()
         {
-            MapCB.SelectedValue = MyInstructions.SelectedMap;
-            DifficultyCB.SelectedValue = MyInstructions.SelectedDifficulty;
-            ModeCB.SelectedValue = MyInstructions.SelectedMode;
-            HeroCB.SelectedValue = MyInstructions.SelectedHero;
-            AnchorXTB.Text = MyInstructions.AnchorCoords.Item1.ToString();
-            AnchorYTB.Text = MyInstructions.AnchorCoords.Item2.ToString();
-            ScriptNameTB.Text = MyInstructions.ScriptName;
+            MapCB.SelectedValue = myScript.Metadata.SelectedMap;
+            DifficultyCB.SelectedValue = myScript.Metadata.SelectedDifficulty;
+            ModeCB.SelectedValue = myScript.Metadata.SelectedMode;
+            HeroCB.SelectedValue = myScript.Metadata.SelectedHero;
+            AnchorXTB.Text = myScript.Metadata.AnchorCoords.X.ToString();
+            AnchorYTB.Text = myScript.Metadata.AnchorCoords.Y.ToString();
+            ScriptNameTB.Text = myScript.Metadata.ScriptName;
         }
 
         private void ModeAndHero_SelectedIndexChanged(object sender, EventArgs e)
@@ -646,35 +605,14 @@ namespace BTD6AutoCommunity
                 Alignment = StringAlignment.Center, //文本垂直居中
                 LineAlignment = StringAlignment.Center //文本水平居中
             };
-            e.Graphics.DrawString(InstructionsViewTL.Items[e.Index].ToString(), e.Font, new SolidBrush(e.ForeColor), e.Bounds, strFmt);
+            e.Graphics.DrawString(InstructionsViewLB.Items[e.Index].ToString(), e.Font, new SolidBrush(e.ForeColor), e.Bounds, strFmt);
             return;
         }
 
         private void InstructionClassCB_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (InstructionClassCB.SelectedIndex < 0) return;
-            int index = InstructionsViewTL.SelectedIndex;
             ActionTypes selectedActionTypes = (ActionTypes)InstructionClassCB.SelectedValue;
-
-            if (index >= 0)
-            {
-                List<int> args = GetArguments();
-                if (MyInstructions.IfSame(index, selectedActionTypes, args))
-                {
-                    ChangeInstructionBT.Enabled = true;
-                }
-                else
-                {
-                    ChangeInstructionBT.Enabled = false;
-                }
-            }
-            else
-            {
-                ChangeInstructionBT.Enabled = false;
-            }
-
-            CoinTriggeringCB.SelectedIndex = 0;
-            RoundTriggeringCB.SelectedIndex = 0;
 
             AddInstructionBT.Enabled = true;
             InsertInstructionBT.Enabled = true;
@@ -683,94 +621,33 @@ namespace BTD6AutoCommunity
 
         private void Argument1CB_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // 验证枚举是否合法
-            if (!Enum.IsDefined(typeof(ActionTypes), InstructionClassCB.SelectedValue)) return;
-
-            int index = InstructionsViewTL.SelectedIndex;
-            ActionTypes type = (ActionTypes)InstructionClassCB.SelectedValue;
-            int argument1 = Argument1CB.SelectedIndex;
-
-            if (index >= 0)
-            {
-                List<int> args = GetArguments();
-                if (MyInstructions.IfSame(index, type, args))
-                {
-                    ChangeInstructionBT.Enabled = true;
-                }
-                else
-                {
-                    ChangeInstructionBT.Enabled = false;
-                }
-            }
-            else
-            {
-                ChangeInstructionBT.Enabled = false;
-            }
-
-            AddInstructionBT.Enabled = true;
-            InsertInstructionBT.Enabled = true;
-
-            if (type == ActionTypes.UpgradeMonkey ||
-                type == ActionTypes.SwitchMonkeyTarget ||
-                type == ActionTypes.SetMonkeyFunction ||
-                type == ActionTypes.SellMonkey)
-            {
-                if (MyInstructions.objectList[argument1].IsDelete)
-                {
-                    ChangeInstructionBT.Enabled = false;
-                    AddInstructionBT.Enabled = false;
-                    InsertInstructionBT.Enabled = false;
-                }
-            }
         }
 
         private List<int> GetArguments()
         {
+            // 初始化为7个-1
             List<int> args = new List<int>();
+            for (int i = 0; i < 7; i++) args.Add(-1);
+
             if (Argument1CB.DropDownStyle != ComboBoxStyle.DropDownList)
             {
-                if (Int32.TryParse(Argument1CB.Text, out int num))
-                {
-                    //MessageBox.Show(num.ToString());
-                    args.Add(num);
-                }
-                else
-                {
-                    args.Add(Argument1CB.SelectedIndex);
-                }
+                if (Int32.TryParse(Argument1CB.Text, out int num)) args[0] = num;
+                else args[0] = Argument1CB.SelectedIndex;
             }
             else
             {
-                try
-                {
-                    if (Int32.TryParse(Argument1CB.SelectedValue.ToString(), out int num))
-                    {
-                        args.Add(num);
-                    }
-                    else
-                    {
-                        args.Add(Argument1CB.SelectedIndex);
-                    }
-                }
-                catch
-                {
-                    args.Add(Argument1CB.SelectedIndex);
-                }
+                if (Argument1CB.SelectedValue != null && 
+                        Int32.TryParse(Argument1CB.SelectedValue.ToString(), out int num)) args[0] = num;
+                else args[0] = Argument1CB.SelectedIndex;
             }
             if (Argument2CB.DropDownStyle != ComboBoxStyle.DropDownList)
             {
-                if (Int32.TryParse(Argument2CB.Text, out int num))
-                {
-                    args.Add(num);
-                }
-                else
-                {
-                    args.Add(Argument2CB.SelectedIndex);
-                }
+                if (Int32.TryParse(Argument2CB.Text, out int num)) args[1] = num;
+                else args[1] = Argument2CB.SelectedIndex;
             }
             else
             {
-                args.Add(Argument2CB.SelectedIndex);
+                args[1] = Argument2CB.SelectedIndex;
             }
             return args;
         }
@@ -778,89 +655,21 @@ namespace BTD6AutoCommunity
         private (int, int) GetTrigger()
         {
             int cT, rT;
-            if (RoundTriggeringCB.SelectedIndex <= 0)
-            {
-                if (Int32.TryParse(RoundTriggeringCB.Text, out int num1))
-                {
-                    rT = num1;
-                }
-                else
-                {
-                    rT = 0;
-                }
-            }
-            else
-            {
-                rT = 0;
-            }
-
-            int difficulty = DifficultyCB.SelectedIndex + (ModeCB.SelectedIndex == 7 ? 1 : 0);
-
-
-            if (InstructionClassCB.SelectedIndex == 1)
-            {
-                //MessageBox.Show("Coin:" + CoinTriggeringCB.SelectedIndex.ToString());
-                if (CoinTriggeringCB.SelectedIndex <= 0)
-                {
-                    if (Int32.TryParse(CoinTriggeringCB.Text, out int num1))
-                    {
-                        cT = num1;
-                    }
-                    else
-                    {
-                        cT = 0;
-                    }
-                }
-                else
-                {
-                    cT = MyInstructions.objectList[Argument1CB.SelectedIndex].GetCurrentUpgradeCost(Argument2CB.SelectedIndex, difficulty, CoinTriggeringCB.SelectedIndex - 1);
-                }
-            }
-            else
-            {
-                //MessageBox.Show("Coin:" + CoinTriggeringCB.SelectedIndex.ToString());
-                if (CoinTriggeringCB.SelectedIndex <= 0)
-                {
-                    if (Int32.TryParse(CoinTriggeringCB.Text, out int num1))
-                    {
-                        cT = num1;
-                    }
-                    else
-                    {
-                        cT = 0;
-                    }
-                }
-                else if (CoinTriggeringCB.SelectedIndex == 1)
-                {
-                    cT = -1 * difficulty - 1;
-                }
-                else
-                {
-                    cT = 0;
-                }
-            }
+            if (Int32.TryParse(RoundTriggerTB.Text, out int num1)) rT = num1;
+            else rT = 0;
+            if (Int32.TryParse(CoinTriggerTB.Text, out int num2)) cT = num2;
+            else cT = 0;
             return (rT, cT);
         }
 
-        private (int, int) GetCoords()
+        private (int X, int Y) GetCoords()
         {
-            (int, int) coords;
-            if (Int32.TryParse(CoordsXTB.Text, out int num1))
-            {
-                coords.Item1 = num1;
-            }
-            else
-            {
-                coords.Item1 = 0;
-            }
-            if (Int32.TryParse(CoordsYTB.Text, out int num2))
-            {
-                coords.Item2 = num2;
-            }
-            else
-            {
-                coords.Item2 = 0;
-            }
+            if (CoordsXTB.Visible == false || CoordsYTB.Visible == false) return (-1, -1);
+            (int, int) coords; 
+            if (Int32.TryParse(CoordsXTB.Text, out int num1)) coords.Item1 = num1;
+            else coords.Item1 = -1;
+            if (Int32.TryParse(CoordsYTB.Text, out int num2)) coords.Item2 = num2;
+            else coords.Item2 = -1;
             return coords;
         }
 
@@ -868,34 +677,31 @@ namespace BTD6AutoCommunity
         {
             if (!Enum.IsDefined(typeof(ActionTypes), InstructionClassCB.SelectedValue)) return;
 
-            InstructionsViewTL.Enabled = false;
+            InstructionsViewLB.Enabled = false;
             ActionTypes instructionType = (ActionTypes)InstructionClassCB.SelectedValue;
             if (instructionType != ActionTypes.QuickCommandBundle) // 普通指令
             {
-                //获取两个参数
                 List<int> args = GetArguments();
-                // 获取触发条件
-                (int, int) triggering = GetTrigger();
-
+                (int, int) triggers = GetTrigger();
                 (int, int) coords = GetCoords();
 
-                MyInstructions.AddInstruction(instructionType, args, triggering.Item1, triggering.Item2, coords);
+                Instruction inst = myScript.AddInstruction(instructionType, args, triggers.Item1, triggers.Item2, coords);
+                if (inst == null) return;
+                InstructionsViewLB.Items.Add(inst.ToString());
             }
             else // 指令包
             {
-                int packageIndex = Int32.Parse(Argument1CB.SelectedValue.ToString());
-                Int32.TryParse(Argument2CB.Text, out int count);
-                if (count <= 0)
-                {
-                    count = 1;
-                }
-                MyInstructions.InsertInstructionPackage(packageIndex, count, InstructionsViewTL.Items.Count - 1); // 0为添加到最后
+                //int packageIndex = Int32.Parse(Argument1CB.SelectedValue.ToString());
+                //Int32.TryParse(Argument2CB.Text, out int count);
+                //if (count <= 0)
+                //{
+                //    count = 1;
+                //}
+                //myScript.InsertInstructionPackage(packageIndex, count, InstructionsViewTL.Items.Count - 1); // 0为添加到最后
             }
 
-            // ListBox数据绑定
-            InstructionsViewTL.Enabled = true;
-            BindInstructionsViewTL(MyInstructions.Displayinstructions);
-            InstructionsViewTL.SelectedIndex = InstructionsViewTL.Items.Count - 1;
+            InstructionsViewLB.Enabled = true;
+            InstructionsViewLB.SelectedIndex = InstructionsViewLB.Items.Count - 1;
             //foreach (var item1 in MyInstructions.displayinstructions)
             //{
             //    MessageBox.Show(item1.ToString());
@@ -906,7 +712,7 @@ namespace BTD6AutoCommunity
         {
             if (!Enum.IsDefined(typeof(ActionTypes), InstructionClassCB.SelectedValue)) return;
 
-            int index = InstructionsViewTL.SelectedIndex;
+            int index = InstructionsViewLB.SelectedIndex;
             //获取两个参数
             List<int> args = GetArguments();
             // 获取触发条件
@@ -914,13 +720,16 @@ namespace BTD6AutoCommunity
 
             (int, int) coords = GetCoords();
 
-            // ListBox数据绑定
-            MyInstructions.ModifyInstruction
-                (index, (ActionTypes)InstructionClassCB.SelectedValue, args, triggering.Item1, triggering.Item2, coords);
+            Instruction inst = myScript.ModifyInstruction(index, (ActionTypes)InstructionClassCB.SelectedValue, args, triggering.Item1, triggering.Item2, coords);
+            if (inst != null)  
+            {
+                InstructionsViewLB.Items[index] = inst.ToString();
+                myScript.Instructions.Build();
+                BindInstructionsViewLB();
+            }
 
-
-            BindInstructionsViewTL(MyInstructions.Displayinstructions);
-            InstructionsViewTL.SelectedIndex = index;
+            if (index >= InstructionsViewLB.Items.Count) index = InstructionsViewLB.Items.Count - 1;
+            InstructionsViewLB.SelectedIndex = index;
 
             return;
         }
@@ -929,7 +738,7 @@ namespace BTD6AutoCommunity
         {
             if (!Enum.IsDefined(typeof(ActionTypes), InstructionClassCB.SelectedValue)) return;
             
-            int index = InstructionsViewTL.SelectedIndex;
+            int index = InstructionsViewLB.SelectedIndex;
 
             ActionTypes instructionType = (ActionTypes)InstructionClassCB.SelectedValue;
 
@@ -942,330 +751,196 @@ namespace BTD6AutoCommunity
 
                 (int, int) coords = GetCoords();
 
-                if (MyInstructions.InsertInstruction(InstructionsViewTL.SelectedIndex, instructionType, args, triggering.Item1, triggering.Item2, coords))
+                Instruction inst = myScript.InsertInstruction(InstructionsViewLB.SelectedIndex + 1, instructionType, args, triggering.Item1, triggering.Item2, coords);
+                if (inst == null) return;
+                InstructionsViewLB.Items.Insert(index + 1, inst.ToString());
+
+                if (index + 1 < InstructionsViewLB.Items.Count)
                 {
-                    BindInstructionsViewTL(MyInstructions.Displayinstructions);
-                    if (index + 1 < InstructionsViewTL.Items.Count)
-                    {
-                        InstructionsViewTL.SelectedIndex = index + 1;
-                    }
-                    else
-                    {
-                        InstructionsViewTL.SelectedIndex = InstructionsViewTL.Items.Count - 1;
-                    }
+                    InstructionsViewLB.SelectedIndex = index + 1;
+                }
+                else
+                {
+                    InstructionsViewLB.SelectedIndex = InstructionsViewLB.Items.Count - 1;
                 }
             }
             else // 指令包
             {
-                int packageIndex = Int32.Parse(Argument1CB.SelectedValue.ToString());
-                Int32.TryParse(Argument2CB.Text, out int count);
-                if (count <= 0)
-                {
-                    count = 1;
-                }
-                MyInstructions.InsertInstructionPackage(packageIndex, count, InstructionsViewTL.SelectedIndex);
+                //int packageIndex = Int32.Parse(Argument1CB.SelectedValue.ToString());
+                //Int32.TryParse(Argument2CB.Text, out int count);
+                //if (count <= 0)
+                //{
+                //    count = 1;
+                //}
+                //myScript.InsertInstructionPackage(packageIndex, count, InstructionsViewLB.SelectedIndex);
 
-                BindInstructionsViewTL(MyInstructions.Displayinstructions);
-                if (index + 1 < InstructionsViewTL.Items.Count)
-                {
-                    InstructionsViewTL.SelectedIndex = index + 1;
-                }
-                else
-                {
-                    InstructionsViewTL.SelectedIndex = InstructionsViewTL.Items.Count - 1;
-                }
+                //BindInstructionsViewTL(myScript.Displayinstructions);
+                //if (index + 1 < InstructionsViewLB.Items.Count)
+                //{
+                //    InstructionsViewLB.SelectedIndex = index + 1;
+                //}
+                //else
+                //{
+                //    InstructionsViewLB.SelectedIndex = InstructionsViewLB.Items.Count - 1;
+                //}
             }
 
         }
 
         private void DeleteInstructionBT_Click(object sender, EventArgs e)
         {
-            int index = InstructionsViewTL.SelectedIndex;
+            int index = InstructionsViewLB.SelectedIndex;
             if (index < 0) return;
-            MyInstructions.DeleteInstruction(index);
-            BindInstructionsViewTL(MyInstructions.Displayinstructions);
-            if (index < InstructionsViewTL.Items.Count)
+            myScript.DeleteInstruction(index);
+            InstructionsViewLB.Items.RemoveAt(index);
+            if (index < InstructionsViewLB.Items.Count)
             {
-                InstructionsViewTL.SelectedIndex = index;
+                InstructionsViewLB.SelectedIndex = index;
             }
             else
             {
-                InstructionsViewTL.SelectedIndex = index - 1;
+                InstructionsViewLB.SelectedIndex = index - 1;
             }
         }
 
-        private void ClearInstructionBT_Click(object sender, EventArgs e)
+        private void ClearInstructionsBT_Click(object sender, EventArgs e)
         {
             var result = MessageBox.Show("清除所有指令？", "确认", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
-                MyInstructions.Clear();
-                BindInstructionsViewTL(MyInstructions.Displayinstructions);
+                myScript.Instructions.Clear();
+                InstructionsViewLB.Items.Clear();
             }
+            InstructionClassCB_SelectedIndexChanged(null, null);
         }
 
         private void UpBT_Click(object sender, EventArgs e)
         {
-            int index = InstructionsViewTL.SelectedIndex;
+            int index = InstructionsViewLB.SelectedIndex;
             if (index - 1 >= 0)
             {
-                if (MyInstructions.ChangeInstructionPosition(index - 1))
-                {
-                    BindInstructionsViewTL(MyInstructions.Displayinstructions);
-                    InstructionsViewTL.SelectedIndex = index - 1;
-                }
+                myScript.MoveInstruction(index, true);
+                // 交换index - 1和index
+                (InstructionsViewLB.Items[index], InstructionsViewLB.Items[index - 1])
+                    = (InstructionsViewLB.Items[index - 1], InstructionsViewLB.Items[index]);
+                InstructionsViewLB.SelectedIndex = index - 1;
             }
             return;
         }
 
         private void DownBT_Click(object sender, EventArgs e)
         {
-            int index = InstructionsViewTL.SelectedIndex;
-            if (MyInstructions.ChangeInstructionPosition(index))
+            int index = InstructionsViewLB.SelectedIndex;
+            if (index + 1 < InstructionsViewLB.Items.Count)
             {
-                BindInstructionsViewTL(MyInstructions.Displayinstructions);
-                InstructionsViewTL.SelectedIndex = index + 1;
+                myScript.MoveInstruction(index, false);
+                // 交换index + 1和index
+                (InstructionsViewLB.Items[index], InstructionsViewLB.Items[index + 1])
+                    = (InstructionsViewLB.Items[index + 1], InstructionsViewLB.Items[index]);
+                InstructionsViewLB.SelectedIndex = index + 1;
             }
             return;
         }
 
+        private void BuildInstructionsBT_Click(object sender, EventArgs e)
+        {
+            int index = InstructionsViewLB.SelectedIndex;
+            myScript.BuildInstructions();
+            BindInstructionsViewLB();
+            if (index >= InstructionsViewLB.Items.Count) index = InstructionsViewLB.Items.Count - 1;
+            InstructionsViewLB.SelectedIndex = index;
+            InstructionClassCB_SelectedIndexChanged(null, null);
+        }
+
         private void SaveInstructionBT_Click(object sender, EventArgs e)
         {
-            string filePath;
             try
             {
-                GetGameInfo();
-                filePath = MyInstructions.SaveToJson(ScriptNameTB.Text);
-                //MessageBox.Show(filePath);
-                SelectPath(Path.GetFullPath(filePath));
-                MyInstructions.Clear();
-                BindInstructionsViewTL(MyInstructions.Displayinstructions);
+                string filePath;
+                myScript.Instructions.Build();
+                GetMetaData();
+                filePath = myScript.SaveInstructionsToFile();
+                //myScript.ClearInstructions();
+                //ClearInstructionsBT_Click(null, null);
+                
+                if (IsStartPageEditButtonClicked)
+                {
+                    StartPrgramTC.SelectedIndex = 0;
+                    IsStartPageEditButtonClicked = false;
+                    ExecuteScriptCB_SelectedIndexChanged(null, null);
+                }
+                else
+                { 
+                    SelectPath(Path.GetFullPath(Path.GetDirectoryName(filePath)));
+                    StartPrgramTC.SelectedIndex = 3;
+                }
             }
             catch
             {
-                MessageBox.Show("脚本名异常！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            if (IsStartPageEditButtonClicked)
-            {
-                StartPrgramTC.SelectedIndex = 0;
-                IsStartPageEditButtonClicked = false;
-                ExecuteScriptCB_SelectedIndexChanged(null, null);
-            }
-            else
-            {
-                StartPrgramTC.SelectedIndex = 3;
+                MessageBox.Show("脚本名不能包含特殊字符：\\/:*?\\");
             }
         }
 
-        private void Argument2CB_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (Argument2CB.Text == "无坐标选择" && Argument2CB.SelectedIndex == 0)
-            {
-                HideCoordsChoosing();
-            }
-            if (Argument2CB.Text == "有坐标选择" && Argument2CB.SelectedIndex == 1)
-            {
-                ShowCoordsChoosing();
-            }
-        }
 
-        private void RoundTriggeringCB_SelectedIndexChanged(object sender, EventArgs e)
+        private void InstructionsViewLB_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (RoundTriggeringCB.SelectedIndex == 1)
-            {
-                RoundTriggeringCB.DropDownStyle = ComboBoxStyle.DropDownList;
-            }
-            if (RoundTriggeringCB.SelectedIndex == 0)
-            {
-                RoundTriggeringCB.DropDownStyle = ComboBoxStyle.DropDown;
-            }
-        }
+            List<int> allArguments = myScript.GetAllArguments(InstructionsViewLB.SelectedIndex);
+            if (allArguments == null || allArguments.Count == 0) return;
+            if (!Enum.IsDefined(typeof(ActionTypes), allArguments[0])) return;
 
-        private void CoinTriggeringCB_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (CoinTriggeringCB.SelectedIndex == 0)
-            {
-                CoinTriggeringCB.DropDownStyle = ComboBoxStyle.DropDown;
-            }
-            else
-            {
-                CoinTriggeringCB.DropDownStyle = ComboBoxStyle.DropDownList;
-            }
-        }
+            var actionType = (ActionTypes)allArguments[0];
+            List<int> arguments = allArguments.GetRange(1, 7);
+            (int X, int Y) coords = (allArguments[8], allArguments[9]);
+            int roundTrigger = allArguments[10];
+            int coinTrigger = allArguments[11];
 
-        private void InstructionsViewTL_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ChangeInstructionBT.Enabled = true;
-            List<int> args = MyInstructions.GetArguments(InstructionsViewTL.SelectedIndex);
-            if (args == null || args.Count == 0) return;
 
-            if (!Enum.IsDefined(typeof(ActionTypes), args[0])) return;
-            var actionType = (ActionTypes)args[0];
             InstructionClassCB.SelectedValue = actionType;
 
-            SetInstructionVision((ActionTypes)args[0]);
+            SetInstructionVision((ActionTypes)allArguments[0]);
 
-            int triggerindex = 0;
-
-            switch (actionType)
+            if (arguments[0] != -1)
             {
-                case ActionTypes.PlaceMonkey: // 放置指令
-                    Argument1CB.SelectedValue = args[1];
-                    CoordsXTB.Text = args[3].ToString();
-                    CoordsYTB.Text = args[4].ToString();
-
-                    triggerindex = 5;
-                    break;
-                case ActionTypes.UpgradeMonkey: // 升级指令
-                    Argument1CB.SelectedIndex = args[1];
-                    Argument2CB.SelectedIndex = args[2];
-
-                    triggerindex = 4;
-                    break;
-                case ActionTypes.SwitchMonkeyTarget: // 切换目标指令
-                    Argument1CB.SelectedIndex = args[1];
-                    Argument2CB.SelectedIndex = args[2];
-
-                    triggerindex = 3;
-                    break;
-                case ActionTypes.UseAbility: // 释放技能指令
-                    Argument1CB.SelectedValue = args[1];
-                    if (args.Count > 4)
-                    {
-                        Argument2CB.SelectedIndex = 1;
-                        CoordsXTB.Text = args[2].ToString();
-                        CoordsYTB.Text = args[3].ToString();
-
-                        triggerindex = 4;
-
-                    }
+                if (Argument1CB.DropDownStyle != ComboBoxStyle.DropDownList)
+                {
+                    if (Argument1CB.Items.Count <= arguments[0]) Argument1CB.Text = arguments[0].ToString();
+                    else Argument1CB.SelectedIndex = arguments[0];
+                }
+                else
+                {
+                    if (Argument1CB.SelectedValue != null) Argument1CB.SelectedValue = arguments[0];
                     else
                     {
-                        triggerindex = 2;
+                        if (arguments[0] >= 0 && arguments[0] < Argument1CB.Items.Count) Argument1CB.SelectedIndex = arguments[0];
                     }
-                    break;
-                case ActionTypes.SwitchSpeed: // 倍速指令
-                    Argument1CB.SelectedIndex = args[1];
-
-                    triggerindex = 2;
-                    break;
-                case ActionTypes.SellMonkey: // 出售指令
-                    Argument1CB.SelectedIndex = args[1];
-
-                    triggerindex = 2;
-                    break;
-                case ActionTypes.SetMonkeyFunction: // 设置猴子功能
-                    Argument1CB.SelectedIndex = args[1];
-                    if (args.Count > 4)
-                    {
-                        Argument2CB.SelectedIndex = 1;
-                        CoordsXTB.Text = args[2].ToString();
-                        CoordsYTB.Text = args[3].ToString();
-
-                        triggerindex = 4;
-
-                    }
-                    else
-                    {
-                        triggerindex = 2;
-                    }
-                    break;
-                case ActionTypes.PlaceHero: // 放置英雄
-                    CoordsXTB.Text = args[1].ToString();
-                    CoordsYTB.Text = args[2].ToString();
-
-                    triggerindex = 3;
-                    break;
-                case ActionTypes.UpgradeHero: // 升级英雄
-                    if (args.Count > 3)
-                    {
-                        Argument2CB.SelectedIndex = 1;
-                        CoordsXTB.Text = args[1].ToString();
-                        CoordsYTB.Text = args[2].ToString();
-
-                        triggerindex = 3;
-
-                    }
-                    else
-                    {
-                        triggerindex = 1;
-                    }
-                    break;
-                case ActionTypes.PlaceHeroItem: // 放置英雄物品
-                    Argument1CB.SelectedIndex = args[1] - 1;
-                    if (args.Count > 4)
-                    {
-                        Argument2CB.SelectedIndex = 1;
-                        CoordsXTB.Text = args[2].ToString();
-                        CoordsYTB.Text = args[3].ToString();
-
-                        triggerindex = 4;
-
-                    }
-                    else
-                    {
-                        triggerindex = 2;
-                    }
-                    break;
-                case ActionTypes.SwitchHeroTarget: // 切换英雄目标
-                    Argument2CB.SelectedIndex = args[1];
-
-                    triggerindex = 2;
-                    break;
-                case ActionTypes.SetHeroFunction: // 设置英雄模式
-                    Argument1CB.SelectedIndex = args[1];
-                    if (args.Count > 4)
-                    {
-                        Argument2CB.SelectedIndex = 1;
-                        CoordsXTB.Text = args[2].ToString();
-                        CoordsYTB.Text = args[3].ToString();
-
-                        triggerindex = 4;
-
-                    }
-                    else
-                    {
-                        triggerindex = 2;
-                    }
-                    break;
-                case ActionTypes.SellHero: // 出售英雄
-
-                    triggerindex = 1;
-                    break;
-                case ActionTypes.MouseClick: // 鼠标点击
-                    Argument1CB.SelectedIndex = args[1] - 1;
-
-                    CoordsXTB.Text = args[2].ToString();
-                    CoordsYTB.Text = args[3].ToString();
-                    triggerindex = 4;
-                    break;
-                case ActionTypes.AdjustMonkeyCoordinates: // 修改猴子坐标
-                    Argument1CB.SelectedIndex = args[1];
-
-                    CoordsXTB.Text = args[2].ToString();
-                    CoordsYTB.Text = args[3].ToString();
-                    triggerindex = 4;
-                    break;
-                case ActionTypes.WaitMilliseconds: // 等待指令
-                case ActionTypes.Jump:
-                    Argument1CB.Text = args[1].ToString();
-                    triggerindex = 2;
-                    break;
-                case ActionTypes.StartFreeplay: // 继续指令
-                    triggerindex = 1;
-                    break;
-                case ActionTypes.EndFreeplay: // 停止指令
-                    triggerindex = 1;
-                    break;
+                }
             }
-            RoundTriggeringCB.SelectedIndex = 0;
-            RoundTriggeringCB.DropDownStyle = ComboBoxStyle.DropDown;
-            RoundTriggeringCB.Text = args[triggerindex].ToString();
-            CoinTriggeringCB.SelectedIndex = 0;
-            CoinTriggeringCB.DropDownStyle = ComboBoxStyle.DropDown;
-            CoinTriggeringCB.Text = args[triggerindex + 1].ToString();
+
+            if (arguments[1] != -1)
+            {
+                if (Argument2CB.DropDownStyle != ComboBoxStyle.DropDownList)
+                {
+                    if (Argument2CB.Items.Count <= arguments[1]) Argument2CB.Text = arguments[1].ToString();
+                    else Argument2CB.SelectedIndex = arguments[1];
+                }
+                else
+                {
+                    if (Argument2CB.SelectedValue != null) Argument2CB.SelectedValue = arguments[1];
+                    else
+                    {
+                        if (arguments[1] >= 0 && arguments[1] < Argument2CB.Items.Count) Argument2CB.SelectedIndex = arguments[1];
+                    }
+                }
+            }
+
+            CoordsXTB.Text = coords.X.ToString();
+            CoordsYTB.Text = coords.Y.ToString();
+
+            RoundTriggerTB.Text = roundTrigger.ToString();
+            CoinTriggerTB.Text = coinTrigger.ToString();
         }
+
 
         protected override void WndProc(ref Message m) // 重载WndProc函数
         {
@@ -1352,7 +1027,6 @@ namespace BTD6AutoCommunity
                 }
             }
         }
-
 
         private void AnchorCoordsBT_Click(object sender, EventArgs e)
         {

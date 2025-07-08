@@ -230,6 +230,7 @@ namespace BTD6AutoCommunity.Core
 
         public static bool GetYellowBlockCount(GameContext context, int index, int p)
         {
+            if (index == -1) return false;
             System.Drawing.Point point = UpgradeYellowPosition[index * 5 + 5 - p];
             Debug.WriteLine($"point: {point}");
             Color c1 = GetGameColor(context, point);

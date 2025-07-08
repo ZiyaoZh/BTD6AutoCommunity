@@ -16,7 +16,7 @@ namespace BTD6AutoCommunity
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new BTD6AutoCommunity());
+            Application.Run(new BTD6AutoCommunity.UI.Main.BTD6AutoUI());
         }
     }
 }
