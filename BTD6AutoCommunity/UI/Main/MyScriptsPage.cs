@@ -20,6 +20,7 @@ namespace BTD6AutoCommunity.UI.Main
         {
             LoadDirectoryTree();
         }
+
         private void LoadDirectoryTree()
         {
             OperationsTV.Nodes.Clear();

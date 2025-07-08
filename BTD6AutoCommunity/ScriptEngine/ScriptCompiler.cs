@@ -77,6 +77,8 @@ namespace BTD6AutoCommunity.ScriptEngine
             compiled.Add(settings.GetHotKey((Monkeys)inst.Arguments[0]));
 
             compiled.Add(new MicroInstruction(MicroInstructionType.LeftClick));
+            int times = 200 / settings.OperationInterval > 0 ? 200 / settings.OperationInterval : 1;
+            for (int i = 0; i < times; i++) { compiled.Add(new MicroInstruction(MicroInstructionType.Empty)); }
             compiled.Add(new MicroInstruction(MicroInstructionType.CheckPlaceSuccess));
 
             return compiled;
@@ -125,6 +127,19 @@ namespace BTD6AutoCommunity.ScriptEngine
                 if (key.Control) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 17)); }
                 if (key.Shift) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 16)); }
             }
+            if (inst.Arguments[1] == 3) // 上路(仅一次)
+            {
+                compiled.Add(settings.GetHotKey(HotkeyAction.UpgradeTopPath));
+            }
+            if (inst.Arguments[1] == 4) // 中路(仅一次)
+            {
+                compiled.Add(settings.GetHotKey(HotkeyAction.UpgradeMiddlePath));
+            }
+            if (inst.Arguments[1] == 5) // 下路(仅一次)
+            {
+                compiled.Add(settings.GetHotKey(HotkeyAction.UpgradeBottomPath));
+            }
+
             if (!IfNext(index))
             {
                 compiled.Add(metadata.AnchorCoords.X, metadata.AnchorCoords.Y);

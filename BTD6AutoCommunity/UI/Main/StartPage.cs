@@ -439,28 +439,27 @@ namespace BTD6AutoCommunity.UI.Main
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string sourceFilePath = openFileDialog.FileName;
+                    ScriptFileManager scriptFileManager;
+                    ScriptModel scriptModel;
+
                     if (Path.GetExtension(sourceFilePath) != ".btd6")
                     {
                         MessageBox.Show("脚本格式错误！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    ScriptEditorSuite scriptEditorSuite = new ScriptEditorSuite();
-                    string jsonString = File.ReadAllText(sourceFilePath);
                     try
                     {
-                        scriptEditorSuite = JsonConvert.DeserializeObject<ScriptEditorSuite>(jsonString);
-                        scriptEditorSuite.ScriptName = Path.GetFileNameWithoutExtension(sourceFilePath);
-                        scriptEditorSuite.RepairScript();
+                        scriptFileManager = new ScriptFileManager();
+                        scriptModel = scriptFileManager.LoadScript(sourceFilePath);
+                        ExecuteMapCB.SelectedValue = scriptModel.Metadata.SelectedMap;
+                        ExecuteDifficultyCB.SelectedValue = scriptModel.Metadata.SelectedDifficulty;
+                        ExecuteDifficultyCB_SelectedValueChanged(ExecuteDifficultyCB, EventArgs.Empty);
+                        ExecuteScriptCB.SelectedIndex = ExecuteScriptCB.FindString(scriptModel.Metadata.ScriptName);
                     }
                     catch
                     {
                         MessageBox.Show("脚本内容错误！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    //File.Copy(sourceFilePath, destinationFilePath, true);
-                    ExecuteMapCB.SelectedValue = scriptEditorSuite.SelectedMap;
-                    ExecuteDifficultyCB.SelectedValue = scriptEditorSuite.SelectedDifficulty;
-                    ExecuteDifficultyCB_SelectedValueChanged(ExecuteDifficultyCB, EventArgs.Empty);
-                    ExecuteScriptCB.SelectedIndex = ExecuteScriptCB.FindString(scriptEditorSuite.ScriptName);
                 }
             }
         }

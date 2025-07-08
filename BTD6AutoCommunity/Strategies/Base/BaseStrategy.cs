@@ -36,8 +36,10 @@ namespace BTD6AutoCommunity.Strategies.Base
 
         // 脚本编译结果
         protected List<ExecutableInstruction> executableInstructions;
-        //脚本元数据
+        // 脚本元数据
         protected ScriptMetadata scriptMetadata;
+        // 脚本文件管理
+        protected ScriptFileManager scriptFileManager;
 
         // 执行引擎
         protected InGame.InGameActionExecutor InGameActionExecutor;
@@ -70,13 +72,14 @@ namespace BTD6AutoCommunity.Strategies.Base
             _logs.Log(_context.ToString(), LogLevel.Info);
             stateMachine = new GameStateMachine(_context);
 
+            scriptFileManager = new ScriptFileManager();
             //InitializeStateHandlers();
             SetupGameStateTimer();
         }
 
         protected void GetExecutableInstructions(UserSelection userSelection)
         {
-            string scriptPath = ScriptEditorSuite.ExistScript(
+            string scriptPath = scriptFileManager.GetScriptFullPath(
                     Constants.GetTypeName((Maps)userSelection.selectedMap),
                     Constants.GetTypeName((LevelDifficulties)userSelection.selectedDifficulty),
                     userSelection.selectedScript

@@ -79,8 +79,9 @@ namespace BTD6AutoCommunity.ScriptEngine
                     case ActionTypes.UseAbility:
                         arguments[0] = argumentsOld[0];
                         arguments[1] = argumentsOld[1];
-                        if (argumentsOld[2] == 1)
+                        if (argumentsOld.Count == 6)
                         {
+                            arguments[2] = 1;
                             arguments[8] = argumentsOld[2];
                             arguments[9] = argumentsOld[3];
                             arguments[10] = argumentsOld[4];
@@ -88,6 +89,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                         }
                         else
                         {
+                            arguments[2] = 0;
                             arguments[10] = argumentsOld[2];
                             arguments[11] = argumentsOld[3];
                         }
@@ -107,18 +109,19 @@ namespace BTD6AutoCommunity.ScriptEngine
                     case ActionTypes.SetMonkeyFunction:
                         arguments[0] = argumentsOld[0];
                         arguments[1] = monkeyIdsOld[argumentsOld[1]].Item1 + monkeyIdsOld[argumentsOld[1]].Item2 * 100;
-                        arguments[2] = argumentsOld[2];
-                        if (argumentsOld[2] == 1)
+                        if (argumentsOld.Count == 6)
                         {
-                            arguments[8] = argumentsOld[3];
-                            arguments[9] = argumentsOld[4];
-                            arguments[10] = argumentsOld[5];
-                            arguments[11] = argumentsOld[6];
+                            arguments[2] = 1;
+                            arguments[8] = argumentsOld[2];
+                            arguments[9] = argumentsOld[3];
+                            arguments[10] = argumentsOld[4];
+                            arguments[11] = argumentsOld[5];
                         }
                         else
                         {
-                            arguments[10] = argumentsOld[3];
-                            arguments[11] = argumentsOld[4];
+                            arguments[2] = 0;
+                            arguments[10] = argumentsOld[2];
+                            arguments[11] = argumentsOld[3];
                         }
                         break;
                     case ActionTypes.PlaceHero:
@@ -136,17 +139,19 @@ namespace BTD6AutoCommunity.ScriptEngine
                     case ActionTypes.PlaceHeroItem:
                         arguments[0] = argumentsOld[0];
                         arguments[1] = argumentsOld[1];
-                        if (argumentsOld[2] == 1)
+                        if (argumentsOld.Count == 6)
                         {
-                            arguments[8] = argumentsOld[3];
-                            arguments[9] = argumentsOld[4];
-                            arguments[10] = argumentsOld[5];
-                            arguments[11] = argumentsOld[6];
+                            arguments[2] = 1;
+                            arguments[8] = argumentsOld[2];
+                            arguments[9] = argumentsOld[3];
+                            arguments[10] = argumentsOld[4];
+                            arguments[11] = argumentsOld[5];
                         }
                         else
                         {
-                            arguments[10] = argumentsOld[3];
-                            arguments[11] = argumentsOld[4];
+                            arguments[2] = 0;
+                            arguments[10] = argumentsOld[2];
+                            arguments[11] = argumentsOld[3];
                         }
                         break;
                     case ActionTypes.SwitchHeroTarget:
@@ -158,17 +163,19 @@ namespace BTD6AutoCommunity.ScriptEngine
                     case ActionTypes.SetHeroFunction:
                         arguments[0] = argumentsOld[0];
                         arguments[1] = argumentsOld[1];
-                        if (argumentsOld[2] == 1)
+                        if (argumentsOld.Count == 6)
                         {
-                            arguments[8] = argumentsOld[3];
-                            arguments[9] = argumentsOld[4];
-                            arguments[10] = argumentsOld[5];
-                            arguments[11] = argumentsOld[6];
+                            arguments[2] = 1;
+                            arguments[8] = argumentsOld[2];
+                            arguments[9] = argumentsOld[3];
+                            arguments[10] = argumentsOld[4];
+                            arguments[11] = argumentsOld[5];
                         }
                         else
                         {
-                            arguments[10] = argumentsOld[3];
-                            arguments[11] = argumentsOld[4];
+                            arguments[2] = 0;
+                            arguments[10] = argumentsOld[2];
+                            arguments[11] = argumentsOld[3];
                         }
                         break;
                     case ActionTypes.SellHero:

@@ -74,7 +74,7 @@ namespace BTD6AutoCommunity.Strategies
             {
                 foreach (int dif in new int[] { 0, 1, 2 })
                 {
-                    string scriptPath = ScriptEditorSuite.ExistScript(
+                    string scriptPath = scriptFileManager.GetScriptFullPath(
                         Constants.GetTypeName((Maps)mapId),
                         Constants.GetTypeName((LevelDifficulties)dif),
                         Constants.CollectionScripts[collectionMode]

@@ -90,9 +90,9 @@ namespace BTD6AutoCommunity.ScriptEngine
                     content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
                     if (Arguments[4] == -1)
                     {
-                        if (Arguments[1] == 0) content += "升级上路";
-                        else if (Arguments[1] == 1) content += "升级中路";
-                        else if (Arguments[1] == 2) content += "升级下路";
+                        if (Arguments[1] == 0 || Arguments[1] == 3) content += "升级上路";
+                        if (Arguments[1] == 1 || Arguments[1] == 4) content += "升级中路";
+                        if (Arguments[1] == 2 || Arguments[1] == 5) content += "升级下路";
                     }
                     else
                     {
@@ -105,28 +105,22 @@ namespace BTD6AutoCommunity.ScriptEngine
                     content += "目标";
                     content += Constants.TargetToChange[Arguments[1]];
                     break;
-                case ActionTypes.UseAbility: // 释放技能指令
-                    content += "释放技能";
-                    content += Constants.AbilityToDisplay[Arguments[0]];
+                case ActionTypes.SetMonkeyFunction: // 设置猴子功能
+                    content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
+                    if (Arguments[1] == 0 || Arguments[1] == 1) content += "更改功能1";
+                    if (Arguments[1] == 2 || Arguments[1] == 3) content += "更改功能2";
                     if (Coordinates.X != -1)
                         content += "于" + Coordinates.ToString();
                     break;
-                case ActionTypes.SwitchSpeed: // 倍速指令
-                    if (Arguments[0] == 0)
-                        content += "切换倍速";
-                    else if (Arguments[0] == 1)
-                        content += "下一回合";
+                case ActionTypes.AdjustMonkeyCoordinates:
+                    content += "修改" + Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString() + "坐标";
+                    content += "于" + Coordinates.ToString();
                     break;
                 case ActionTypes.SellMonkey: // 出售指令
                     content += "出售";
                     content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
                     break;
-                case ActionTypes.SetMonkeyFunction: // 设置猴子功能
-                    content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
-                    content += "更改功能";
-                    if (Coordinates.X != -1)
-                        content += "于" + Coordinates.ToString();
-                    break;
+
                 case ActionTypes.PlaceHero:
                     content += "放置英雄";
                     content += "于" + Coordinates.ToString();
@@ -156,14 +150,22 @@ namespace BTD6AutoCommunity.ScriptEngine
                 case ActionTypes.SellHero:
                     content += "出售英雄";
                     break;
+                case ActionTypes.UseAbility: // 释放技能指令
+                    content += "释放技能";
+                    content += Constants.AbilityToDisplay[Arguments[0]];
+                    if (Coordinates.X != -1)
+                        content += "于" + Coordinates.ToString();
+                    break;
+                case ActionTypes.SwitchSpeed: // 倍速指令
+                    if (Arguments[0] == 0)
+                        content += "切换倍速";
+                    else if (Arguments[0] == 1)
+                        content += "下一回合";
+                    break;
                 case ActionTypes.MouseClick:
                     content += "鼠标点击";
                     content += Coordinates.ToString();
                     content += Arguments[0].ToString() + "次";
-                    break;
-                case ActionTypes.AdjustMonkeyCoordinates:
-                    content += "修改" + Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString() + "坐标";
-                    content += "于" + Coordinates.ToString();
                     break;
                 case ActionTypes.WaitMilliseconds:
                     content += "等待" + Arguments[0].ToString() + "ms";

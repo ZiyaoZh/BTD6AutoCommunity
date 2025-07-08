@@ -155,6 +155,8 @@ namespace BTD6AutoCommunity.UI.Main
             Argument2CB.DisplayMember = "object";
         }
 
+
+
         private void BindScriptMap()
         {
             DataTable dt = new DataTable();
@@ -237,6 +239,20 @@ namespace BTD6AutoCommunity.UI.Main
             }
         }
 
+        private void Argument2CB_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if ((Argument2CB.SelectedIndex == 0 || Argument2CB.SelectedIndex == 2)
+                && Argument2CB.Text.Contains("无坐标选择"))
+            {
+                HideCoordsChoosing();
+            }
+            if ((Argument2CB.SelectedIndex == 1 || Argument2CB.SelectedIndex == 3)
+                && Argument2CB.Text.Contains("有坐标选择"))
+            {
+                ShowCoordsChoosing();
+            }
+        }
+
         private void HideCoordsChoosing()
         {
             if (CoordsXTB.Visible == false) return;
@@ -279,6 +295,9 @@ namespace BTD6AutoCommunity.UI.Main
                     Argument2CB.Items.Add("上路");
                     Argument2CB.Items.Add("中路");
                     Argument2CB.Items.Add("下路");
+                    Argument2CB.Items.Add("上路(仅一次)");
+                    Argument2CB.Items.Add("中路(仅一次)");
+                    Argument2CB.Items.Add("下路(仅一次)");
                     // 设置value
                     Argument2CB.SelectedIndex = 0;
 
@@ -863,17 +882,6 @@ namespace BTD6AutoCommunity.UI.Main
             }
         }
 
-        private void Argument2CB_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (Argument2CB.SelectedIndex == 0 || Argument2CB.SelectedIndex == 2)
-            {
-                HideCoordsChoosing();
-            }
-            if (Argument2CB.SelectedIndex == 1 || Argument2CB.SelectedIndex == 3)
-            {
-                ShowCoordsChoosing();
-            }
-        }
 
         private void InstructionsViewLB_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -904,7 +912,7 @@ namespace BTD6AutoCommunity.UI.Main
                     if (Argument1CB.SelectedValue != null) Argument1CB.SelectedValue = arguments[0];
                     else
                     {
-                        if (arguments[0] < 0 || arguments[0] >= Argument1CB.Items.Count) Argument1CB.SelectedIndex = arguments[0];
+                        if (arguments[0] >= 0 && arguments[0] < Argument1CB.Items.Count) Argument1CB.SelectedIndex = arguments[0];
                     }
                 }
             }
@@ -921,7 +929,7 @@ namespace BTD6AutoCommunity.UI.Main
                     if (Argument2CB.SelectedValue != null) Argument2CB.SelectedValue = arguments[1];
                     else
                     {
-                        if (arguments[1] < 0 || arguments[1] >= Argument2CB.Items.Count) Argument2CB.SelectedIndex = arguments[1];
+                        if (arguments[1] >= 0 && arguments[1] < Argument2CB.Items.Count) Argument2CB.SelectedIndex = arguments[1];
                     }
                 }
             }

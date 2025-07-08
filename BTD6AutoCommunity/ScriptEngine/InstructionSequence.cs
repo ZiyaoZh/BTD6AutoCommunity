@@ -182,7 +182,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                         if (!monkeyList.TryGetValue(inst.Arguments[0], out _)) invalidIndexList.Add(i);
                         else
                         {
-                            if (monkeyList[inst.Arguments[0]].Upgrade(inst.Arguments[1]))
+                            if (monkeyList[inst.Arguments[0]].Upgrade(inst.Arguments[1] % 3))
                             {
                                 inst.AllArguments[5] = monkeyList[inst.Arguments[0]].GetUpgradeInt();
                                 inst.AllArguments[6] = monkeyList[inst.Arguments[0]].GetCoordinates().X;

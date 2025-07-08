@@ -21,13 +21,13 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public bool ScriptExists(string mapName, string difficultyName, string scriptName)
         {
-            string fullPath = GetScriptPath(mapName, difficultyName, scriptName);
+            string fullPath = (GetScriptFullPath(mapName, difficultyName, scriptName));
             return File.Exists(fullPath);
         }
 
-        public string GetScriptPath(string mapName, string difficultyName, string scriptName)
+        public string GetScriptFullPath(string mapName, string difficultyName, string scriptName)
         {
-            return Path.Combine(basePath, mapName, difficultyName, $"{scriptName}.json");
+            return Path.Combine(basePath, mapName, difficultyName, $"{scriptName}.btd6");
         }
 
         public string SaveScript(ScriptModel script)

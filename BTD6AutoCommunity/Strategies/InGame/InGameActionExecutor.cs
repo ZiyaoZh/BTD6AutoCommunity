@@ -187,7 +187,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                             break;
                     }
                     RunCode(micro);
-                    currentSecondIndex = currentInstructionCount - 2;
+                    currentSecondIndex = 2;
                     micro[1] = x;
                     micro[2] = y;
                 }
@@ -345,7 +345,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                     currentSecondIndex++;
                 }
             }
-            else if (micro.Type == MicroInstructionType.MouseMove && currentSecondIndex == 4) // 移动到英雄放置位置
+            else if (micro.Type == MicroInstructionType.MouseMove && currentSecondIndex == 3) // 移动到英雄放置位置
             {
                 if (reDeployFlag)
                 {
@@ -388,7 +388,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                             break;
                     }
                     RunCode(micro);
-                    currentSecondIndex = currentInstructionCount - 2;
+                    currentSecondIndex = 4;
                     micro[1] = x;
                     micro[2] = y;
                 }
@@ -412,7 +412,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                 {
                     reDeployFlag = true;
                     currentReDeployIndex++;
-                    currentSecondIndex = 4;
+                    currentSecondIndex = 3;
                 }
             }
             else
