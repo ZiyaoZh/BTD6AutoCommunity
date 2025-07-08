@@ -82,12 +82,12 @@ namespace BTD6AutoCommunity.ScriptEngine
             switch (Type)
             {
                 case ActionTypes.PlaceMonkey: // 放置指令
-                    content += Constants.GetTypeName((Monkeys)Arguments[0]) + Arguments[5].ToString();
+                    content += Constants.GetTypeName((Monkeys)Arguments[0]) + (Arguments[6] / 100).ToString();
                     content += "放置";
                     content += "于" + Coordinates.ToString();
                     break;
                 case ActionTypes.UpgradeMonkey: // 升级指令
-                    content += Constants.GetTypeName((Monkeys)Arguments[2]) + Arguments[3].ToString();
+                    content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
                     if (Arguments[4] == -1)
                     {
                         if (Arguments[1] == 0) content += "升级上路";
@@ -101,7 +101,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                     }
                     break;
                 case ActionTypes.SwitchMonkeyTarget: // 切换目标指令
-                    content += Constants.GetTypeName((Monkeys)Arguments[2]) + Arguments[3].ToString();
+                    content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
                     content += "目标";
                     content += Constants.TargetToChange[Arguments[1]];
                     break;
@@ -119,10 +119,10 @@ namespace BTD6AutoCommunity.ScriptEngine
                     break;
                 case ActionTypes.SellMonkey: // 出售指令
                     content += "出售";
-                    content += Constants.GetTypeName((Monkeys)Arguments[2]) + Arguments[3].ToString();
+                    content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
                     break;
                 case ActionTypes.SetMonkeyFunction: // 设置猴子功能
-                    content += Constants.GetTypeName((Monkeys)Arguments[2]) + Arguments[3].ToString();
+                    content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
                     content += "更改功能";
                     if (Coordinates.X != -1)
                         content += "于" + Coordinates.ToString();
@@ -162,7 +162,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                     content += Arguments[0].ToString() + "次";
                     break;
                 case ActionTypes.AdjustMonkeyCoordinates:
-                    content += "修改" + Constants.GetTypeName((Monkeys)Arguments[0]) + Arguments[5].ToString() + "坐标";
+                    content += "修改" + Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString() + "坐标";
                     content += "于" + Coordinates.ToString();
                     break;
                 case ActionTypes.WaitMilliseconds:

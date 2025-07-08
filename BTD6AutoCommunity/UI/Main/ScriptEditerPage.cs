@@ -34,6 +34,7 @@ namespace BTD6AutoCommunity.UI.Main
             AnchorBTTT.SetToolTip(AnchorCoordsBT, "空白点即为完成升级点击的空白区域\n回车（Enter）自动输入坐标");
             
             myScript = new ScriptEditorCore();
+            //myScript.Instructions.InstructionBuild += BindInstructionsViewLB;
         }
 
         private void BindActionClassCB()
@@ -112,6 +113,29 @@ namespace BTD6AutoCommunity.UI.Main
             Argument1CB.DataSource = dt;
             Argument1CB.ValueMember = "id";
             Argument1CB.DisplayMember = "object";
+        }
+
+        private void BindArgument1CB(List<int> monkeyIds)
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add(new DataColumn("value", typeof(int)));
+            dt.Columns.Add(new DataColumn("monkey", typeof(string)));
+            foreach (var id in monkeyIds)
+            {
+                int monkeyIdNumber = id / 100;
+                Monkeys monkeyType = (Monkeys)(id % 100);
+                DataRow dr = dt.NewRow();
+                dr["value"] = id;
+                dr["monkey"] = Constants.GetTypeName(monkeyType) + monkeyIdNumber.ToString();
+                //if (i.Value.IsDelete)
+                //{
+                //    dr["monkey"] += "(已删除)";
+                //}
+                dt.Rows.Add(dr);
+            }
+            Argument1CB.DataSource = dt;
+            Argument1CB.ValueMember = "value";
+            Argument1CB.DisplayMember = "monkey";
         }
 
         private void BindArgument2CB(Dictionary<int, string> dic)
@@ -202,28 +226,7 @@ namespace BTD6AutoCommunity.UI.Main
             DifficultyCB.DisplayMember = "DifficultyName";
         }
 
-        private void BindArgument1CB(List<MonkeyTowerClass> lst)
-        {
-            DataTable dt = new DataTable();
-            dt.Columns.Add(new DataColumn("value", typeof(int)));
-            dt.Columns.Add(new DataColumn("monkey", typeof(string)));
-            for (int i = 0; i < lst.Count; i++)
-            {
-                Monkeys monkeyType = lst[i].Type;
-                int monkeyId = lst[i].monkeyId;
-                DataRow dr = dt.NewRow();
-                dr["value"] = i;
-                dr["monkey"] = Constants.GetTypeName(monkeyType) + monkeyId;
-                if (lst[i].IsDelete)
-                {
-                    dr["monkey"] += "(已删除)";
-                }
-                dt.Rows.Add(dr);
-            }
-            Argument1CB.DataSource = dt;
-            Argument1CB.ValueMember = "value";
-            Argument1CB.DisplayMember = "monkey";
-        }
+
 
         private void BindInstructionsViewLB()
         {
@@ -267,7 +270,7 @@ namespace BTD6AutoCommunity.UI.Main
                     break;
 
                 case ActionTypes.UpgradeMonkey:
-                    BindArgument1CB(myScript.Instructions.GetMonkeyList());
+                    BindArgument1CB(myScript.Instructions.GetMonkeyIds());
                     Argument1CB.DropDownStyle = ComboBoxStyle.DropDownList;
 
                     Argument2CB.DataSource = null;
@@ -286,7 +289,7 @@ namespace BTD6AutoCommunity.UI.Main
                     break;
 
                 case ActionTypes.SwitchMonkeyTarget:
-                    BindArgument1CB(myScript.Instructions.GetMonkeyList());
+                    BindArgument1CB(myScript.Instructions.GetMonkeyIds());
                     Argument1CB.DropDownStyle = ComboBoxStyle.DropDownList;
                     BindArgument2CB(Constants.TargetToChange);
                     Argument2CB.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -327,7 +330,7 @@ namespace BTD6AutoCommunity.UI.Main
                     break;
 
                 case ActionTypes.SellMonkey:
-                    BindArgument1CB(myScript.Instructions.GetMonkeyList());
+                    BindArgument1CB(myScript.Instructions.GetMonkeyIds());
 
                     Argument1CB.Visible = true;
                     Argument2CB.Visible = false;
@@ -336,13 +339,16 @@ namespace BTD6AutoCommunity.UI.Main
                     break;
 
                 case ActionTypes.SetMonkeyFunction:
-                    BindArgument1CB(myScript.Instructions.GetMonkeyList());
+                    BindArgument1CB(myScript.Instructions.GetMonkeyIds());
                     Argument1CB.DropDownStyle = ComboBoxStyle.DropDownList;
 
                     Argument2CB.DataSource = null;
                     Argument2CB.Items.Clear();
-                    Argument2CB.Items.Add("无坐标选择");
-                    Argument2CB.Items.Add("有坐标选择");
+                    Argument2CB.Items.Add("功能1无坐标选择");
+                    Argument2CB.Items.Add("功能1有坐标选择");
+                    Argument2CB.Items.Add("功能2无坐标选择");
+                    Argument2CB.Items.Add("功能2有坐标选择");
+
                     Argument2CB.DropDownStyle = ComboBoxStyle.DropDownList;
                     Argument2CB.SelectedIndex = 0;
 
@@ -454,7 +460,7 @@ namespace BTD6AutoCommunity.UI.Main
 
                     break;
                 case ActionTypes.AdjustMonkeyCoordinates:
-                    BindArgument1CB(myScript.Instructions.GetMonkeyList());
+                    BindArgument1CB(myScript.Instructions.GetMonkeyIds());
                     Argument1CB.DropDownStyle = ComboBoxStyle.DropDownList;
 
                     Argument1CB.Visible = true;
@@ -596,29 +602,6 @@ namespace BTD6AutoCommunity.UI.Main
 
         private void Argument1CB_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // 验证枚举是否合法
-            if (!Enum.IsDefined(typeof(ActionTypes), InstructionClassCB.SelectedValue)) return;
-
-            //int index = InstructionsViewTL.SelectedIndex;
-            ActionTypes type = (ActionTypes)InstructionClassCB.SelectedValue;
-            int argument1 = Argument1CB.SelectedIndex;
-
-            AddInstructionBT.Enabled = true;
-            InsertInstructionBT.Enabled = true;
-
-            if (type == ActionTypes.UpgradeMonkey ||
-                type == ActionTypes.SwitchMonkeyTarget ||
-                type == ActionTypes.SetMonkeyFunction ||
-                type == ActionTypes.SellMonkey)
-            {
-                if (myScript.Instructions.GetMonkeyList() == null || 
-                    myScript.Instructions.GetMonkeyList()[argument1].IsDelete)
-                {
-                    ChangeInstructionBT.Enabled = false;
-                    AddInstructionBT.Enabled = false;
-                    InsertInstructionBT.Enabled = false;
-                }
-            }
         }
 
         private List<int> GetArguments()
@@ -810,6 +793,7 @@ namespace BTD6AutoCommunity.UI.Main
                 myScript.Instructions.Clear();
                 InstructionsViewLB.Items.Clear();
             }
+            InstructionClassCB_SelectedIndexChanged(null, null);
         }
 
         private void UpBT_Click(object sender, EventArgs e)
@@ -843,10 +827,11 @@ namespace BTD6AutoCommunity.UI.Main
         private void BuildInstructionsBT_Click(object sender, EventArgs e)
         {
             int index = InstructionsViewLB.SelectedIndex;
-            myScript.Instructions.Build();
+            myScript.BuildInstructions();
             BindInstructionsViewLB();
             if (index >= InstructionsViewLB.Items.Count) index = InstructionsViewLB.Items.Count - 1;
             InstructionsViewLB.SelectedIndex = index;
+            InstructionClassCB_SelectedIndexChanged(null, null);
         }
 
         private void SaveInstructionBT_Click(object sender, EventArgs e)
@@ -857,8 +842,9 @@ namespace BTD6AutoCommunity.UI.Main
                 myScript.Instructions.Build();
                 GetMetaData();
                 filePath = myScript.SaveInstructionsToFile();
-                myScript.ClearInstructions();
-
+                //myScript.ClearInstructions();
+                //ClearInstructionsBT_Click(null, null);
+                
                 if (IsStartPageEditButtonClicked)
                 {
                     StartPrgramTC.SelectedIndex = 0;
@@ -879,11 +865,11 @@ namespace BTD6AutoCommunity.UI.Main
 
         private void Argument2CB_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Argument2CB.Text == "无坐标选择" && Argument2CB.SelectedIndex == 0)
+            if (Argument2CB.SelectedIndex == 0 || Argument2CB.SelectedIndex == 2)
             {
                 HideCoordsChoosing();
             }
-            if (Argument2CB.Text == "有坐标选择" && Argument2CB.SelectedIndex == 1)
+            if (Argument2CB.SelectedIndex == 1 || Argument2CB.SelectedIndex == 3)
             {
                 ShowCoordsChoosing();
             }
@@ -916,7 +902,10 @@ namespace BTD6AutoCommunity.UI.Main
                 else
                 {
                     if (Argument1CB.SelectedValue != null) Argument1CB.SelectedValue = arguments[0];
-                    else Argument1CB.SelectedIndex = arguments[0];
+                    else
+                    {
+                        if (arguments[0] < 0 || arguments[0] >= Argument1CB.Items.Count) Argument1CB.SelectedIndex = arguments[0];
+                    }
                 }
             }
 
@@ -930,7 +919,10 @@ namespace BTD6AutoCommunity.UI.Main
                 else
                 {
                     if (Argument2CB.SelectedValue != null) Argument2CB.SelectedValue = arguments[1];
-                    else Argument2CB.SelectedIndex = arguments[1];
+                    else
+                    {
+                        if (arguments[1] < 0 || arguments[1] >= Argument2CB.Items.Count) Argument2CB.SelectedIndex = arguments[1];
+                    }
                 }
             }
 

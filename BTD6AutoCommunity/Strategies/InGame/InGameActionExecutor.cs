@@ -121,8 +121,8 @@ namespace BTD6AutoCommunity.Strategies.InGame
                         }
                         return;
                     }
-
-                    Tick(currentRound, currentCash);
+                    currentInstrucion.IsRoundMet = true;
+                    currentInstrucion.IsCoinMet = true;
                 }
                 if (actionHandlers.TryGetValue(currentInstrucion.Type, out Action handler))
                 {
@@ -140,6 +140,9 @@ namespace BTD6AutoCommunity.Strategies.InGame
         {
             int currentInstructionCount = currentInstrucion.Count;
             MicroInstruction micro = currentInstrucion[currentSecondIndex];
+            string debugInfo = "";
+            for (int i = 0; i < micro.AllArguments.Count; i++)  debugInfo += micro.AllArguments[i] + " ";
+            Debug.WriteLine("Place monkey " + debugInfo);
 
             if (micro.Type == MicroInstructionType.MouseMove) // 移动到猴子放置位置
             {
@@ -216,7 +219,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                 {
                     reDeployFlag = true;
                     currentReDeployIndex++;
-                    currentSecondIndex = 1;
+                    currentSecondIndex = 0;
                 }
             }
             else
@@ -244,7 +247,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
             {
                 //int route = instructionInfo.Arguments[2];
 
-                //int colorIndex = GetColorIndex(route);
+                int colorIndex = GetColorIndex(micro[2]);
                 ////Debug.WriteLine("Upgrade " + colorIndex);
                 //if (colorIndex == -1) return; // 未弹出升级界面
 
@@ -252,7 +255,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                 //Debug.WriteLine("Upgrade " + colorIndex + " " + p);
                 //if (p == 0) return;
 
-                if (!GameVisionRecognizer.GetYellowBlockCount(_context, micro[2], micro[3]))
+                if (!GameVisionRecognizer.GetYellowBlockCount(_context, colorIndex, micro[3]))
                 {
                     RunCode(micro);
                     return;
@@ -578,7 +581,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                     break;
                 case MicroInstructionType.KeyboardPressAndRelease:
                 case MicroInstructionType.CheckColorAndHitKey:
-                    InputSimulator.KeyboardPress((ushort)micro[1]);
+                    InputSimulator.KeyboardPressAndRelease((ushort)micro[1]);
                     break;
 
                 case MicroInstructionType.Empty: // 空指令

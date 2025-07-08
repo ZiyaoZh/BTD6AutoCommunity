@@ -1,5 +1,6 @@
 ﻿using BTD6AutoCommunity.Core;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -70,7 +71,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompilePlaceMonkey(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
 
             compiled.Add(new MicroInstruction(MicroInstructionType.MouseMove, inst.Coordinates.X, inst.Coordinates.Y));
             compiled.Add(settings.GetHotKey((Monkeys)inst.Arguments[0]));
@@ -84,7 +85,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileUpgradeMonkey(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             if (!IfLast(index))
             {
                 compiled.Add(inst.Arguments[5], inst.Arguments[6]);
@@ -92,15 +93,37 @@ namespace BTD6AutoCommunity.ScriptEngine
 
             if (inst.Arguments[1] == 0) // 上路
             {
-                compiled.Add(settings.GetHotKey(HotkeyAction.UpgradeTopPath));
+                HotKey key = settings.GetHotKey(HotkeyAction.UpgradeTopPath);
+                if (key.Alt) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 18)); }
+                if (key.Control) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 17)); }
+                if (key.Shift) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 16)); }
+                // 取Arguemnts[4]的百位数
+                compiled.Add(new MicroInstruction(MicroInstructionType.CheckColorAndHitKey, (int)key.MainKey, inst.Arguments[1], inst.Arguments[4] / 100));
+                if (key.Alt) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 18)); }
+                if (key.Control) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 17)); }
+                if (key.Shift) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 16)); }
             }
             if (inst.Arguments[1] == 1) // 中路
             {
-                compiled.Add(settings.GetHotKey(HotkeyAction.UpgradeMiddlePath));
+                HotKey key = settings.GetHotKey(HotkeyAction.UpgradeMiddlePath);
+                if (key.Alt) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 18)); }
+                if (key.Control) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 17)); }
+                if (key.Shift) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 16)); }
+                compiled.Add(new MicroInstruction(MicroInstructionType.CheckColorAndHitKey, (int)key.MainKey, inst.Arguments[1], (inst.Arguments[4] % 100) / 10));
+                if (key.Alt) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 18)); }
+                if (key.Control) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 17)); }
+                if (key.Shift) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 16)); }
             }
             if (inst.Arguments[1] == 2) // 下路
             {
-                compiled.Add(settings.GetHotKey(HotkeyAction.UpgradeBottomPath));
+                HotKey key = settings.GetHotKey(HotkeyAction.UpgradeBottomPath);
+                if (key.Alt) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 18)); }
+                if (key.Control) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 17)); }
+                if (key.Shift) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardPress, 16)); }
+                compiled.Add(new MicroInstruction(MicroInstructionType.CheckColorAndHitKey, (int)key.MainKey, inst.Arguments[1], inst.Arguments[4] % 10));
+                if (key.Alt) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 18)); }
+                if (key.Control) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 17)); }
+                if (key.Shift) { compiled.Add(new MicroInstruction(MicroInstructionType.KeyboardRelease, 16)); }
             }
             if (!IfNext(index))
             {
@@ -112,7 +135,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileSwitchMonkeyTarget(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             HotKey hotKey1 = settings.GetHotKey(HotkeyAction.SwitchTarget);
             HotKey hotKey2 = settings.GetHotKey(HotkeyAction.ReverseSwitchTarget);
             if (!IfLast(index))
@@ -137,7 +160,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileSetMonkeyFunction(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             HotKey hotKey1 = settings.GetHotKey(HotkeyAction.SetFunction1);
             HotKey hotKey2 = settings.GetHotKey(HotkeyAction.SetFunction2);
             if (!IfLast(index))
@@ -170,7 +193,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileAdjustMonkeyCoordinates(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             compiled.Add(new MicroInstruction(MicroInstructionType.Empty));
             return compiled;
         }
@@ -178,7 +201,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileSellMonkey(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
 
             if (!IfLast(index))
             {
@@ -191,7 +214,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompilePlaceHero(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             compiled.Add(new MicroInstruction(MicroInstructionType.IsHeroCanPlace));
             compiled.Add(1715, 230); 
             compiled.Add(inst.Coordinates.X, inst.Coordinates.Y);
@@ -202,7 +225,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileUpgradeHero(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             HotKey hotKey1 = settings.GetHotKey(HotkeyAction.Hero);
             HotKey hotKey2 = settings.GetHotKey(HotkeyAction.UpgradeTopPath);
             if (!IfLast(index))
@@ -222,7 +245,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompilePlaceHeroItem(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
 
             HotKey hotKey1 = settings.GetHotKey(HotkeyAction.Hero);
             HotKey hotKey2 = settings.GetHotKey((HeroObjectTypes)inst.Arguments[0]);
@@ -245,7 +268,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileSwitchHeroTarget(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             HotKey hotKey1 = settings.GetHotKey(HotkeyAction.Hero);
             HotKey hotKey2 = settings.GetHotKey(HotkeyAction.SwitchTarget);
             HotKey hotKey3 = settings.GetHotKey(HotkeyAction.ReverseSwitchTarget);
@@ -272,7 +295,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileSetHeroFunction(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             HotKey hotKey1 = settings.GetHotKey(HotkeyAction.Hero);
             HotKey hotKey2 = settings.GetHotKey(HotkeyAction.SetFunction1);
             HotKey hotKey3 = settings.GetHotKey(HotkeyAction.SetFunction2);
@@ -303,7 +326,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileSellHero(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             HotKey hotKey1 = settings.GetHotKey(HotkeyAction.Hero);
             HotKey hotKey2 = settings.GetHotKey(HotkeyAction.Sell);
 
@@ -318,7 +341,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileUseAbility(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             compiled.Add(settings.GetHotKey((SkillTypes)inst.Arguments[0]));
             // 选择释放坐标
             if (inst.Coordinates != (-1, -1))
@@ -331,7 +354,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileSwitchSpeed(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             HotKey hotKey1 = settings.GetHotKey(HotkeyAction.ChangeSpeed);
             HotKey hotKey2 = settings.GetHotKey(HotkeyAction.NextRound);
             if (inst.Arguments[0] == 0) // 快/慢切换
@@ -348,7 +371,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileMouseClick(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             if (inst.Coordinates != (-1, -1))
             {
                 compiled.Add(inst.Coordinates.X, inst.Coordinates.Y, inst.Arguments[0]);
@@ -359,7 +382,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileWaitMilliseconds(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             int times = (inst.Arguments[0] / settings.OperationInterval > 1 ? inst.Arguments[0] / settings.OperationInterval : 1);
             for (int i = 0; i < times; i++)
             {
@@ -371,7 +394,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileStartFreeplay(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             compiled.Add(new MicroInstruction(MicroInstructionType.StartAutoRound));
             int times = (3000 / settings.OperationInterval > 1 ? 3000 / settings.OperationInterval : 1);
             for (int m = 0; m < times; m++)
@@ -384,7 +407,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileEndFreeplay(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             int times = (4500 / settings.OperationInterval > 1 ? 4500 / settings.OperationInterval : 1);
             for (int m = 0; m < times; m++)
             {
@@ -402,7 +425,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         private ExecutableInstruction CompileJump(int index)
         {
             var inst = instructions[index];
-            ExecutableInstruction compiled = new ExecutableInstruction(inst);
+            ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             if (inst.Arguments[0] < 1) inst.Arguments[0] = 1;
             if (inst.Arguments[0] > instructions.Count) inst.Arguments[0] = instructions.Count;
             compiled.Add(new MicroInstruction(MicroInstructionType.JumpTo, inst.Arguments[0]));
@@ -413,7 +436,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         {
             // 用Handler来处理指令
             var inst = instructions[index];
-            var compiled = new ExecutableInstruction(inst);
+            var compiled = new ExecutableInstruction(inst, index);
             if (compileHandlers.TryGetValue(inst.Type, out var handler))
             {
                 compiled = handler(index);

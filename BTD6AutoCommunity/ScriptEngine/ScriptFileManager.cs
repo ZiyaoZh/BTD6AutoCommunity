@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using System.Windows.Forms;
 
 namespace BTD6AutoCommunity.ScriptEngine
 {
@@ -52,30 +53,21 @@ namespace BTD6AutoCommunity.ScriptEngine
 
             // 兼容旧格式处理（你原来的 RepairScript）
             ScriptModel model = JsonConvert.DeserializeObject<ScriptModel>(json);
-            //RepairIfNeeded(model);
-            return model;
+            string scriptName = Path.GetFileNameWithoutExtension(fullPath);
+            
+            return RepairScript(model, json, scriptName); ;
         }
 
-        private void RepairIfNeeded(ScriptModel model)
+        private ScriptModel RepairScript(ScriptModel model, string json, string scriptName)
         {
-            // 如果旧脚本缺字段，这里可补默认值
+            ScriptModel newModel = model;
             if (model.Metadata == null)
             {
-                model.Metadata = new ScriptMetadata
-                {
-                    //ScriptName = "Unknown",
-                    //SelectedMap = Maps.Unknown,
-                    //SelectedDifficulty = LevelDifficulties.Easy,
-                    //SelectedMode = LevelMode.Standard,
-                    //SelectedHero = Heroes.None,
-                    //AnchorCoords = (0, 0)
-                };
+                ScriptModelOld modelOld = JsonConvert.DeserializeObject<ScriptModelOld>(json);
+                newModel = ScriptModel.Convert(modelOld, scriptName);
+                SaveScript(newModel);
             }
-
-            if (model.InstructionsList == null)
-            {
-                //model.InstructionsList = new InstructionSequence();
-            }
+            return newModel;
         }
     }
 }

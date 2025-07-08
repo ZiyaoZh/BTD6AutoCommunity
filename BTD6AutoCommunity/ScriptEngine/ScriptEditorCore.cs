@@ -102,7 +102,7 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public string SaveInstructionsToFile()
         {
-            var script = new ScriptModel(Metadata, Instructions.GetInstructionList(), Instructions.GetMonkeyCount(), Instructions.GetMonkeyId());
+            var script = new ScriptModel(Metadata, Instructions.GetInstructionList(), Instructions.GetMonkeyCount(), Instructions.GetMonkeyIds());
             return fileManager.SaveScript(script);
         }
 

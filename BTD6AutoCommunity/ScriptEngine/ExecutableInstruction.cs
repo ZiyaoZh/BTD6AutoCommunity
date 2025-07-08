@@ -27,14 +27,15 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public List<MicroInstruction> MicroInstructions { get; set; }
 
-        public ExecutableInstruction(Instruction inst)
+        public ExecutableInstruction(Instruction inst, int index)
         {
+            Index = index;
             Type = inst.Type;
             RoundTrigger = inst.RoundTrigger;
             CoinTrigger = inst.CoinTrigger;
             Content = inst.ToString();
-            IsRoundMet = false;
-            IsCoinMet = false;
+            IsRoundMet = true;
+            IsCoinMet = true;
             MicroInstructions = new List<MicroInstruction>();
         }
 

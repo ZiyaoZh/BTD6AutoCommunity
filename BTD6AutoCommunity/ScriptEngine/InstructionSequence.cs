@@ -28,14 +28,18 @@ namespace BTD6AutoCommunity.ScriptEngine
         public List<Instruction> Instructions => instructions;
 
         // 依赖
-        private List<int> monkeyCount; // 猴子的数量
+        private List<int> monkeyCounts; // 猴子的数量
 
-        private List<(int monkeyIndex, int count)> monkeyId; // 猴子的ID
-        private List<MonkeyTowerClass> monkeyList; // 每一个猴子对象
+        private List<int> monkeyIds; // 猴子的ID
+        private Dictionary<int, MonkeyTowerClass> monkeyList; // 每一个猴子对象
         private HeroClass hero = new HeroClass();
 
         // 非法指令索引列表
         private List<int> invalidIndexList = new List<int>();
+
+        // 事件
+        //public event Action InstructionBuild;
+
 
         public InstructionSequence()
         {
@@ -46,8 +50,8 @@ namespace BTD6AutoCommunity.ScriptEngine
         {
             InstructionSequence sequence = new InstructionSequence();
             sequence.SetInstructionList(scriptModel.InstructionsList);
-            sequence.SetMonkeyCount(scriptModel.MonkeyCount);
-            sequence.SetMonkeyId(scriptModel.MonkeyId);
+            sequence.SetMonkeyCount(scriptModel.MonkeyCounts);
+            sequence.SetMonkeyIds(scriptModel.MonkeyIds);
             sequence.Build();
             return sequence;
         }
@@ -56,22 +60,12 @@ namespace BTD6AutoCommunity.ScriptEngine
         {
             if (inst.Type == ActionTypes.PlaceMonkey)
             {
-                monkeyCount[inst.Arguments[0]]++;
-                monkeyId.Add((inst.Arguments[0], monkeyCount[inst.Arguments[0]]));
+                monkeyCounts[inst.Arguments[0]]++;
+                int monkeyId = inst.Arguments[0] + monkeyCounts[inst.Arguments[0]] * 100;
+                monkeyIds.Add(monkeyId);
                 List<int> args = new List<int>(inst.AllArguments)
                 {
-                    [7] = monkeyId.Count - 1,
-                    [6] = monkeyId.Last().count
-                };
-                inst = new Instruction(args);
-                monkeyList.Add(new MonkeyTowerClass((Monkeys)inst.Arguments[0], args[6], inst.Coordinates));
-            }
-            if (inst.IsMonkeyInstruction())
-            {
-                List<int> args = new List<int>(inst.AllArguments)
-                {
-                    [3] = monkeyId[inst.Arguments[0]].monkeyIndex,
-                    [4] = monkeyId[inst.Arguments[0]].count
+                    [7] = monkeyIds.Last()
                 };
                 inst = new Instruction(args);
             }
@@ -84,21 +78,12 @@ namespace BTD6AutoCommunity.ScriptEngine
                 return;
             if (inst.Type == ActionTypes.PlaceMonkey)
             {
-                monkeyCount[inst.Arguments[0]]++;
-                monkeyId.Add((inst.Arguments[0], monkeyCount[inst.Arguments[0]]));
+                int monkeyId = inst.Arguments[0] + monkeyCounts[inst.Arguments[0]] * 100;
+                monkeyCounts[inst.Arguments[0]]++;
+                monkeyIds.Add(monkeyId);
                 List<int> args = new List<int>(inst.AllArguments)
                 {
-                    [7] = monkeyId.Count - 1,
-                    [6] = monkeyId.Last().count
-                };
-                inst = new Instruction(args);
-            }
-            if (inst.IsMonkeyInstruction())
-            {
-                List<int> args = new List<int>(inst.AllArguments)
-                {
-                    [3] = monkeyId[inst.Arguments[0]].monkeyIndex,
-                    [4] = monkeyId[inst.Arguments[0]].count
+                    [7] = monkeyIds.Count - 1,
                 };
                 inst = new Instruction(args);
             }
@@ -146,7 +131,14 @@ namespace BTD6AutoCommunity.ScriptEngine
         public void Delete(int index)
         {
             if (!(index >= 0 && index < instructions.Count)) return;
-
+            if (instructions[index].Type == ActionTypes.PlaceMonkey)
+            {
+                int monkeyId = instructions[index].AllArguments[7];
+                monkeyIds.Remove(monkeyId);
+                instructions.RemoveAt(index);
+                Build();
+                return;
+            }
             instructions.RemoveAt(index);
         }
 
@@ -176,7 +168,7 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public void Build()
         {
-            InitMonkeyList(monkeyId.Count);
+            InitMonkeyList();
             hero = new HeroClass();
             for (int i = 0; i < instructions.Count; i++)
             {
@@ -184,10 +176,10 @@ namespace BTD6AutoCommunity.ScriptEngine
                 switch (instructions[i].Type)
                 {
                     case ActionTypes.PlaceMonkey:
-                        monkeyList[inst.Arguments[6]] = new MonkeyTowerClass((Monkeys)inst.Arguments[0], inst.Arguments[5], inst.Coordinates);
+                        monkeyList[inst.Arguments[6]] = new MonkeyTowerClass((Monkeys)inst.Arguments[0], inst.Arguments[6] / 100, inst.Coordinates);
                         break;
                     case ActionTypes.UpgradeMonkey:
-                        if (monkeyList[inst.Arguments[0]] == null) invalidIndexList.Add(i);
+                        if (!monkeyList.TryGetValue(inst.Arguments[0], out _)) invalidIndexList.Add(i);
                         else
                         {
                             if (monkeyList[inst.Arguments[0]].Upgrade(inst.Arguments[1]))
@@ -202,7 +194,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                         break;
                     case ActionTypes.SwitchMonkeyTarget:
                     case ActionTypes.SetMonkeyFunction:
-                        if (monkeyList[inst.Arguments[0]] == null) invalidIndexList.Add(i);
+                        if (!monkeyList.TryGetValue(inst.Arguments[0], out _)) invalidIndexList.Add(i);
                         else
                         {
                             if (monkeyList[inst.Arguments[0]].exsitence == false) invalidIndexList.Add(i);
@@ -215,7 +207,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                         }
                         break;
                     case ActionTypes.AdjustMonkeyCoordinates:
-                        if (monkeyList[inst.Arguments[0]] == null) invalidIndexList.Add(i);
+                        if (!monkeyList.TryGetValue(inst.Arguments[0], out _)) invalidIndexList.Add(i);
                         else
                         {
                             if (monkeyList[inst.Arguments[0]].exsitence == false) invalidIndexList.Add(i);
@@ -226,7 +218,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                         }
                         break;
                     case ActionTypes.SellMonkey:
-                        if (monkeyList[inst.Arguments[0]] == null) invalidIndexList.Add(i);
+                        if (!monkeyList.TryGetValue(inst.Arguments[0], out _)) invalidIndexList.Add(i);
                         else
                         {
                             if (!monkeyList[inst.Arguments[0]].Sell()) invalidIndexList.Add(i);
@@ -262,6 +254,7 @@ namespace BTD6AutoCommunity.ScriptEngine
             }
             instructions.RemoveAll(x => invalidIndexList.Contains(instructions.IndexOf(x)));
             invalidIndexList.Clear();
+            //InstructionBuild?.Invoke();
         }
 
 
@@ -287,33 +280,33 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public List<int> GetMonkeyCount()
         {
-            return monkeyCount;
+            return monkeyCounts;
         }
 
         public void SetMonkeyCount(List<int> count)
         {
-            monkeyCount = count;
+            monkeyCounts = count;
         }
 
-        public List<(int, int)> GetMonkeyId()
+        public List<int> GetMonkeyIds()
         {
-            return monkeyId;
+            return monkeyIds;
         }
 
-        public void SetMonkeyId(List<(int, int)> id)
+        public void SetMonkeyIds(List<int> id)
         {
-            monkeyId = id;
+            monkeyIds = id;
         }
 
-        public List<MonkeyTowerClass> GetMonkeyList()
+        public Dictionary<int, MonkeyTowerClass> GetMonkeyList()
         {
             return monkeyList;
         }
 
         private void ClearRely()
         {
-            monkeyId.Clear();
-            monkeyCount.Clear();
+            monkeyIds.Clear();
+            monkeyCounts.Clear();
             monkeyList.Clear();
             hero = new HeroClass();
 
@@ -321,19 +314,20 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         private void InitRely()
         {
-            monkeyCount = new List<int>();
+            monkeyCounts = new List<int>();
 
-            for (int i = 0; i < 50; i++) monkeyCount.Add(0);
-            monkeyId = new List<(int, int)>();
-            monkeyList = new List<MonkeyTowerClass>();
+            for (int i = 0; i < 50; i++) monkeyCounts.Add(0);
+            monkeyIds = new List<int>();
+            monkeyList = new Dictionary<int, MonkeyTowerClass>();
         }
 
-        private void InitMonkeyList(int count)
+        private void InitMonkeyList()
         {
-            monkeyList = new List<MonkeyTowerClass>();
-            for (int i = 0; i < count; i++)
+            monkeyList = new Dictionary<int, MonkeyTowerClass>();
+            if (monkeyIds.Count == 0) return;
+            foreach (int i in monkeyIds)
             {
-                monkeyList.Add(null);
+                monkeyList.Add(i, null);
             }
         }
 
