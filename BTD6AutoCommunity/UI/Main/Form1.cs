@@ -32,8 +32,8 @@ namespace BTD6AutoCommunity.UI.Main
             InitializeComponent();
             InitializeStartPage();
             InitializeScriptsEditor();
-            InitializeMyScriptsPage();
             InitializeSettingPage();
+            InitializeMyScriptsPage();
         }
 
         private void BTD6AutoCommunity_Activated(object sender, EventArgs e)
@@ -79,5 +79,12 @@ namespace BTD6AutoCommunity.UI.Main
             WindowApiWrapper.RegisterHotKey(Handle, 108, 7, Keys.F1);
         }
 
+        private void StartPrgramTC_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //if (StartPrgramTC.SelectedIndex == 0) InitializeStartPage();
+            //else if (StartPrgramTC.SelectedIndex == 1) InitializeScriptsEditor();
+            //else if (StartPrgramTC.SelectedIndex == 2) InitializeSettingPage();
+            //else if (StartPrgramTC.SelectedIndex == 3) InitializeMyScriptsPage();
+        }
     }
 }

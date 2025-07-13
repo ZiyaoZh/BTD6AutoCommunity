@@ -109,17 +109,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ScriptEngine\ExecutableInstruction.cs" />
-    <Compile Include="ScriptEngine\Instruction.cs" />
-    <Compile Include="ScriptEngine\ScriptCompiler.cs" />
-    <Compile Include="ScriptEngine\InstructionFactory.cs" />
-    <Compile Include="ScriptEngine\InstructionInfo.cs" />
-    <Compile Include="ScriptEngine\InstructionSequence.cs" />
-    <Compile Include="ScriptEngine\MicroInstruction.cs" />
+    <Compile Include="GameObjects\GameEnums.cs" />
+    <Compile Include="ScriptEngine\InstructionSystem\ExecutableInstruction.cs" />
+    <Compile Include="ScriptEngine\InstructionSystem\Instruction.cs" />
+    <Compile Include="ScriptEngine\InstructionSystem\InstructionsBundle.cs" />
+    <Compile Include="ScriptEngine\ScriptEnums.cs" />
+    <Compile Include="ScriptEngine\ScriptSystem\ScriptCompiler.cs" />
+    <Compile Include="ScriptEngine\InstructionSystem\InstructionFactory.cs" />
+    <Compile Include="ScriptEngine\InstructionSystem\InstructionSequence.cs" />
+    <Compile Include="ScriptEngine\InstructionSystem\MicroInstruction.cs" />
     <Compile Include="ScriptEngine\ScriptEditorCore.cs" />
-    <Compile Include="ScriptEngine\ScriptFileManager.cs" />
-    <Compile Include="ScriptEngine\ScriptMetadata.cs" />
-    <Compile Include="ScriptEngine\ScriptModel.cs" />
+    <Compile Include="ScriptEngine\ScriptSystem\ScriptFileManager.cs" />
+    <Compile Include="ScriptEngine\ScriptSystem\ScriptMetadata.cs" />
+    <Compile Include="ScriptEngine\ScriptSystem\ScriptModel.cs" />
     <Compile Include="ScriptEngine\UserSelection.cs" />
     <Compile Include="Strategies\Base\BaseStrategy.cs" />
     <Compile Include="Strategies\BlackBorderStrategy.cs" />
@@ -149,7 +151,6 @@
     </Compile>
     <Compile Include="Core\GameStateMachine.cs" />
     <Compile Include="GameObjects\HeroClass.cs" />
-    <Compile Include="ScriptEngine\ScriptEditorSuite.cs" />
     <Compile Include="GameObjects\MonkeyTowerClass.cs" />
     <Compile Include="UI\Main\MyScriptsPage.cs">
       <SubType>Form</SubType>

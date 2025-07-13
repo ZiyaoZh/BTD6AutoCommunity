@@ -35,6 +35,18 @@ namespace BTD6AutoCommunity.GameObjects
             monkeyId = id;
         }
 
+        public MonkeyTowerClass Clone()
+        {
+            MonkeyTowerClass newMonkey = new MonkeyTowerClass(Type, monkeyId, coordinates)
+            {
+                upgradeLevels = new List<int>(upgradeLevels),
+                routeLock = new List<int>(routeLock),
+                upgradeCount = upgradeCount,
+                IsDelete = IsDelete
+            };
+            return newMonkey;
+        }
+
         // 获取部署坐标
         public (int X, int Y) GetCoordinates()
         {

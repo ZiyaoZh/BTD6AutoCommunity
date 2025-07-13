@@ -13,6 +13,7 @@ using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Drawing;
 using System.CodeDom.Compiler;
 using OpenCvSharp.ML;
+using BTD6AutoCommunity.GameObjects;
 
 namespace BTD6AutoCommunity.Strategies
 {
@@ -45,6 +46,8 @@ namespace BTD6AutoCommunity.Strategies
         public CollectionStrategy(ScriptSettings settings, LogHandler logHandler)
             : base(settings, logHandler)
         {
+            DefaultDataReadInterval = 1000;
+            DefaultOperationInterval = 200;
             InitializeStateHandlers();
             currentMapId = 0;
         }
@@ -79,7 +82,7 @@ namespace BTD6AutoCommunity.Strategies
                         Constants.GetTypeName((LevelDifficulties)dif),
                         Constants.CollectionScripts[collectionMode]
                         );
-                    if (scriptPath != null)
+                    if (File.Exists(scriptPath))
                     {
                         mapDifficulties.Add(mapId, dif);
                         collectionScripts.Add(mapId, scriptPath);
@@ -195,7 +198,7 @@ namespace BTD6AutoCommunity.Strategies
             if (currentMapId < ExpertMapStartId || currentMapId > ExpertMapEndId)
             {
                 HandleReturnableScreen();
-                _logs.Log("非专家级地图，无法进入收集模式，返回", LogLevel.Error);
+                _logs.Log("非专家级地图，无法进入收集模式，返回", LogLevel.Warning);
                 return;
             }
             switch (mapDifficulties[currentMapId])
@@ -211,6 +214,7 @@ namespace BTD6AutoCommunity.Strategies
                     break;
             }
             // 加载脚本
+            _logs.Log($"已进入难度选择界面，开始选择难度。", LogLevel.Info);
             GetExecutableInstructions(collectionScripts[currentMapId]);
         }
 
@@ -219,14 +223,14 @@ namespace BTD6AutoCommunity.Strategies
             if (executableInstructions == null || scriptMetadata == null)
             {
                 HandleReturnableScreen();
-                _logs.Log("脚本未加载，无法进入简单模式，返回", LogLevel.Error);
+                _logs.Log("脚本未加载，无法进入简单模式，返回", LogLevel.Warning);
                 return;
             }
             if (scriptMetadata.SelectedMode != LevelMode.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Easy)
             {
                 HandleReturnableScreen();
-                _logs.Log("当前模式不是简单模式，无法进入简单模式，返回", LogLevel.Error);
+                _logs.Log("当前模式不是简单模式，无法进入简单模式，返回", LogLevel.Warning);
                 return;
             }
             if (IsHeroSelectionComplete)
@@ -248,14 +252,14 @@ namespace BTD6AutoCommunity.Strategies
             if (executableInstructions == null || scriptMetadata == null)
                 {
                 HandleReturnableScreen();
-                _logs.Log("脚本未加载，无法进入中级模式，返回", LogLevel.Error);
+                _logs.Log("脚本未加载，无法进入中级模式，返回", LogLevel.Warning);
                 return;
             }
             if (scriptMetadata.SelectedMode != LevelMode.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Medium)
             {
                 HandleReturnableScreen();
-                _logs.Log("当前模式不是中级模式，无法进入中级模式，返回", LogLevel.Error);
+                _logs.Log("当前模式不是中级模式，无法进入中级模式，返回", LogLevel.Warning);
                 return;
             }
             if (IsHeroSelectionComplete)
@@ -276,14 +280,14 @@ namespace BTD6AutoCommunity.Strategies
             if (executableInstructions == null || scriptMetadata == null)
                 {
                 HandleReturnableScreen();
-                _logs.Log("脚本未加载，无法进入困难模式，返回", LogLevel.Error);
+                _logs.Log("脚本未加载，无法进入困难模式，返回", LogLevel.Warning);
                 return;
             }
             if (scriptMetadata.SelectedMode != LevelMode.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Hard)
             {
                 HandleReturnableScreen();
-                _logs.Log("当前模式不是困难模式，无法进入困难模式，返回", LogLevel.Error);
+                _logs.Log("当前模式不是困难模式，无法进入困难模式，返回", LogLevel.Warning);
                 return;
             }
             if (IsHeroSelectionComplete)
@@ -304,13 +308,13 @@ namespace BTD6AutoCommunity.Strategies
             if (executableInstructions == null || scriptMetadata == null)
             {
                 HandleReturnableScreen();
-                _logs.Log("脚本未加载，返回", LogLevel.Error);
+                _logs.Log("脚本未加载，返回", LogLevel.Warning);
                 return;
             }
             if (IsHeroSelectionComplete || scriptMetadata == null)
             {
                 HandleReturnableScreen();
-                _logs.Log("英雄选择已完成，返回", LogLevel.Error);
+                _logs.Log("英雄选择已完成，返回", LogLevel.Warning);
                 return;
             }
             Point heroPosition = GameVisionRecognizer.GetHeroPosition(_context, scriptMetadata.SelectedHero);
@@ -352,7 +356,7 @@ namespace BTD6AutoCommunity.Strategies
                 InputSimulator.MouseMoveAndLeftClick(_context, 1600, 40);
                 Thread.Sleep(500);
                 InputSimulator.MouseMoveAndLeftClick(_context, 850, 850);
-                _logs.Log("脚本未加载，无法进入战斗，返回", LogLevel.Error);
+                _logs.Log("脚本未加载，无法进入战斗，返回", LogLevel.Warning);
                 return;
             }
             if (IsStrategyExecutionCompleted)

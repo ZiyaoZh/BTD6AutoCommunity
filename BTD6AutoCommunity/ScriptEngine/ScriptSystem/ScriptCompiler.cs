@@ -1,4 +1,6 @@
 ﻿using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.GameObjects;
+using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
-namespace BTD6AutoCommunity.ScriptEngine
+namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
 {
     public class ScriptCompiler
     {
@@ -77,9 +79,12 @@ namespace BTD6AutoCommunity.ScriptEngine
             compiled.Add(settings.GetHotKey((Monkeys)inst.Arguments[0]));
 
             compiled.Add(new MicroInstruction(MicroInstructionType.LeftClick));
-            int times = 200 / settings.OperationInterval > 0 ? 200 / settings.OperationInterval : 1;
-            for (int i = 0; i < times; i++) { compiled.Add(new MicroInstruction(MicroInstructionType.Empty)); }
-            compiled.Add(new MicroInstruction(MicroInstructionType.CheckPlaceSuccess));
+            if (inst[2] == 0)
+            {
+                int times = 200 / settings.OperationInterval > 0 ? 200 / settings.OperationInterval : 1;
+                for (int i = 0; i < times; i++) { compiled.Add(new MicroInstruction(MicroInstructionType.Empty)); }
+                compiled.Add(new MicroInstruction(MicroInstructionType.CheckPlaceSuccess));
+            }
 
             return compiled;
         }

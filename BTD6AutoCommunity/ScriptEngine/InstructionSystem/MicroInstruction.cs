@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BTD6AutoCommunity.ScriptEngine
+namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
 {
     public enum MicroInstructionType
     {

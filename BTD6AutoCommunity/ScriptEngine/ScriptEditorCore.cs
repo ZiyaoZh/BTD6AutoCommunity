@@ -1,4 +1,6 @@
 ﻿using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
+using BTD6AutoCommunity.ScriptEngine.ScriptSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,10 @@ namespace BTD6AutoCommunity.ScriptEngine
     public class ScriptEditorCore
     {
         public ScriptMetadata Metadata { get; set; }
-        public InstructionSequence Instructions { get; set; }
+
+        public InstructionSequence Instructions => instructions;
+
+        private InstructionSequence instructions;
 
         private readonly InstructionFactory factory;
 
@@ -19,7 +24,7 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public ScriptEditorCore()
         {
-            Instructions = new InstructionSequence();
+            instructions = new InstructionSequence();
             factory = new InstructionFactory();
             fileManager = new ScriptFileManager();
         }
@@ -34,13 +39,18 @@ namespace BTD6AutoCommunity.ScriptEngine
             try
             {
                 var inst = factory.Create(type, args, roundTrigger, coinTrigger, coords);
-                Instructions.Add(inst);
+                instructions.Insert(instructions.Count, inst);
             }
             catch 
             {
                 return null;
             }
-            return Instructions.Last;
+            return instructions.Last;
+        }
+
+        public int AddInstructionBundle(InstructionSequence bundle, int times)
+        {
+            return instructions.InsertBundle(instructions.Count, bundle, times);
         }
 
         public Instruction InsertInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords)
@@ -48,14 +58,19 @@ namespace BTD6AutoCommunity.ScriptEngine
             try
             {
                 var inst = factory.Create(type, args, roundTrigger, coinTrigger, coords);
-                Instructions.Insert(index, inst);
+                instructions.Insert(index, inst);
 
             }
             catch
             {
                 return null;
             }
-            return Instructions[index];
+            return instructions[index];
+        }
+
+        public int InsertInstructionBundle(int index, InstructionSequence bundle, int times)
+        {
+            return instructions.InsertBundle(index, bundle, times);
         }
 
         public Instruction ModifyInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords)
@@ -63,9 +78,9 @@ namespace BTD6AutoCommunity.ScriptEngine
             try
             {
                 var inst = factory.Create(type, args, roundTrigger, coinTrigger, coords);
-                if (Instructions.Modify(index, inst))
+                if (instructions.Modify(index, inst))
                 {
-                    return Instructions[index];
+                    return instructions[index];
                 }
                 return null;
             }
@@ -75,34 +90,54 @@ namespace BTD6AutoCommunity.ScriptEngine
             }
         }
 
+        public bool TryModifyInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords)
+        {
+            var inst = factory.Create(type, args, roundTrigger, coinTrigger, coords);
+            if (instructions.TryModify(index, inst)) return true;
+            return false;
+        }
+
         public void DeleteInstruction(int index)
         {
-            Instructions.Delete(index);
+            instructions.Delete(index);
+        }
+
+        public void DeleteInstructions(List<int> indices)
+        {
+            for (int i = indices.Count - 1; i >= 0; i--)
+            {
+                instructions.Delete(indices[i]);
+            }
         }
 
         public void MoveInstruction(int index, bool up)
         {
-            Instructions.Move(index, up);
+            instructions.Move(index, up);
         }
 
         public List<int> GetAllArguments(int index)
         {
-            return Instructions.GetAllArguments(index);
+            return instructions.GetAllArguments(index);
+        }
+
+        public List<int> GetInstructionsMonkeyIds()
+        {
+            return instructions.GetMonkeyIds();
         }
 
         public void ClearInstructions()
         {
-            Instructions.Clear();
+            instructions.Clear();
         }
 
         public void BuildInstructions()
         {
-            Instructions.Build();
+            instructions.Build();
         }
 
         public string SaveInstructionsToFile()
         {
-            var script = new ScriptModel(Metadata, Instructions.GetInstructionList(), Instructions.GetMonkeyCount(), Instructions.GetMonkeyIds());
+            var script = new ScriptModel(Metadata, instructions.GetInstructionList(), instructions.GetMonkeyCounts(), instructions.GetMonkeyIds());
             return fileManager.SaveScript(script);
         }
 
@@ -115,7 +150,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                 return;
             }
             Metadata = script.Metadata;
-            Instructions = InstructionSequence.BuildByScriptModel(script);
+            instructions = InstructionSequence.BuildByScriptModel(script);
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.ScriptEngine;
+using BTD6AutoCommunity.GameObjects;
 
 namespace BTD6AutoCommunity.UI.Main
 {
@@ -416,8 +417,6 @@ namespace BTD6AutoCommunity.UI.Main
 
                         StartPrgramTC.SelectedIndex = 0;
                         ExecuteModeCB.SelectedIndex = 0;
-                        StartProgramBT.PerformClick();
-
                     }
                     catch
                     {

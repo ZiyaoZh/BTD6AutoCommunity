@@ -1,4 +1,5 @@
 ﻿using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Windows.Forms;
 
-namespace BTD6AutoCommunity.ScriptEngine
+namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
 {
     public class ScriptFileManager
     {
@@ -40,8 +41,21 @@ namespace BTD6AutoCommunity.ScriptEngine
             string path = Path.Combine(dir, $"{script.Metadata.ScriptName}.btd6");
 
             string json = JsonConvert.SerializeObject(script, Formatting.None);
+            if (File.Exists(path)) DeleteScript(path);
+
             File.WriteAllText(path, json);
             return path;
+        }
+
+        public void DeleteScript(string fullpath)
+        {
+            // 将文件移入data/最近删除
+            string recentDeleteDir = Path.Combine(basePath, "最近删除");
+            Directory.CreateDirectory(recentDeleteDir);
+            // 名称加上日期事件信息
+            string fileName = Path.GetFileName(fullpath) + "-" + DateTime.Now.ToString("yyyyMMddHHmmss");
+            string newPath = Path.Combine(recentDeleteDir, fileName);
+            File.Move(fullpath, newPath);
         }
 
         public ScriptModel LoadScript(string fullPath)

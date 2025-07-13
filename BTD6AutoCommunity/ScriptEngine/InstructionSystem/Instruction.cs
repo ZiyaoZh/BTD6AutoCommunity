@@ -1,11 +1,12 @@
 ﻿using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.GameObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BTD6AutoCommunity.ScriptEngine
+namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
 {
     public class Instruction
     {
@@ -50,6 +51,11 @@ namespace BTD6AutoCommunity.ScriptEngine
             //CoinTrigger = allArguments[11];
         }
 
+        public Instruction Clone()
+        {
+            return new Instruction(new List<int>(AllArguments));
+        }
+
         public bool IsMonkeyInstruction()
         {
             if (
@@ -74,6 +80,21 @@ namespace BTD6AutoCommunity.ScriptEngine
                 )
                 return true;
             return false;
+        }
+
+        // 是否包含坐标参数
+        public bool HasCoordinates()
+        {
+            if ( Coordinates.X != -1 && Coordinates.Y != -1) return true;
+            return false;
+        }
+
+        // 参数n是否有效
+        public bool IsValidArgument(int n)
+        {
+            if (n < 0 || n > 11) return false;
+            if (AllArguments[n] == -1) return false;
+            return true;
         }
 
         public  override string ToString()
@@ -103,7 +124,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                 case ActionTypes.SwitchMonkeyTarget: // 切换目标指令
                     content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
                     content += "目标";
-                    content += Constants.TargetToChange[Arguments[1]];
+                    content += Constants.GetTypeName((TargetTypes)Arguments[1]);
                     break;
                 case ActionTypes.SetMonkeyFunction: // 设置猴子功能
                     content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
@@ -120,7 +141,6 @@ namespace BTD6AutoCommunity.ScriptEngine
                     content += "出售";
                     content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
                     break;
-
                 case ActionTypes.PlaceHero:
                     content += "放置英雄";
                     content += "于" + Coordinates.ToString();
@@ -136,11 +156,11 @@ namespace BTD6AutoCommunity.ScriptEngine
                     break;
                 case ActionTypes.SwitchHeroTarget:
                     content += "英雄目标";
-                    content += Constants.TargetToChange[Arguments[0]];
+                    content += Constants.GetTypeName((TargetTypes)Arguments[0]);
                     break;
                 case ActionTypes.SetHeroFunction:
                     content += "更改英雄";
-                    if (Arguments[0] == 1)
+                    if (Arguments[0] / 2 == 1)
                         content += "功能2";
                     else
                         content += "功能1";
@@ -151,8 +171,8 @@ namespace BTD6AutoCommunity.ScriptEngine
                     content += "出售英雄";
                     break;
                 case ActionTypes.UseAbility: // 释放技能指令
-                    content += "释放技能";
-                    content += Constants.AbilityToDisplay[Arguments[0]];
+                    content += "释放";
+                    content += Constants.GetTypeName((SkillTypes)Arguments[0]);
                     if (Coordinates.X != -1)
                         content += "于" + Coordinates.ToString();
                     break;
