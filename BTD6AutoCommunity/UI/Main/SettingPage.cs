@@ -7,7 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.GameObjects;
 using BTD6AutoCommunity.ScriptEngine;
+using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
+using BTD6AutoCommunity.ScriptEngine.ScriptSystem;
 using System.Diagnostics;
 using BTD6AutoCommunity;
 
@@ -19,6 +22,7 @@ namespace BTD6AutoCommunity.UI.Main
         private ScriptSettings scriptSettings;
         private List<System.Windows.Forms.Button> hotKeysButtonsList;
         private System.Windows.Forms.Button currentButton;
+        private InstructionsBundle bundles;
         private bool isSettingHotKey;
         private Type currentType;
 
@@ -29,6 +33,7 @@ namespace BTD6AutoCommunity.UI.Main
             currentButton = null;
             isSettingHotKey = false;
             LoadSettings();
+            LoadBundles();
         }
 
         private void InitHotKeyButton()
@@ -204,6 +209,16 @@ namespace BTD6AutoCommunity.UI.Main
             RefreshHotkeyText();
         }
 
+        public void LoadBundles()
+        {
+            bundles = new InstructionsBundle();
+            BundleNamesCB.Items.Clear();
+            foreach (var bundle in bundles.BundleNames)
+            {
+                BundleNamesCB.Items.Add(bundle);
+            }
+        }
+
         private void HotkeyBT_Click(object sender, EventArgs e)
         {
             System.Windows.Forms.Button btn = sender as System.Windows.Forms.Button;
@@ -293,6 +308,54 @@ namespace BTD6AutoCommunity.UI.Main
             //    GetGameDataIntervalUD.Enabled = true;
             //    ExecuteIntervalUD.Enabled = true;
             //}
+        }
+
+        private void AddBundleBT_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "脚本文件 (*.btd6)|*.btd6";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string bundleName = Path.GetFileNameWithoutExtension(openFileDialog.FileName);
+                    ScriptFileManager fileManager = new ScriptFileManager();
+                    ScriptModel scriptModel;
+                    if (BundleNamesCB.Items.Contains(bundleName))
+                    {
+                        // 名称已存在，是否覆盖
+                        DialogResult result = MessageBox.Show($"\"{bundleName}\"已存在，是否覆盖？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                        if (result == DialogResult.No) return;
+                        // 删除已存在的名称
+                        bundles.RemoveBundle(bundleName);
+                        BundleNamesCB.Items.Remove(bundleName);
+                        bundles.SaveBundle();
+                    }
+                    scriptModel = fileManager.LoadScript(openFileDialog.FileName);
+                    if (bundles.AddBundle(bundleName, scriptModel))
+                    {
+                        BundleNamesCB.Items.Add(bundleName);
+                        bundles.SaveBundle();
+                    }
+                    else
+                    {
+                        MessageBox.Show("加载指令包失败！");
+                    }
+                }
+            }
+        }
+
+        private void DeleteBundleBT_Click(object sender, EventArgs e)
+        {
+            if (BundleNamesCB.SelectedIndex >= 0 && BundleNamesCB.SelectedIndex < BundleNamesCB.Items.Count)
+            {
+                // 是/否MessageBox
+                DialogResult result = MessageBox.Show($"是否删除\"{BundleNamesCB.SelectedItem}\"指令包？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.No) return;
+
+                bundles.RemoveBundle(BundleNamesCB.SelectedItem.ToString());
+                bundles.SaveBundle();
+                BundleNamesCB.Items.Remove(BundleNamesCB.SelectedItem);
+            }
         }
     }
 }

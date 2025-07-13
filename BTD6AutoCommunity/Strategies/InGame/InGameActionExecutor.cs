@@ -1,10 +1,11 @@
-﻿using BTD6AutoCommunity.ScriptEngine;
+﻿using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
 using BTD6AutoCommunity.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Diagnostics;
+using BTD6AutoCommunity.ScriptEngine;
 
 namespace BTD6AutoCommunity.Strategies.InGame
 {
@@ -140,9 +141,6 @@ namespace BTD6AutoCommunity.Strategies.InGame
         {
             int currentInstructionCount = currentInstrucion.Count;
             MicroInstruction micro = currentInstrucion[currentSecondIndex];
-            string debugInfo = "";
-            for (int i = 0; i < micro.AllArguments.Count; i++)  debugInfo += micro.AllArguments[i] + " ";
-            Debug.WriteLine("Place monkey " + debugInfo);
 
             if (micro.Type == MicroInstructionType.MouseMove) // 移动到猴子放置位置
             {

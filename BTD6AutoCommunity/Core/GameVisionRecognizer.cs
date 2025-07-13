@@ -10,7 +10,8 @@ using System.IO;
 using System.Diagnostics;
 using System.Runtime.Remoting.Contexts;
 using System.Windows.Forms;
-using static BTD6AutoCommunity.Core.Constants;
+using BTD6AutoCommunity.GameObjects;
+
 
 namespace BTD6AutoCommunity.Core
 {
@@ -84,19 +85,23 @@ namespace BTD6AutoCommunity.Core
                 var captureArea = CalculateCaptureArea(context);
                 using (var screenImage = CaptureScreenRegion(captureArea))
                 {
-                    using (var template = LoadHeroTemplate(context, heroName))
+                    List<Mat> templateList = LoadHeroTemplate(context, heroName);
+                    using (var result = new Mat())
                     {
-                        using (var result = new Mat())
+                        foreach (var template in templateList)
                         {
                             Cv2.MatchTemplate(screenImage, template, result, TemplateMatchModes.CCoeffNormed);
 
                             Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out OpenCvSharp.Point maxLoc);
 
-                            return maxVal >= MatchThreshold
-                                ? CalculateCenter(context, maxLoc, template.Size())
-                                : new System.Drawing.Point(-1, -1);
+                            if (maxVal >= MatchThreshold)
+                            {
+                                return CalculateCenter(context, maxLoc, template.Size());
+                            }
                         }
                     }
+                    templateList.Clear();
+                    return new System.Drawing.Point(-1, -1);
                 }
             }
             catch
@@ -165,21 +170,32 @@ namespace BTD6AutoCommunity.Core
             return template;
         }
 
-        private static Mat LoadHeroTemplate(GameContext context, Heroes heroName)
+        private static List<Mat> LoadHeroTemplate(GameContext context, Heroes heroName)
         {
-            var templatePath = Path.Combine("data", "templates", "heros", $"{(int)heroName}.png");
-            if (!File.Exists(templatePath))
-                throw new FileNotFoundException($"Template not found: {templatePath}");
-
-            var template = Cv2.ImRead(templatePath, ImreadModes.Unchanged);
-
-            // 封装DPI缩放逻辑
-            if (context.ResolutionScale != 1)
+            List<string> templatePath = new List<string>();
+            for (int i = 0; i < 4; i++)
             {
-                Cv2.Resize(template, template,
-                new OpenCvSharp.Size(template.Width * context.ResolutionScale, template.Height * context.ResolutionScale));
+                string pngPath = Path.Combine("data", "templates", "heros", $"{(int)heroName}-{i}.png");
+                if (File.Exists(pngPath))
+                {
+                    templatePath.Add(pngPath);
+                }
             }
-            return template;
+            List<Mat> templateList = new List<Mat>();
+            foreach (string path in templatePath)
+            {
+                var template = Cv2.ImRead(path, ImreadModes.Unchanged);
+
+                // 封装DPI缩放逻辑
+                if (context.ResolutionScale != 1)
+                {
+                    Cv2.Resize(template, template,
+                    new OpenCvSharp.Size(template.Width * context.ResolutionScale, template.Height * context.ResolutionScale));
+                }
+                templateList.Add(template);
+            }
+
+            return templateList;
         }
 
         private static double GetMatchConfidence(Mat screenImage, Mat template)
@@ -231,7 +247,7 @@ namespace BTD6AutoCommunity.Core
         public static bool GetYellowBlockCount(GameContext context, int index, int p)
         {
             if (index == -1) return false;
-            System.Drawing.Point point = UpgradeYellowPosition[index * 5 + 5 - p];
+            System.Drawing.Point point = Constants.UpgradeYellowPosition[index * 5 + 5 - p];
             Debug.WriteLine($"point: {point}");
             Color c1 = GetGameColor(context, point);
             if (c1.B < 5 && c1.R > 40 && c1.G > 220)

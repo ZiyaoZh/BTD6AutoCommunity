@@ -1,11 +1,13 @@
 ﻿using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.GameObjects;
+using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BTD6AutoCommunity.ScriptEngine
+namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
 {
     public class ScriptMetadata
     {

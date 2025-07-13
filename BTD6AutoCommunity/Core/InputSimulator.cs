@@ -192,6 +192,14 @@ namespace BTD6AutoCommunity.Core
             SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
         }
 
+        public static void ReleaseAllKeys()
+        {
+            for (int i = 0x08; i <= 0x87; i++)
+            {
+                KeyboardRelease((ushort)i);
+            }
+        }
+
         public static void KeyboardPress(ushort keyCode)
         {
             INPUT[] inputs = new INPUT[1];

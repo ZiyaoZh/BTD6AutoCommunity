@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.GameObjects;
 
 namespace BTD6AutoCommunity.ScriptEngine
 {
     public class ScriptSettings
     {
-        private const string ConfigPath = @"Settings.json";
+        private const string ConfigPath = @"config\Settings.json";
         public int DataReadInterval { get; set; }
 
         public int OperationInterval { get; set; }

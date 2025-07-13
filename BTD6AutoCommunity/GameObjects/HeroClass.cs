@@ -11,12 +11,7 @@ namespace BTD6AutoCommunity.GameObjects
     public class HeroClass
     {
         public string name;  // 猴子塔的名字
-        public int deployCost;    // 部署价格
-        public List<int> upgradeCosts;  // 每条升级路线的价格
         public (int, int) coordinates  = (0, 0);  // 部署坐标 (x, y)
-        public List<(Instruction inst, int index)> actionList = new List<(Instruction, int)>();
-        // 非法操作列表
-        public List<(Instruction inst, int index)> illegalActions = new List<(Instruction, int)>();
 
         public bool exsitence;
         public bool storeOpen;
@@ -25,6 +20,18 @@ namespace BTD6AutoCommunity.GameObjects
             exsitence = false;
             storeOpen = false;
             coordinates = (0, 0);
+        }
+
+        public HeroClass Clone()
+        {
+            HeroClass hero = new HeroClass
+            {
+                name = name,
+                coordinates = coordinates,
+                exsitence = exsitence,
+                storeOpen = storeOpen
+            };
+            return hero;
         }
 
         public bool PlaceHero((int, int) pos)

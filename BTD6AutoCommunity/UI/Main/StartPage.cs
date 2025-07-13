@@ -13,6 +13,9 @@ using System.Windows.Forms;
 using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.ScriptEngine;
 using BTD6AutoCommunity.Strategies;
+using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
+using BTD6AutoCommunity.ScriptEngine.ScriptSystem;
+using BTD6AutoCommunity.GameObjects;
 
 namespace BTD6AutoCommunity.UI.Main
 {
@@ -436,11 +439,14 @@ namespace BTD6AutoCommunity.UI.Main
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
+                // 过滤器
+                openFileDialog.Filter = "脚本文件 (*.btd6)|*.btd6";
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string sourceFilePath = openFileDialog.FileName;
                     ScriptFileManager scriptFileManager;
                     ScriptModel scriptModel;
+
 
                     if (Path.GetExtension(sourceFilePath) != ".btd6")
                     {
@@ -451,6 +457,7 @@ namespace BTD6AutoCommunity.UI.Main
                     {
                         scriptFileManager = new ScriptFileManager();
                         scriptModel = scriptFileManager.LoadScript(sourceFilePath);
+                        scriptFileManager.SaveScript(scriptModel);
                         ExecuteMapCB.SelectedValue = scriptModel.Metadata.SelectedMap;
                         ExecuteDifficultyCB.SelectedValue = scriptModel.Metadata.SelectedDifficulty;
                         ExecuteDifficultyCB_SelectedValueChanged(ExecuteDifficultyCB, EventArgs.Empty);

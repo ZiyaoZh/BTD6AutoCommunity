@@ -1,4 +1,5 @@
 ﻿using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
 using BTD6AutoCommunity.GameObjects;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BTD6AutoCommunity.ScriptEngine
+namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
 {
     public class ScriptModel
     {
@@ -28,6 +29,18 @@ namespace BTD6AutoCommunity.ScriptEngine
             MonkeyIds = monkeyIds;
         }
 
+        public static ScriptModel Create(ScriptMetadata metadata, InstructionSequence sequence)
+        {
+            ScriptModel model = new ScriptModel
+            {
+                Metadata = metadata,
+                InstructionsList = sequence.GetInstructionList(),
+                MonkeyCounts = sequence.GetMonkeyCounts(),
+                MonkeyIds = sequence.GetMonkeyIds()
+            };
+            return model;
+        }
+
         public static ScriptModel Convert(ScriptModelOld oldModel, string scriptName)
         {
             var monkeyCountsOld = oldModel.ObjectCount;
@@ -47,6 +60,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                     case ActionTypes.PlaceMonkey:
                         arguments[0] = argumentsOld[0];
                         arguments[1] = argumentsOld[1];
+                        arguments[2] = 0;
                         arguments[7] = monkeyIdsOld[argumentsOld[2]].Item1 + monkeyIdsOld[argumentsOld[2]].Item2 * 100;
                         monkeyIds.Add(arguments[7]);
                         arguments[8] = argumentsOld[3];
@@ -162,10 +176,10 @@ namespace BTD6AutoCommunity.ScriptEngine
                         break;
                     case ActionTypes.SetHeroFunction:
                         arguments[0] = argumentsOld[0];
-                        arguments[1] = argumentsOld[1];
+                        arguments[1] = argumentsOld[1] * 2;
                         if (argumentsOld.Count == 6)
                         {
-                            arguments[2] = 1;
+                            arguments[1] += 1;
                             arguments[8] = argumentsOld[2];
                             arguments[9] = argumentsOld[3];
                             arguments[10] = argumentsOld[4];
@@ -173,7 +187,6 @@ namespace BTD6AutoCommunity.ScriptEngine
                         }
                         else
                         {
-                            arguments[2] = 0;
                             arguments[10] = argumentsOld[2];
                             arguments[11] = argumentsOld[3];
                         }

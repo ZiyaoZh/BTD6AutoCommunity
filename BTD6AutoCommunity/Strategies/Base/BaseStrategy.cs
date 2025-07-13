@@ -1,4 +1,6 @@
 ﻿using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.ScriptEngine.ScriptSystem;
+using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
 using BTD6AutoCommunity.ScriptEngine;
 using System;
 using System.Collections.Generic;
@@ -80,8 +82,8 @@ namespace BTD6AutoCommunity.Strategies.Base
         protected void GetExecutableInstructions(UserSelection userSelection)
         {
             string scriptPath = scriptFileManager.GetScriptFullPath(
-                    Constants.GetTypeName((Maps)userSelection.selectedMap),
-                    Constants.GetTypeName((LevelDifficulties)userSelection.selectedDifficulty),
+                    Constants.GetTypeName(userSelection.selectedMap),
+                    Constants.GetTypeName(userSelection.selectedDifficulty),
                     userSelection.selectedScript
                 );
             if (scriptPath == null)
@@ -197,11 +199,11 @@ namespace BTD6AutoCommunity.Strategies.Base
             int interval = DefaultDataReadInterval;
             if (useRecommendInterval)
             {
-                interval = _settings.DataReadInterval;
                 _logs.Log($"使用推荐数据读取间隔：{interval}ms", LogLevel.Info);
             }
             else
             {
+                interval = _settings.DataReadInterval;
                 _logs.Log($"使用自定义数据读取间隔：{interval}ms", LogLevel.Info);
             }
             LevelDataMonitorTimer = new System.Timers.Timer(interval);
@@ -214,11 +216,11 @@ namespace BTD6AutoCommunity.Strategies.Base
             int interval = DefaultOperationInterval;
             if (useRecommendInterval)
             {
-                interval = _settings.OperationInterval;
                 _logs.Log($"使用推荐操作间隔：{interval}ms", LogLevel.Info);
             }
             else
             {
+                interval = _settings.OperationInterval;
                 _logs.Log($"使用自定义操作间隔：{interval}ms", LogLevel.Info);
             }
             InGameActionExecutorTimer = new System.Timers.Timer(interval);
@@ -244,11 +246,16 @@ namespace BTD6AutoCommunity.Strategies.Base
                 InGameActionExecutor.currentFirstIndex = startIndex;
                 InGameActionExecutorTimer.Start();
                 _logs.Log("开始执行关卡策略...", LogLevel.Info);
+                InputSimulator.ReleaseAllKeys();
             }
         }
 
         protected void StopLevelTimer()
         {
+            if (LevelDataMonitorTimer != null)
+            {
+                InputSimulator.ReleaseAllKeys();
+            }
             LevelDataMonitorTimer?.Stop();
             InGameActionExecutorTimer?.Stop();
             LevelDataMonitorTimer?.Dispose();

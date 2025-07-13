@@ -12,6 +12,7 @@ using System.IO;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Drawing;
 using System.Runtime.CompilerServices;
+using BTD6AutoCommunity.GameObjects;
 
 namespace BTD6AutoCommunity.Strategies
 {
@@ -163,7 +164,7 @@ namespace BTD6AutoCommunity.Strategies
             if (!IsMapSelectionComplete)
             {
                 HandleReturnableScreen();
-                _logs.Log("地图选择未完成，无法选择难度，返回", LogLevel.Error);
+                _logs.Log("地图选择未完成，无法选择难度，返回", LogLevel.Warning);
                 return;
             }
             switch (scriptMetadata.SelectedDifficulty)
@@ -192,14 +193,14 @@ namespace BTD6AutoCommunity.Strategies
             if (!IsMapSelectionComplete)
             {
                 HandleReturnableScreen();
-                _logs.Log("地图选择未完成，无法进入简单模式，返回", LogLevel.Error);
+                _logs.Log("地图选择未完成，无法进入简单模式，返回", LogLevel.Warning);
                 return;
             }
             if (scriptMetadata.SelectedMode != LevelMode.Standard && 
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Easy)
             {
                 HandleReturnableScreen();
-                _logs.Log("当前模式不是简单模式，无法进入简单模式，返回", LogLevel.Error);
+                _logs.Log("当前模式不是简单模式，无法进入简单模式，返回", LogLevel.Warning);
                 return;
             }
             if (IsHeroSelectionComplete)
@@ -228,14 +229,14 @@ namespace BTD6AutoCommunity.Strategies
             if (!IsMapSelectionComplete)
             {
                 HandleReturnableScreen();
-                _logs.Log("地图选择未完成，无法进入中级模式，返回", LogLevel.Error);
+                _logs.Log("地图选择未完成，无法进入中级模式，返回", LogLevel.Warning);
                 return;
             }
             if (scriptMetadata.SelectedMode != LevelMode.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Medium)
             {
                 HandleReturnableScreen();
-                _logs.Log("当前模式不是中级模式，无法进入中级模式，返回", LogLevel.Error);
+                _logs.Log("当前模式不是中级模式，无法进入中级模式，返回", LogLevel.Warning);
                 return;
             }
             if (IsHeroSelectionComplete)
@@ -263,14 +264,14 @@ namespace BTD6AutoCommunity.Strategies
             if (!IsMapSelectionComplete)
             {
                 HandleReturnableScreen();
-                _logs.Log("地图选择未完成，无法进入困难模式，返回", LogLevel.Error);
+                _logs.Log("地图选择未完成，无法进入困难模式，返回", LogLevel.Warning);
                 return;
             }
             if (scriptMetadata.SelectedMode != LevelMode.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Hard)
             {
                 HandleReturnableScreen();
-                _logs.Log("当前模式不是困难模式，无法进入困难模式，返回", LogLevel.Error);
+                _logs.Log("当前模式不是困难模式，无法进入困难模式，返回", LogLevel.Warning);
                 return;
             }
             if (IsHeroSelectionComplete)
@@ -298,7 +299,7 @@ namespace BTD6AutoCommunity.Strategies
             if (IsHeroSelectionComplete || scriptMetadata == null)
             {
                 HandleReturnableScreen();
-                _logs.Log("英雄选择已完成，返回", LogLevel.Error);
+                _logs.Log("英雄选择已完成，返回", LogLevel.Warning);
                 return;
             }
             Point heroPosition = GameVisionRecognizer.GetHeroPosition(_context, scriptMetadata.SelectedHero);
@@ -348,7 +349,7 @@ namespace BTD6AutoCommunity.Strategies
                 InputSimulator.MouseMoveAndLeftClick(_context, 1600, 40);
                 Thread.Sleep(500);
                 InputSimulator.MouseMoveAndLeftClick(_context, 850, 850);
-                _logs.Log("地图选择未完成，无法进入战斗，返回", LogLevel.Error);
+                _logs.Log("地图选择未完成，无法进入战斗，返回", LogLevel.Warning);
                 return;
             }
             if (levelChallengingCount < 2)
