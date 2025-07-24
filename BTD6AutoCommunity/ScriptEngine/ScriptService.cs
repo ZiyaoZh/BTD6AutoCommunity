@@ -1,6 +1,7 @@
 ﻿using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
 using BTD6AutoCommunity.ScriptEngine.ScriptSystem;
+using BTD6AutoCommunity.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,9 @@ using System.Windows.Forms;
 
 namespace BTD6AutoCommunity.ScriptEngine
 {
-    public class ScriptEditorCore
+    public class ScriptService : IScriptService
     {
-        public ScriptMetadata Metadata { get; set; }
-
-        public InstructionSequence Instructions => instructions;
+        private ScriptMetadata metadata;
 
         private InstructionSequence instructions;
 
@@ -22,8 +21,9 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         private readonly ScriptFileManager fileManager;
 
-        public ScriptEditorCore()
+        public ScriptService()
         {
+            metadata = new ScriptMetadata();
             instructions = new InstructionSequence();
             factory = new InstructionFactory();
             fileManager = new ScriptFileManager();
@@ -31,7 +31,22 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public void SetMetadata(ScriptMetadata metadata)
         {
-            Metadata = metadata;
+            this.metadata = metadata;
+        }
+
+        public ScriptMetadata GetMetadata()
+        {
+            return metadata;
+        }
+
+        public InstructionSequence GetInstructions()
+        {
+            return instructions;
+        }
+
+        public InstructionSequence GetInstructionsCopy()
+        {
+            return instructions.Clone();
         }
 
         public Instruction AddInstruction(ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords)
@@ -97,12 +112,12 @@ namespace BTD6AutoCommunity.ScriptEngine
             return false;
         }
 
-        public void DeleteInstruction(int index)
+        public void RemoveInstruction(int index)
         {
             instructions.Delete(index);
         }
 
-        public void DeleteInstructions(List<int> indices)
+        public void RemoveInstructions(List<int> indices)
         {
             for (int i = indices.Count - 1; i >= 0; i--)
             {
@@ -115,9 +130,9 @@ namespace BTD6AutoCommunity.ScriptEngine
             instructions.Move(index, up);
         }
 
-        public List<int> GetAllArguments(int index)
+        public Instruction GetInstruction(int index)
         {
-            return instructions.GetAllArguments(index);
+            return instructions[index];
         }
 
         public List<int> GetInstructionsMonkeyIds()
@@ -135,22 +150,49 @@ namespace BTD6AutoCommunity.ScriptEngine
             instructions.Build();
         }
 
-        public string SaveInstructionsToFile()
+        public string GetScriptPath(string seletedMap, string selectedDifficulty, string scriptName)
         {
-            var script = new ScriptModel(Metadata, instructions.GetInstructionList(), instructions.GetMonkeyCounts(), instructions.GetMonkeyIds());
+            return fileManager.GetScriptFullPath(
+                seletedMap,
+                selectedDifficulty,
+                scriptName
+                );
+        }
+
+        public string GetScriptPath()
+        {
+            return fileManager.GetScriptFullPath(
+                Constants.GetTypeName(metadata.SelectedMap),
+                Constants.GetTypeName(metadata.SelectedDifficulty),
+                metadata.ScriptName
+                );
+        }
+
+        public string SaveScript()
+        {
+            BuildInstructions();
+            var script = new ScriptModel(metadata, instructions.GetInstructionList(), instructions.GetMonkeyCounts(), instructions.GetMonkeyIds());
             return fileManager.SaveScript(script);
         }
 
-        public void LoadInstructionsFromFile(string filePath)
+        public bool LoadScript(string scriptPath)
         {
-            var script = fileManager.LoadScript(filePath);
+            var script = fileManager.LoadScript(scriptPath);
             if (script == null)
             {
-                MessageBox.Show("Failed to load script file.");
-                return;
+                return false;
             }
-            Metadata = script.Metadata;
+            metadata = script.Metadata;
             instructions = InstructionSequence.BuildByScriptModel(script);
+            return true;
+        }
+
+        public List<string> GetPreview()
+        {
+            if (instructions.Count == 0) return new List<string>();
+            return instructions.InstructionsList
+                       .Select(inst => inst.ToString()) // 或自定义展示格式
+                       .ToList();
         }
     }
 }

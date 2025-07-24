@@ -7,12 +7,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BTD6AutoCommunity.Services.Interfaces;
 
 
 
 namespace BTD6AutoCommunity.Strategies.Base
 {
-    public abstract class BaseStrategy
+    public abstract class BaseStrategy : IStrategyExecutor
     {
         // 核心依赖
         protected readonly GameContext _context;
@@ -34,7 +35,7 @@ namespace BTD6AutoCommunity.Strategies.Base
         public event Action OnStopTriggered;
         public event Action<ScriptMetadata> OnScriptLoaded;
         public event Action<List<string>> OnGameDataUpdated;
-        public event Action<ExecutableInstruction> OnCurrentStrategyCompleted;
+        public event Action<ExecutableInstruction> OnCurrentInstructionCompleted;
 
         // 脚本编译结果
         protected List<ExecutableInstruction> executableInstructions;
@@ -312,7 +313,7 @@ namespace BTD6AutoCommunity.Strategies.Base
             int round = int.TryParse(CurrentGameData[0], out var rt) ? rt : 0;
             int cash = int.TryParse(CurrentGameData[1], out var ct) ? ct : 0;
             InGameActionExecutor.Tick(round, cash);
-            OnCurrentStrategyCompleted?.Invoke(InGameActionExecutor.currentInstrucion);
+            OnCurrentInstructionCompleted?.Invoke(InGameActionExecutor.currentInstrucion);
         }
 
         protected virtual void OnGameActionFinished()

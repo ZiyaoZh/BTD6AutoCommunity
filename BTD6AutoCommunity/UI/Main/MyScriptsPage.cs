@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.ScriptEngine;
 using BTD6AutoCommunity.GameObjects;
+using BTD6AutoCommunity.ScriptEngine.ScriptSystem;
 
 namespace BTD6AutoCommunity.UI.Main
 {
@@ -64,7 +65,7 @@ namespace BTD6AutoCommunity.UI.Main
                 {
                     if (dirInfo.Name == "我的脚本")
                     {
-                        foreach (Maps maps in Constants.MapsToDisplay)
+                        foreach (Maps maps in Constants.MapsList)
                         {
                             string subDirName = Constants.GetTypeName(maps);
                             DirectoryInfo subDir = new DirectoryInfo(Path.Combine(dirInfo.FullName, subDirName));
@@ -182,16 +183,12 @@ namespace BTD6AutoCommunity.UI.Main
         {
             if (OperationsLV.SelectedItems.Count > 0)
             {
-                string filePath = OperationsLV.SelectedItems[0].Tag as string;
-                if (filePath != null)
+                if (OperationsLV.SelectedItems[0].Tag is string filePath)
                 {
                     // 双击编辑
                     try
                     {
-                        myScript.ClearInstructions();
-                        myScript.LoadInstructionsFromFile(filePath);
-                        BindInstructionsViewLB();
-                        LoadScriptMetaData();
+                        scriptEditorViewModel.EditScriptCommand.Execute(filePath);
                         StartPrgramTC.SelectedIndex = 1;
                     }
                     catch (Exception ex)
@@ -204,56 +201,33 @@ namespace BTD6AutoCommunity.UI.Main
 
         private void ImportBT_Click(object sender, EventArgs e)
         {
-            try
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                List<string> eachDir = currentDirectory.Split('\\').ToList();
-                string lastDir = eachDir[eachDir.Count - 1];
-                if (lastDir == "简单" || lastDir == "中级" || lastDir == "困难")
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    if (!string.IsNullOrEmpty(currentDirectory))
+                    string sourceFilePath = openFileDialog.FileName;
+                    string fileName = Path.GetFileName(sourceFilePath);
+                    ScriptFileManager fileManager = new ScriptFileManager();
+                    string destinationFilePath = fileManager.GetScriptFullPath(fileManager.LoadScript(sourceFilePath));
+                    if (Path.GetExtension(fileName) == ".btd6")
                     {
-                        using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                        try
                         {
-                            if (openFileDialog.ShowDialog() == DialogResult.OK)
-                            {
-                                string sourceFilePath = openFileDialog.FileName;
-                                string fileName = Path.GetFileName(sourceFilePath);
-                                string destinationFilePath = Path.Combine(currentDirectory, fileName);
-                                if (Path.GetExtension(fileName) == ".btd6")
-                                {
-                                    try
-                                    {
-                                        File.Copy(sourceFilePath, destinationFilePath, true);
-                                        DisplayFiles(currentDirectory);
-                                    }
-                                    catch (IOException ex)
-                                    {
-                                        MessageBox.Show("脚本格式错误！" + ex.Message);
-                                    }
-                                }
-                                else
-                                {
-                                    MessageBox.Show("脚本格式错误！");
-                                }
-                            }
+                            File.Copy(sourceFilePath, destinationFilePath, true);
+                            SelectPath(Path.GetDirectoryName(destinationFilePath));
+                        }
+                        catch (IOException ex)
+                        {
+                            MessageBox.Show("脚本格式错误！" + ex.Message);
                         }
                     }
                     else
                     {
-                        MessageBox.Show("请在左侧选择地图\\难度");
+                        MessageBox.Show("脚本格式错误！");
                     }
                 }
-                else
-                {
-                    MessageBox.Show("请在左侧选择地图\\难度");
-                }
-            }
-            catch
-            {
-                MessageBox.Show("请在左侧选择地图\\难度");
             }
         }
-
 
         private void OutputBT_Click(object sender, EventArgs e)
         {
@@ -334,15 +308,11 @@ namespace BTD6AutoCommunity.UI.Main
         {
             if (OperationsLV.SelectedItems.Count > 0)
             {
-                string filePath = OperationsLV.SelectedItems[0].Tag as string;
-                if (filePath != null)
+                if (OperationsLV.SelectedItems[0].Tag is string filePath)
                 {
                     try
                     {
-                        myScript.ClearInstructions();
-                        myScript.LoadInstructionsFromFile(filePath);
-                        BindInstructionsViewLB();
-                        LoadScriptMetaData();
+                        scriptEditorViewModel.EditScriptCommand.Execute(filePath);
                         StartPrgramTC.SelectedIndex = 1;
                     }
                     catch (Exception ex)
@@ -357,6 +327,10 @@ namespace BTD6AutoCommunity.UI.Main
             }
         }
 
+        /// <summary>
+        /// 根据path选择TreeView节点，并显示其下的文件列表
+        /// </summary>
+        /// <param name="path"></param>
         private void SelectPath(string path)
         {
             TreeNode node = FindNodeByPath(OperationsTV.Nodes, path);
@@ -408,15 +382,10 @@ namespace BTD6AutoCommunity.UI.Main
                 {
                     try
                     {
-                        string[] directoryName = filePath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                        int lastIndex = directoryName.Length - 1;
-                        ExecuteMapCB.SelectedIndex = ExecuteMapCB.FindString(directoryName[lastIndex - 2]);
-                        ExecuteDifficultyCB.SelectedIndex = ExecuteDifficultyCB.FindString(directoryName[lastIndex - 1]);
-                        ExecuteDifficultyCB_SelectedValueChanged(ExecuteDifficultyCB, EventArgs.Empty);
-                        ExecuteScriptCB.SelectedIndex = ExecuteScriptCB.FindString(Path.GetFileNameWithoutExtension(directoryName[lastIndex]));
+                        startViewModel.SelectScriptCommand.Execute(filePath);
 
-                        StartPrgramTC.SelectedIndex = 0;
                         ExecuteModeCB.SelectedIndex = 0;
+                        StartPrgramTC.SelectedIndex = 0;
                     }
                     catch
                     {

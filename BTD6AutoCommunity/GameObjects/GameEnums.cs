@@ -173,7 +173,9 @@ namespace BTD6AutoCommunity.GameObjects
         // 泥泞的水坑
         MuddyPuddles = 100,
         // #哎哟
-        Ouch = 101
+        Ouch = 101,
+
+        Unkown = 255
     }
 
     public enum LevelMode
@@ -221,7 +223,9 @@ namespace BTD6AutoCommunity.GameObjects
         /// P - No Powerups         (无强化道具)
         /// S - No Selling          (无法出售塔)
         /// </remarks>
-        CHIMPS = 8
+        CHIMPS = 8,
+
+        Unkown = 255
     }
 
     public enum LevelModeBudgets
@@ -239,7 +243,9 @@ namespace BTD6AutoCommunity.GameObjects
         HalfCash = 10,
         AlternateBloonsRounds = 11,
         Impoppable = 12,
-        CHIMPS = 13
+        CHIMPS = 13,
+
+        Unkown = 255
     }
 
     public enum MapTypes
@@ -255,7 +261,8 @@ namespace BTD6AutoCommunity.GameObjects
         Easy = 0,
         Medium = 1,
         Hard = 2,
-        Any // standard mode
+        Any = 3,
+        Unknown = 255
     }
 
     public enum Heroes
@@ -276,6 +283,8 @@ namespace BTD6AutoCommunity.GameObjects
         Psi = 13,
         Geraldo = 14,
         Corvus = 15,
+
+        Unkown = 255
     }
 
     public enum Monkeys
@@ -307,7 +316,9 @@ namespace BTD6AutoCommunity.GameObjects
         SpikeFactory = 31,       // 刺钉工厂
         MonkeyVillage = 32,      // 猴村
         EngineerMonkey = 33,     // 工程师猴
-        BeastHandler = 34        // 驯兽大师
+        BeastHandler = 34,        // 驯兽大师
+
+        Unkown = 255
     }
 
     public enum SkillTypes

@@ -21,27 +21,55 @@ using System.Xml.Serialization;
 using static OpenCvSharp.Stitcher;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.Services;
 
 namespace BTD6AutoCommunity.UI.Main
 {
     public partial class BTD6AutoUI : Form
     {
         private bool IsStartPageEditButtonClicked = false;
+        private MessageBoxService messageBoxService;
+
         public BTD6AutoUI()
         {
             InitializeComponent();
+
+            messageBoxService = new MessageBoxService();
+
             InitializeStartPage();
             InitializeScriptsEditor();
             InitializeSettingPage();
             InitializeMyScriptsPage();
+
+            BindTabControl();
         }
 
-        private void BTD6AutoCommunity_Activated(object sender, EventArgs e)
+        private void BindTabControl()
         {
-        }
-
-        private void BTD6AutoCommunity_Leave(object sender, EventArgs e)
-        {
+            StartPrgramTC.SelectedIndexChanged += (s, e) =>
+            {
+                scriptEditorViewModel.SelectedTabIndex = StartPrgramTC.SelectedIndex;
+            };
+            scriptEditorViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == "SelectedTabIndex")
+                {
+                    if (!Equals(StartPrgramTC.SelectedIndex, scriptEditorViewModel.SelectedTabIndex))
+                    {
+                        StartPrgramTC.SelectedIndex = scriptEditorViewModel.SelectedTabIndex;
+                    }
+                }
+            };
+            //startViewModel.PropertyChanged += (s, e) =>
+            //{
+            //    if (e.PropertyName == "SelectedTabIndex")
+            //    {
+            //        if (!Equals(StartPrgramTC.SelectedIndex, startViewModel.SelectedTabIndex))
+            //        {
+            //            StartPrgramTC.SelectedIndex = startViewModel.SelectedTabIndex;
+            //        }
+            //    }
+            //};
         }
 
         private void BTD6AutoCommunity_FormClosing(object sender, FormClosingEventArgs e)
@@ -57,7 +85,6 @@ namespace BTD6AutoCommunity.UI.Main
             WindowApiWrapper.UnregisterHotKey(Handle, 108);
 
         }
-
 
         private void ReleaseAllKeys()
         {
@@ -79,12 +106,32 @@ namespace BTD6AutoCommunity.UI.Main
             WindowApiWrapper.RegisterHotKey(Handle, 108, 7, Keys.F1);
         }
 
-        private void StartPrgramTC_SelectedIndexChanged(object sender, EventArgs e)
+        protected override void WndProc(ref Message m) // 重载WndProc函数
         {
-            //if (StartPrgramTC.SelectedIndex == 0) InitializeStartPage();
-            //else if (StartPrgramTC.SelectedIndex == 1) InitializeScriptsEditor();
-            //else if (StartPrgramTC.SelectedIndex == 2) InitializeSettingPage();
-            //else if (StartPrgramTC.SelectedIndex == 3) InitializeMyScriptsPage();
+            const int WM_HOTKEY = 0x0312;
+            //按快捷键 
+            switch (m.Msg)
+            {
+                case WM_HOTKEY:
+                    switch (m.WParam.ToInt32())
+                    {
+                        case 13:    //Enter 设置
+                            mouseCoordinateDisplayService?.HandleHotKeyPressed();
+                            break;
+                        case 101:
+                        case 102:
+                        case 103:
+                        case 104:
+                        case 105:
+                        case 106:
+                        case 107:
+                        case 108:
+                            StartProgramBT.PerformClick();
+                            break;
+                    }
+                    break;
+            }
+            base.WndProc(ref m);
         }
     }
 }
