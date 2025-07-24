@@ -58,7 +58,7 @@ namespace BTD6AutoCommunity.Core
 
                 ClientRect = rect;
                 CurrentResolution = new Size((int)((rect.Right - rect.Left) * DpiScale), (int)((rect.Bottom - rect.Top) * DpiScale));
-                Debug.WriteLine($"CurrentResolution: {CurrentResolution.Width}");
+                //Debug.WriteLine($"CurrentResolution: {CurrentResolution.Width}");
                 ClientTopLeft = new POINT { X = rect.Left, Y = rect.Top };
                 ClientToScreen(WindowHandle, ref ClientTopLeft);
                 ClientTopLeft.X = (int)(ClientTopLeft.X * DpiScale);

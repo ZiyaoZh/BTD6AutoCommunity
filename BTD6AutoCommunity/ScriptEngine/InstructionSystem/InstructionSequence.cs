@@ -27,7 +27,7 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
     {
         private List<Instruction> instructions = new List<Instruction>();
 
-        public List<Instruction> Instructions => instructions;
+        public List<Instruction> InstructionsList => instructions;
 
         // 依赖
         private List<int> monkeyCounts; // 猴子的数量
@@ -96,7 +96,7 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                     monkeyIds.Add(externMonkeyIds[j]);
                 }
                 // 将新指令插入到原指令序列中
-                List<Instruction> externInstructions = newSequence.Instructions;
+                List<Instruction> externInstructions = newSequence.InstructionsList;
                 for (int j = 0; j < externInstructions.Count; j++)
                 {
                     instructions.Insert(index + j + i * bundle.Count, externInstructions[j]);
@@ -408,7 +408,7 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
         {
             if (sequence == null) return null;
             InstructionSequence result = sequence.Clone();
-            List<Instruction> insts = result.Instructions;
+            List<Instruction> insts = result.InstructionsList;
             List<int> monkeyIdsOld = result.GetMonkeyIds();
             for (int i = 0; i < insts.Count; i++)
             {

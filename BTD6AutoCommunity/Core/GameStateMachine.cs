@@ -141,10 +141,7 @@ namespace BTD6AutoCommunity.Core
             if (CheckColor(_context, 722, 383, 0x6397D8) && CheckColor(_context, 1213, 383, 0x6397D8) && CheckColor(_context, 988, 118, 0xFFFFFF))
                 return GameState.LevelFailedScreen;
 
-            if (CheckColor(_context, 1910, 40, 0x543E2A) && CheckColor(_context, 13, 40, 0x543E2A))
-            {
-                return GameState.LevelUpgradingScreen;
-            }
+
 
             // 收集活动相关界面需要优先判断
             if (CheckColor(_context, 960, 180, 0x121417) && CheckColor(_context, 750, 60, 0x121417) && CheckColor(_context, 1130, 200, 0x121417) && CheckColor(_context, 1725, 500, 0x121417))
@@ -231,7 +228,10 @@ namespace BTD6AutoCommunity.Core
                 }
             }
 
-
+            if (CheckColor(_context, 1910, 40, 0x543E2A) && CheckColor(_context, 13, 40, 0x543E2A))
+            {
+                return GameState.LevelUpgradingScreen;
+            }
 
 
             if (CheckColor(_context, 1080, 400, 0x71E800) && CheckColor(_context, 1080, 500, 0x6095D7) && CheckColor(_context, 1080, 725, 0x69E500))

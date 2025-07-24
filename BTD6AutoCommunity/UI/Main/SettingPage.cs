@@ -228,7 +228,7 @@ namespace BTD6AutoCommunity.UI.Main
             currentType = btn.Tag.GetType();
         }
 
-        private void StartPrgramTC_KeyDown(object sender, KeyEventArgs e)
+        private void StartProgramTC_KeyDown(object sender, KeyEventArgs e)
         {
             if (StartPrgramTC.SelectedIndex == 2 && isSettingHotKey && currentButton != null)
             {
@@ -275,7 +275,7 @@ namespace BTD6AutoCommunity.UI.Main
             }
         }
 
-        private void StartPrgramTC_KeyUp(object sender, KeyEventArgs e)
+        private void StartProgramTC_KeyUp(object sender, KeyEventArgs e)
         {
             if (StartPrgramTC.SelectedIndex == 2 && isSettingHotKey && currentButton != null)
             {
@@ -294,20 +294,6 @@ namespace BTD6AutoCommunity.UI.Main
             RefreshHotkeyText();
             currentButton = null;
             isSettingHotKey = false;
-        }
-
-        private void RecommendedIntervalCB_CheckedChanged(object sender, EventArgs e)
-        {
-            //if (EnableRecommendIntervalCB.Checked)
-            //{
-            //    GetGameDataIntervalUD.Enabled = false;
-            //    ExecuteIntervalUD.Enabled = false;
-            //}
-            //else
-            //{
-            //    GetGameDataIntervalUD.Enabled = true;
-            //    ExecuteIntervalUD.Enabled = true;
-            //}
         }
 
         private void AddBundleBT_Click(object sender, EventArgs e)

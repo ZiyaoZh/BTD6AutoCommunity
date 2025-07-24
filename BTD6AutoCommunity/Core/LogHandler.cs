@@ -25,4 +25,10 @@ namespace BTD6AutoCommunity.Core
             OnLogMessage?.Invoke($"[{DateTime.Now:HH:mm:ss}] {message}", level);
         }
     }
+
+    public class LogItem
+    {
+        public string Message { get; set; }
+        public LogLevel Level { get; set; }
+    }
 }

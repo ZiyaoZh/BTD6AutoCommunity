@@ -6,6 +6,7 @@ using BTD6AutoCommunity.Strategies;
 using BTD6AutoCommunity.ScriptEngine;
 using BTD6AutoCommunity.GameObjects;
 using System.Collections.ObjectModel;
+using System.Windows.Forms;
 
 namespace BTD6AutoCommunity.Core
 {
@@ -75,7 +76,7 @@ namespace BTD6AutoCommunity.Core
             { CollectionMode.FastPathCollection, "快速路径收集" }
         };
 
-        
+
         private static readonly Dictionary<LevelMode, Point> LevelModePoint = new Dictionary<LevelMode, Point>()
         {
             { LevelMode.Standard, new Point(630, 590) },
@@ -99,7 +100,7 @@ namespace BTD6AutoCommunity.Core
                  : new Point(0, 0);
         }
 
-        
+
         private static readonly Dictionary<MapTypes, Point> MapTypePoint = new Dictionary<MapTypes, Point>()
         {
             { MapTypes.Beginner, new Point(590, 980) },
@@ -114,7 +115,7 @@ namespace BTD6AutoCommunity.Core
                 ? pos
                  : new Point(0, 0);
         }
-        
+
         private static readonly Dictionary<LevelModeBudgets, Point> LevelModeBudgetPoint = new Dictionary<LevelModeBudgets, Point>()
         {
             { LevelModeBudgets.EasyStandard, new Point(406, 365) },
@@ -175,13 +176,13 @@ namespace BTD6AutoCommunity.Core
             new Point(1278, 840)
         };
 
-        
+
         public static readonly Dictionary<LevelDifficulties, string> _levelDifficultyNames = new Dictionary<LevelDifficulties, string>
         {
             { LevelDifficulties.Easy, "简单" },
             { LevelDifficulties.Medium, "中级" },
             { LevelDifficulties.Hard, "困难" },
-            { LevelDifficulties.Any, "任意" }
+            { LevelDifficulties.Unknown, "未知难度" }
         };
 
         public static string GetTypeName(LevelDifficulties difficulty)
@@ -191,7 +192,10 @@ namespace BTD6AutoCommunity.Core
                  : "未知难度";
         }
 
-        
+        public static List<LevelDifficulties> DifficultiesList => new List<LevelDifficulties>
+        { LevelDifficulties.Easy, LevelDifficulties.Medium, LevelDifficulties.Hard};
+
+
         private static readonly Dictionary<FunctionTypes, string> _functionNames = new Dictionary<FunctionTypes, string>
         {
             { FunctionTypes.Custom, "自定义" },
@@ -208,7 +212,9 @@ namespace BTD6AutoCommunity.Core
                  : "未知功能";
         }
 
-        
+        public static List<FunctionTypes> FunctionsList => new List<FunctionTypes>
+        { FunctionTypes.Custom, FunctionTypes.Collection, FunctionTypes.Circulation, FunctionTypes.Race};
+
         private static readonly Dictionary<Heroes, string> _heroNames = new Dictionary<Heroes, string>
         {
             { Heroes.Quincy, "昆西" },
@@ -226,7 +232,8 @@ namespace BTD6AutoCommunity.Core
             { Heroes.AdmiralBrickell, "海军上将布里克尔"},
             { Heroes.Psi, "灵机"},
             { Heroes.Geraldo, "杰拉尔多"},
-            { Heroes.Corvus, "科沃斯"}
+            { Heroes.Corvus, "科沃斯"},
+            { Heroes.Unkown, "未知英雄" }
         };
 
         // 获取中文名称
@@ -245,7 +252,26 @@ namespace BTD6AutoCommunity.Core
                 .FirstOrDefault(e => (int)e == id);
         }
 
-        
+        public static List<Heroes> HeroesList => new List<Heroes>
+        {
+            Heroes.Quincy,
+            Heroes.StrikerJones,
+            Heroes.ObynGreenfoot,
+            Heroes.Rosalia,
+            Heroes.CaptainChurchill,
+            Heroes.Benjamin,
+            Heroes.PatFusty,
+            Heroes.Ezili,
+            Heroes.Adora,
+            Heroes.Etienne,
+            Heroes.Sauda,
+            Heroes.AdmiralBrickell,
+            Heroes.Psi,
+            Heroes.Geraldo,
+            Heroes.Corvus
+        };
+
+
         private static readonly Dictionary<Monkeys, string> _monkeyNames = new Dictionary<Monkeys, string>
         {
             { Monkeys.DartMonkey, "飞镖猴" },
@@ -272,7 +298,8 @@ namespace BTD6AutoCommunity.Core
             { Monkeys.SpikeFactory, "刺钉工厂" },
             { Monkeys.MonkeyVillage, "猴村" },
             { Monkeys.EngineerMonkey, "工程师猴" },
-            { Monkeys.BeastHandler, "驯兽大师" }
+            { Monkeys.BeastHandler, "驯兽大师" },
+            { Monkeys.Unkown, "未知猴塔" }
         };
 
         // 获取中文名称
@@ -291,88 +318,33 @@ namespace BTD6AutoCommunity.Core
                 .FirstOrDefault(e => (int)e == id);
         }
 
-        public static List<Maps> MapsToDisplay = new List<Maps>
+        public static List<Monkeys> MonkeysList => new List<Monkeys>
         {
-            Maps.MonkeyMeadow,
-            Maps.InTheLoop,
-            Maps.MiddleOfTheRoad,
-            Maps.SpaPits,
-            Maps.TinkerTon,
-            Maps.TreeStump,
-            Maps.TownCenter,
-            Maps.OneTwoTree,
-            Maps.ScrapYard,
-            Maps.TheCabin,
-            Maps.Resort,
-            Maps.Skates,
-            Maps.LotusIsland,
-            Maps.CandyFalls,
-            Maps.WinterPark,
-            Maps.Carved,
-            Maps.ParkPath,
-            Maps.AlpineRun,
-            Maps.FrozenOver,
-            Maps.Cubism,
-            Maps.FourCircles,
-            Maps.Hedge,
-            Maps.EndOfTheRoad,
-            Maps.Logs,
-            Maps.LuminousCove,
-            Maps.SulfurSprings,
-            Maps.WaterPark,
-            Maps.Polyphemus,
-            Maps.CoveredGarden,
-            Maps.Quarry,
-            Maps.QuietStreet,
-            Maps.BloonariusPrime,
-            Maps.Balance,
-            Maps.Encrypted,
-            Maps.Bazaar,
-            Maps.AdorasTemple,
-            Maps.SpringSpring,
-            Maps.KartMonkey,
-            Maps.MoonLanding,
-            Maps.Haunted,
-            Maps.Downstream,
-            Maps.FiringRange,
-            Maps.Cracked,
-            Maps.Streambed,
-            Maps.Chutes,
-            Maps.Rake,
-            Maps.SpiceIslands,
-            Maps.SunsetGulch,
-            Maps.EnchantedGlade,
-            Maps.LastResort,
-            Maps.AncientPortal,
-            Maps.CastleRevenge,
-            Maps.DarkPath,
-            Maps.Erosion,
-            Maps.MidnightMansion,
-            Maps.SunkenColumns,
-            Maps.XFactor,
-            Maps.Mesa,
-            Maps.Geared,
-            Maps.Spillway,
-            Maps.Cargo,
-            Maps.PatsPond,
-            Maps.Peninsula,
-            Maps.HighFinance,
-            Maps.AnotherBrick,
-            Maps.OffTheCoast,
-            Maps.Cornfield,
-            Maps.Underground,
-            Maps.GlacialTrail,
-            Maps.DarkDungeon,
-            Maps.Sanctuary,
-            Maps.Ravine,
-            Maps.FloodedValley,
-            Maps.Infernal,
-            Maps.BloodyPuddles,
-            Maps.Workshop,
-            Maps.Quad,
-            Maps.DarkCastle,
-            Maps.MuddyPuddles,
-            Maps.Ouch
+            Monkeys.DartMonkey,
+            Monkeys.BoomerangMonkey,
+            Monkeys.BombShooter,
+            Monkeys.TackShooter,
+            Monkeys.IceMonkey,
+            Monkeys.GlueGunner,
+            Monkeys.Desperado,
+            Monkeys.SniperMonkey,
+            Monkeys.MonkeySub,
+            Monkeys.MonkeyBuccaneer,
+            Monkeys.MonkeyAce,
+            Monkeys.HeliPilot,
+            Monkeys.MortarMonkey,
+            Monkeys.DartlingGunner,
+            Monkeys.WizardMonkey,
+            Monkeys.SuperMonkey,
+            Monkeys.NinjaMonkey,
+            Monkeys.Alchemist,
+            Monkeys.Druid,
+            Monkeys.MerMonkey,
+            Monkeys.BananaFarm,
+            Monkeys.SpikeFactory,
+            Monkeys.MonkeyVillage,
+            Monkeys.EngineerMonkey,
+            Monkeys.BeastHandler
         };
 
         private static readonly Dictionary<Maps, string> _mapNames = new Dictionary<Maps, string>
@@ -456,7 +428,8 @@ namespace BTD6AutoCommunity.Core
             { Maps.Quad, "方院" },
             { Maps.DarkCastle, "黑暗城堡" },
             { Maps.MuddyPuddles, "泥泞的水坑" },
-            { Maps.Ouch, "#哎哟" }
+            { Maps.Ouch, "#哎哟" },
+            { Maps.Unkown, "未知地图" }
         };
 
         // 获取中文名称
@@ -476,7 +449,91 @@ namespace BTD6AutoCommunity.Core
                 .FirstOrDefault(e => (int)e == id);
         }
 
-        
+        public static List<Maps> MapsList => new List<Maps>
+        {
+            Maps.MonkeyMeadow,
+            Maps.InTheLoop,
+            Maps.MiddleOfTheRoad,
+            Maps.SpaPits,
+            Maps.TinkerTon,
+            Maps.TreeStump,
+            Maps.TownCenter,
+            Maps.OneTwoTree,
+            Maps.ScrapYard,
+            Maps.TheCabin,
+            Maps.Resort,
+            Maps.Skates,
+            Maps.LotusIsland,
+            Maps.CandyFalls,
+            Maps.WinterPark,
+            Maps.Carved,
+            Maps.ParkPath,
+            Maps.AlpineRun,
+            Maps.FrozenOver,
+            Maps.Cubism,
+            Maps.FourCircles,
+            Maps.Hedge,
+            Maps.EndOfTheRoad,
+            Maps.Logs,
+            Maps.LuminousCove,
+            Maps.SulfurSprings,
+            Maps.WaterPark,
+            Maps.Polyphemus,
+            Maps.CoveredGarden,
+            Maps.Quarry,
+            Maps.QuietStreet,
+            Maps.BloonariusPrime,
+            Maps.Balance,
+            Maps.Encrypted,
+            Maps.Bazaar,
+            Maps.AdorasTemple,
+            Maps.SpringSpring,
+            Maps.KartMonkey,
+            Maps.MoonLanding,
+            Maps.Haunted,
+            Maps.Downstream,
+            Maps.FiringRange,
+            Maps.Cracked,
+            Maps.Streambed,
+            Maps.Chutes,
+            Maps.Rake,
+            Maps.SpiceIslands,
+            Maps.SunsetGulch,
+            Maps.EnchantedGlade,
+            Maps.LastResort,
+            Maps.AncientPortal,
+            Maps.CastleRevenge,
+            Maps.DarkPath,
+            Maps.Erosion,
+            Maps.MidnightMansion,
+            Maps.SunkenColumns,
+            Maps.XFactor,
+            Maps.Mesa,
+            Maps.Geared,
+            Maps.Spillway,
+            Maps.Cargo,
+            Maps.PatsPond,
+            Maps.Peninsula,
+            Maps.HighFinance,
+            Maps.AnotherBrick,
+            Maps.OffTheCoast,
+            Maps.Cornfield,
+            Maps.Underground,
+            Maps.GlacialTrail,
+            Maps.DarkDungeon,
+            Maps.Sanctuary,
+            Maps.Ravine,
+            Maps.FloodedValley,
+            Maps.Infernal,
+            Maps.BloodyPuddles,
+            Maps.Workshop,
+            Maps.Quad,
+            Maps.DarkCastle,
+            Maps.MuddyPuddles,
+            Maps.Ouch
+        };
+
+
         private static readonly Dictionary<Maps, MapTypes> _mapTypes = new Dictionary<Maps, MapTypes>
         {
             { Maps.MonkeyMeadow, MapTypes.Beginner },
@@ -568,7 +625,7 @@ namespace BTD6AutoCommunity.Core
                  : MapTypes.Beginner;
         }
 
-        
+
         private static readonly Dictionary<LevelMode, string> _levelModeNames = new Dictionary<LevelMode, string>
         {
             { LevelMode.Standard, "标准" },
@@ -581,7 +638,7 @@ namespace BTD6AutoCommunity.Core
             { LevelMode.DoubleHpMoabs, "双倍生命值MOAB" },
             { LevelMode.HalfCash, "现金减半" },
             { LevelMode.AlternateBloonsRounds, "代替气球回合" },
-            { LevelMode.Impoppable, "极难模式" },                                                                                           
+            { LevelMode.Impoppable, "极难模式" },
             { LevelMode.CHIMPS, "点击" }
         };
 
@@ -601,24 +658,40 @@ namespace BTD6AutoCommunity.Core
                 .FirstOrDefault(e => (int)e == id);
         }
 
-        
+        public static List<LevelMode> ModesList => new List<LevelMode>
+        {
+            LevelMode.Standard,
+            LevelMode.PrimaryOnly,
+            LevelMode.Deflation,
+            LevelMode.MilitaryOnly,
+            LevelMode.Apopalypse,
+            LevelMode.Reverse,
+            LevelMode.MagicMonkeysOnly,
+            LevelMode.DoubleHpMoabs,
+            LevelMode.HalfCash,
+            LevelMode.AlternateBloonsRounds,
+            LevelMode.Impoppable,
+            LevelMode.CHIMPS
+        };
+
+
         private static readonly Dictionary<ActionTypes, string> _actionNames = new Dictionary<ActionTypes, string>
         {
             { ActionTypes.PlaceMonkey, "放置猴子" },
             { ActionTypes.UpgradeMonkey, "升级猴子" },
             { ActionTypes.SwitchMonkeyTarget, "切换猴子目标" },
-            { ActionTypes.UseAbility, "使用技能" },
-            { ActionTypes.SwitchSpeed, "切换倍速" },
-            { ActionTypes.SellMonkey, "出售猴子" },
             { ActionTypes.SetMonkeyFunction, "设置猴子功能" },
+            { ActionTypes.AdjustMonkeyCoordinates, "修改猴子坐标" },
+            { ActionTypes.SellMonkey, "出售猴子" },
             { ActionTypes.PlaceHero, "放置英雄" },
             { ActionTypes.UpgradeHero, "升级英雄" },
             { ActionTypes.PlaceHeroItem, "英雄物品放置" },
             { ActionTypes.SwitchHeroTarget, "切换英雄目标" },
             { ActionTypes.SetHeroFunction, "设置英雄功能" },
             { ActionTypes.SellHero, "出售英雄" },
+            { ActionTypes.UseAbility, "使用技能" },
+            { ActionTypes.SwitchSpeed, "切换倍速" },
             { ActionTypes.MouseClick, "鼠标点击" },
-            { ActionTypes.AdjustMonkeyCoordinates, "修改猴子坐标" },
             { ActionTypes.WaitMilliseconds, "等待(ms)" },
             { ActionTypes.StartFreeplay, "开启自由游戏" },
             { ActionTypes.EndFreeplay, "结束自由游戏" },
@@ -641,6 +714,30 @@ namespace BTD6AutoCommunity.Core
                 .Cast<ActionTypes>()
                 .FirstOrDefault(e => (int)e == id);
         }
+
+        public static List<ActionTypes> ActionsList => new List<ActionTypes>
+        {
+            ActionTypes.PlaceMonkey,
+            ActionTypes.UpgradeMonkey,
+            ActionTypes.SwitchMonkeyTarget,
+            ActionTypes.SetMonkeyFunction,
+            ActionTypes.AdjustMonkeyCoordinates,
+            ActionTypes.SellMonkey,
+            ActionTypes.PlaceHero,
+            ActionTypes.UpgradeHero,
+            ActionTypes.PlaceHeroItem,
+            ActionTypes.SwitchHeroTarget,
+            ActionTypes.SetHeroFunction,
+            ActionTypes.SellHero,
+            ActionTypes.UseAbility,
+            ActionTypes.SwitchSpeed,
+            ActionTypes.MouseClick,
+            ActionTypes.WaitMilliseconds,
+            ActionTypes.StartFreeplay,
+            ActionTypes.EndFreeplay,
+            ActionTypes.Jump,
+            ActionTypes.InstructionsBundle
+        };
 
 
         private static readonly Dictionary<SkillTypes, string> _skillNames = new Dictionary<SkillTypes, string>
@@ -675,6 +772,22 @@ namespace BTD6AutoCommunity.Core
                 .FirstOrDefault(e => (int)e == id);
         }
 
+        public static List<SkillTypes> SkillsList => new List<SkillTypes>
+        {
+            SkillTypes.Skill1,
+            SkillTypes.Skill2,
+            SkillTypes.Skill3,
+            SkillTypes.Skill4,
+            SkillTypes.Skill5,
+            SkillTypes.Skill6,
+            SkillTypes.Skill7,
+            SkillTypes.Skill8,
+            SkillTypes.Skill9,
+            SkillTypes.Skill10,
+            SkillTypes.Skill11,
+            SkillTypes.Skill12
+        };
+
 
         private static readonly Dictionary<TargetTypes, string> _targetNames = new Dictionary<TargetTypes, string>
         {
@@ -701,6 +814,16 @@ namespace BTD6AutoCommunity.Core
                 .Cast<TargetTypes>()
                 .FirstOrDefault(e => (int)e == id);
         }
+
+        public static List<TargetTypes> TargetsList => new List<TargetTypes>
+        {
+            TargetTypes.Right,
+            TargetTypes.RightDouble,
+            TargetTypes.RightTriple,
+            TargetTypes.Left,
+            TargetTypes.LeftDouble,
+            TargetTypes.LeftTriple
+        };
 
         private static readonly Dictionary<HeroObjectTypes, string> _heroObjectNames = new Dictionary<HeroObjectTypes, string>
         {
@@ -738,6 +861,26 @@ namespace BTD6AutoCommunity.Core
                 .FirstOrDefault(e => (int)e == id);
         }
 
+        public static List<HeroObjectTypes> HeroObjectsList => new List<HeroObjectTypes>
+        {
+            HeroObjectTypes.HeroObject1,
+            HeroObjectTypes.HeroObject2,
+            HeroObjectTypes.HeroObject3,
+            HeroObjectTypes.HeroObject4,
+            HeroObjectTypes.HeroObject5,
+            HeroObjectTypes.HeroObject6,
+            HeroObjectTypes.HeroObject7,
+            HeroObjectTypes.HeroObject8,
+            HeroObjectTypes.HeroObject9,
+            HeroObjectTypes.HeroObject10,
+            HeroObjectTypes.HeroObject11,
+            HeroObjectTypes.HeroObject12,
+            HeroObjectTypes.HeroObject13,
+            HeroObjectTypes.HeroObject14,
+            HeroObjectTypes.HeroObject15,
+            HeroObjectTypes.HeroObject16
+        };
+
         private static readonly Dictionary<UpgradeTypes, string> _upgradePathNames = new Dictionary<UpgradeTypes, string>
         {
             { UpgradeTypes.Top, "上路"},
@@ -764,6 +907,16 @@ namespace BTD6AutoCommunity.Core
                 .FirstOrDefault(e => (int)e == id);
         }
 
+        public static List<UpgradeTypes> UpgradePathsList => new List<UpgradeTypes>
+        {
+            UpgradeTypes.Top,
+            UpgradeTypes.Middle,
+            UpgradeTypes.Bottom,
+            UpgradeTypes.TopOnce,
+            UpgradeTypes.MiddleOnce,
+            UpgradeTypes.BottomOnce
+        };
+
         private static readonly Dictionary<MonkeyFunctionTypes, string> _monkeyFunctionNames = new Dictionary<MonkeyFunctionTypes, string>
         {
             { MonkeyFunctionTypes.Function1, "功能1无坐标选择"},
@@ -788,6 +941,14 @@ namespace BTD6AutoCommunity.Core
                 .FirstOrDefault(e => (int)e == id);
         }
 
+        public static List<MonkeyFunctionTypes> MonkeyFunctionsList => new List<MonkeyFunctionTypes>
+        {
+            MonkeyFunctionTypes.Function1,
+            MonkeyFunctionTypes.Function2,
+            MonkeyFunctionTypes.Function1Coordinate,
+            MonkeyFunctionTypes.Function2Coordinate
+        };
+
         private static readonly Dictionary<CoordinateTypes, string> _coordinateNames = new Dictionary<CoordinateTypes, string>
         {
             { CoordinateTypes.None, "无坐标选择" },
@@ -809,6 +970,12 @@ namespace BTD6AutoCommunity.Core
                 .Cast<CoordinateTypes>()
                 .FirstOrDefault(e => (int)e == id);
         }
+
+        public static List<CoordinateTypes> CoordinatesList => new List<CoordinateTypes>
+        {
+            CoordinateTypes.None,
+            CoordinateTypes.Coordinate
+        };
 
         private static readonly Dictionary<SpeedTypes, string> _speedNames = new Dictionary<SpeedTypes, string>
         {
@@ -832,6 +999,12 @@ namespace BTD6AutoCommunity.Core
                 .FirstOrDefault(e => (int)e == id);
         }
 
+        public static List<SpeedTypes> SpeedsList => new List<SpeedTypes>
+        {
+            SpeedTypes.Switch,
+            SpeedTypes.NextRound
+        };
+
         private static readonly Dictionary<PlaceCheckTypes, string> _placeCheckNames = new Dictionary<PlaceCheckTypes, string>
         {
             { PlaceCheckTypes.None, "无放置检测" },
@@ -853,6 +1026,12 @@ namespace BTD6AutoCommunity.Core
                 .Cast<PlaceCheckTypes>()
                 .FirstOrDefault(e => (int)e == id);
         }
+
+        public static List<PlaceCheckTypes> PlaceChecksList => new List<PlaceCheckTypes>
+        {
+            PlaceCheckTypes.None,
+            PlaceCheckTypes.Check
+        };
 
         public static string GetTypeName(object obj, Type type)
         {
@@ -916,7 +1095,11 @@ namespace BTD6AutoCommunity.Core
             {
                 return GetTypeName((PlaceCheckTypes)obj);
             }
-            else 
+            else if (type == typeof(MonkeyId))
+            {
+                return ((MonkeyId)obj).ToString();
+            }
+            else
             {
                 return obj.ToString();
             }

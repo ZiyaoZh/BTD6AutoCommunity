@@ -12,511 +12,309 @@ using System.Timers;
 using System.Windows.Forms;
 using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.ScriptEngine;
-using BTD6AutoCommunity.Strategies;
-using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
-using BTD6AutoCommunity.ScriptEngine.ScriptSystem;
 using BTD6AutoCommunity.GameObjects;
+using BTD6AutoCommunity.ViewModels;
+using BTD6AutoCommunity.Models;
+using BTD6AutoCommunity.Services.Interfaces;
 
 namespace BTD6AutoCommunity.UI.Main
 {
     public partial class BTD6AutoUI
     {
-        private ScriptEditorCore ExecuteScript = new ScriptEditorCore();
-        public int dpi;
-
-        CustomStrategy customStrategy;
-        CollectionStrategy collectionStrategy;
-        CirculationStrategy circulationStrategy;
-        RaceStrategy raceStrategy;
-        //BlackBorderStrategy blackBorderStrategy;
-
-        private LogHandler logHandler;
-        private readonly object _logLock = new object();
+        private StartViewModel startViewModel;
 
         private void InitializeStartPage()
         {
-            BindSelectedFunction();
-            BindSelectedMap();
-            BindSelectedDifficulty();
+            IScriptService startPageScriptService = new ScriptService();
+            startViewModel = new StartViewModel(startPageScriptService, messageBoxService);
+
+            BindFunctionComboBox();
+            BindMapComboBox();
+            BindDifficultyComboBox();
+            BindScriptComboBox();
+            BindPreviewListBox();
+            BindStartProgramButton();
+            BindImportScriptButton();
+            BindOutputScriptButton();
+            BindEditScriptButton();
+            BindCurrentRoundLabel();
+            BindCurrentGoldLabel();
+            BindCurrentLifeLabel();
+            BindCurrentInstructionRichTextBox();
+            BindCurrentTriggerRichTextBox();
+            BindLogsRichTextBox();
         }
 
-        private void BindSelectedFunction()
+        private void BindFunctionComboBox()
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Value", typeof(FunctionTypes));
-            dt.Columns.Add("FunctionName", typeof(string));
-            foreach (FunctionTypes item in Enum.GetValues(typeof(FunctionTypes)))
-            {
-                DataRow dr = dt.NewRow();
-                dr["Value"] = item;
-                dr["FunctionName"] = Constants.GetTypeName(item);
-                dt.Rows.Add(dr);
-            }
-            ExecuteModeCB.DataSource = dt;
+            // 绑定 ComboBox 数据源
+            ExecuteModeCB.DataSource = startViewModel.FunctionOptions;
+            ExecuteModeCB.DisplayMember = "Name";
             ExecuteModeCB.ValueMember = "Value";
-            ExecuteModeCB.DisplayMember = "FunctionName";
-            ExecuteModeCB.SelectedValueChanged += ExecuteModeCB_SelectedValueChanged;
 
+            // 初始选中
+            ExecuteModeCB.SelectedItem = startViewModel.SelectedFunction;
+
+            // UI → VM
+            ExecuteModeCB.SelectedIndexChanged += (s, e) =>
+            {
+                if (ExecuteModeCB.SelectedItem is FunctionDisplayItem item)
+                    startViewModel.SelectedFunction = item;
+            };
         }
 
-        private void BindSelectedDifficulty()
+        private void BindMapComboBox()
         {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Value", typeof(LevelDifficulties));
-            dt.Columns.Add("DifficultyName", typeof(string));
-            foreach (LevelDifficulties item in Enum.GetValues(typeof(LevelDifficulties)))
-            {
-                if (item == LevelDifficulties.Any) continue;
-                DataRow dr = dt.NewRow();
-                dr["Value"] = item;
-                dr["DifficultyName"] = Constants.GetTypeName(item);
-                dt.Rows.Add(dr);
-            }
-            ExecuteDifficultyCB.DataSource = dt;
-            ExecuteDifficultyCB.ValueMember = "Value";
-            ExecuteDifficultyCB.DisplayMember = "DifficultyName";
-            ExecuteDifficultyCB.SelectedValueChanged += ExecuteDifficultyCB_SelectedValueChanged;
-        }
-
-        private void BindSelectedMap()
-        {
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Value", typeof(Maps));
-            dt.Columns.Add("MapName", typeof(string));
-            foreach (Maps item in Constants.MapsToDisplay)
-            {
-                DataRow dr = dt.NewRow();
-                dr["Value"] = item;
-                dr["MapName"] = Constants.GetTypeName(item);
-                dt.Rows.Add(dr);
-            }
-            ExecuteMapCB.DataSource = dt;
+            ExecuteMapCB.DataBindings.Add("Enabled", startViewModel, "ExecuteMapEnabled");
+            ExecuteMapCB.DataSource = startViewModel.MapOptions;
+            ExecuteMapCB.DisplayMember = "Name";
             ExecuteMapCB.ValueMember = "Value";
-            ExecuteMapCB.DisplayMember = "MapName";
-            ExecuteMapCB.SelectedValueChanged += ExecuteDifficultyCB_SelectedValueChanged;
-        }
 
-        private void BindPreviewLB(List<Instruction> lst)
-        {
-            List<string> lstStr = lst.Select(x => x.ToString()).ToList();
-            BindingSource bs = new BindingSource
-            {
-                DataSource = lstStr
-            };
-            PreviewLB.DataSource = bs;
-        }
+            ExecuteMapCB.SelectedItem = startViewModel.SelectedMap;
 
-        private void StartProgram_Click(object sender, EventArgs e)
-        {
-            UserSelection userSelection = new UserSelection()
+            ExecuteMapCB.SelectedIndexChanged += (s, e) =>
             {
-                selectedFunction = (FunctionTypes)ExecuteModeCB.SelectedValue,
-                selectedMap = (Maps)ExecuteMapCB.SelectedValue,
-                selectedDifficulty = (LevelDifficulties)ExecuteDifficultyCB.SelectedValue,
-                selectedScript = ExecuteScriptCB.Text,
-                selectedIndex = PreviewLB.SelectedIndex,
+                if (ExecuteMapCB.SelectedItem is MapDisplayItem map)
+                {
+                    startViewModel.SelectedMap = map;
+                }
             };
 
-            if (StartProgramBT.Text == "启动")
+            startViewModel.PropertyChanged += (s, e) =>
             {
-                switch (userSelection.selectedFunction)
-                { 
-                    case FunctionTypes.Custom:
-                        RunCustomMode(userSelection);
-                        break;
-                    case FunctionTypes.Collection:
-                        RunCollectionMode();
-                        break;
-                    case FunctionTypes.Circulation:
-                        RunCirculationMode(userSelection);
-                        break;
-                    case FunctionTypes.Race:
-                        RunFasterMode(userSelection);
-                        break;
-                    case FunctionTypes.BlackBorder:
-                        MessageBox.Show("敬请期待！");
-                        RunBlackBorderMode();
-                        break;
-                }
-            }
-            else
-            {
-                customStrategy?.Stop();
-                customStrategy = null;
-                collectionStrategy?.Stop();
-                collectionStrategy = null;
-                circulationStrategy?.Stop();
-                circulationStrategy = null;
-                raceStrategy?.Stop();
-                raceStrategy = null;
-                //blackBorderStrategy?.Stop();
-                //blackBorderStrategy = null;
-                ReleaseAllKeys();
-                StartProgramBT.Text = "启动";
-            }
-        }
-
-        private void RunCustomMode(UserSelection userSelection)
-        {
-            logHandler = new LogHandler() { EnableInfoLog = scriptSettings.EnableLogging };
-            logHandler.OnLogMessage += HandleLogMessage;
-            customStrategy = new CustomStrategy(scriptSettings, logHandler, userSelection);
-            customStrategy.OnStopTriggered += HandleStopEvent;
-            customStrategy.OnGameDataUpdated += HandleGameDataUpdated;
-            customStrategy.OnCurrentStrategyCompleted += HandleCurrentStrategyCompleted;
-
-            if (customStrategy.ReadyToStart)
-            {
-                StartProgramBT.Text = "终止";
-                customStrategy.Start();
-            }
-        }
-
-        private void RunCollectionMode()
-        {
-            logHandler = new LogHandler(){ EnableInfoLog = scriptSettings.EnableLogging};
-            logHandler.OnLogMessage += HandleLogMessage;
-
-            collectionStrategy = new CollectionStrategy(scriptSettings, logHandler);
-            collectionStrategy.OnStopTriggered += HandleStopEvent;
-            collectionStrategy.OnGameDataUpdated += HandleGameDataUpdated;
-            collectionStrategy.OnCurrentStrategyCompleted += HandleCurrentStrategyCompleted;
-            collectionStrategy.OnScriptLoaded += HandleScriptLoaded;
-
-            if (collectionStrategy.ReadyToStart)
-            {
-                StartProgramBT.Text = "终止";
-                collectionStrategy.Start();
-            }
-        }
-
-        private void RunCirculationMode(UserSelection userSelection)
-        {
-            logHandler = new LogHandler() { EnableInfoLog = scriptSettings.EnableLogging };
-            logHandler.OnLogMessage += HandleLogMessage;
-
-            circulationStrategy = new CirculationStrategy(scriptSettings, logHandler, userSelection);
-            circulationStrategy.OnStopTriggered += HandleStopEvent;
-            circulationStrategy.OnGameDataUpdated += HandleGameDataUpdated;
-            circulationStrategy.OnCurrentStrategyCompleted += HandleCurrentStrategyCompleted;
-
-            if (circulationStrategy.ReadyToStart)
-            {
-                StartProgramBT.Text = "终止";
-                circulationStrategy.Start();
-            }
-        }
-
-        private void RunFasterMode(UserSelection userSelection)
-        {
-            logHandler = new LogHandler() { EnableInfoLog = scriptSettings.EnableLogging };
-            logHandler.OnLogMessage += HandleLogMessage;
-
-            raceStrategy = new RaceStrategy(scriptSettings, logHandler, userSelection);
-            raceStrategy.OnStopTriggered += HandleStopEvent;
-            raceStrategy.OnGameDataUpdated += HandleGameDataUpdated;
-            raceStrategy.OnCurrentStrategyCompleted += HandleCurrentStrategyCompleted;
-
-            if (raceStrategy.ReadyToStart)
-            {
-                StartProgramBT.Text = "终止";
-                raceStrategy.Start();
-            }
-        }
-
-        private void RunBlackBorderMode()
-        {
-            logHandler = new LogHandler() { EnableInfoLog = scriptSettings.EnableLogging };
-            logHandler.OnLogMessage += HandleLogMessage;
-
-        }
-        private void HandleStopEvent()
-        {
-            if (StartProgramBT.InvokeRequired)
-            {
-                StartProgramBT.BeginInvoke(new Action(() =>
+                if (e.PropertyName == nameof(startViewModel.SelectedMap))
                 {
-                    //StartProgramBT.Enabled = false;
-                    StartProgramBT.Text = "启动";
-                }));
-            }
-            else
-            {
-                //StartProgramBT.Enabled = false;
-                StartProgramBT.Text = "启动";
-            }
-        }
-
-        private void HandleGameDataUpdated(List<string> gameData)
-        {
-            if (gameData[0] != "")
-            {
-                CurrentRoundLB.Invoke((MethodInvoker)delegate
-                {
-                    CurrentRoundLB.Text = gameData[0];
-                });
-            }
-            if (gameData[1] != "")
-            {
-                CurrentGoldLB.Invoke((MethodInvoker)delegate
-                {
-                    CurrentGoldLB.Text = gameData[1];
-                });
-            }
-            if (gameData[2] != "")
-            {
-                CurrentLifeLB.Invoke((MethodInvoker)delegate
-                {
-                    CurrentLifeLB.Text = gameData[2];
-                });
-            }
-        }
-
-        private void HandleCurrentStrategyCompleted(ExecutableInstruction executableInstruction)
-        {
-            CurrentInstructionLB.Invoke((MethodInvoker)delegate
-            {
-                CurrentInstructionLB.Text = "当前指令：\n" + executableInstruction.Content;
-            });
-            CurrentTriggerLB.Invoke((MethodInvoker)delegate
-            {
-                CurrentTriggerLB.Clear();
-
-                // 固定前缀
-                CurrentTriggerLB.SelectionFont = new Font(CurrentTriggerLB.Font, FontStyle.Regular);
-                CurrentTriggerLB.SelectionColor = Color.Black;
-                CurrentTriggerLB.AppendText("触发条件：\n");
-
-                // 回合条件
-                bool isRoundMet = executableInstruction.IsRoundMet;
-                string roundIcon = isRoundMet ? "✅" : "❌";
-                CurrentTriggerLB.SelectionFont = isRoundMet
-                    ? new Font(CurrentTriggerLB.Font, FontStyle.Regular)
-                    : new Font(CurrentTriggerLB.Font, FontStyle.Bold);
-
-                CurrentTriggerLB.SelectionColor = isRoundMet ? Color.Blue : Color.Red;
-                CurrentTriggerLB.AppendText($"第{executableInstruction.RoundTrigger}回合后{roundIcon}");
-
-                // 分隔符
-                CurrentTriggerLB.SelectionFont = new Font(CurrentTriggerLB.Font, FontStyle.Regular);
-                CurrentTriggerLB.SelectionColor = Color.Black;
-                CurrentTriggerLB.AppendText(" / ");
-
-                // 金币条件
-                bool isCashMet = executableInstruction.IsCoinMet;
-                string cashIcon = isCashMet ? "✅" : "❌";
-                CurrentTriggerLB.SelectionFont = isCashMet
-                    ? new Font(CurrentTriggerLB.Font, FontStyle.Regular)
-                    : new Font(CurrentTriggerLB.Font, FontStyle.Bold);
-
-                CurrentTriggerLB.SelectionColor = isCashMet ? Color.Blue : Color.Red;
-                CurrentTriggerLB.AppendText($"{executableInstruction.CoinTrigger}金币{cashIcon}");
-            });
-            PreviewLB.Invoke((MethodInvoker)delegate
-            {
-                PreviewLB.SelectedIndex = executableInstruction.Index;
-            });
-        }
-
-        private void HandleScriptLoaded(ScriptMetadata scriptMetadata)
-        {
-            ExecuteMapCB.Invoke((MethodInvoker)delegate
-            {
-                ExecuteMapCB.SelectedValue = scriptMetadata.SelectedMap;
-            });
-            ExecuteDifficultyCB.Invoke((MethodInvoker)delegate
-            {
-                ExecuteDifficultyCB.SelectedValue = scriptMetadata.SelectedDifficulty;
-                ExecuteDifficultyCB_SelectedValueChanged(ExecuteDifficultyCB, EventArgs.Empty);
-            });
-            ExecuteScriptCB.Invoke((MethodInvoker)delegate
-            {
-                ExecuteScriptCB.SelectedIndex = ExecuteScriptCB.FindString(scriptMetadata.ScriptName);
-            });
-        }
-
-        private void HandleLogMessage(string msg, LogLevel level)
-        {
-            lock (_logLock)
-            {
-                var color = Color.Black;
-                switch (level)
-                {
-                    case LogLevel.Warning:
-                        color = Color.Blue;
-                        break;
-                    case LogLevel.Error:
-                        color = Color.Red;
-                        break;
-                    case LogLevel.Info:
-                        color = Color.Gray;
-                        break;
-                }
-
-                if (logsRTB.InvokeRequired)
-                {
-                    logsRTB.Invoke(new Action(() =>
+                    ExecuteMapCB.InvokeIfRequired(() =>
                     {
-                        // 删除多余行数
+                        if (!Equals(ExecuteMapCB.SelectedItem, startViewModel.SelectedMap))
+                        {
+                            ExecuteMapCB.SelectedItem = startViewModel.SelectedMap;
+                        }
+                    });
+                }
+            };
+        }
+
+        private void BindDifficultyComboBox()
+        {
+            ExecuteDifficultyCB.DataBindings.Add("Enabled", startViewModel, "ExecuteDifficultyEnabled");
+            // 绑定难度下拉框
+            ExecuteDifficultyCB.DisplayMember = "Name";
+            ExecuteDifficultyCB.ValueMember = "Value";
+            ExecuteDifficultyCB.DataSource = startViewModel.DifficultyOptions;
+
+            // 初始同步选中项
+            ExecuteDifficultyCB.SelectedItem = startViewModel.SelectedDifficulty;
+
+            // UI → ViewModel
+            ExecuteDifficultyCB.SelectedIndexChanged += (s, e) =>
+            {
+                if (ExecuteDifficultyCB.SelectedItem is DifficultyDisplayItem item)
+                {
+                    startViewModel.SelectedDifficulty = item;
+                }
+            };
+
+            // ViewModel → UI（绑定脚本列表）
+            startViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(startViewModel.SelectedDifficulty))
+                {
+                    ExecuteDifficultyCB.InvokeIfRequired(() =>
+                    {
+                        if (!Equals(ExecuteDifficultyCB.SelectedItem, startViewModel.SelectedDifficulty))
+                        {
+                            ExecuteDifficultyCB.SelectedItem = startViewModel.SelectedDifficulty;
+                        }
+                    });
+                }
+            };
+        }
+
+        private void BindScriptComboBox()
+        {
+            ExecuteScriptCB.DataSource = new BindingSource(startViewModel.ScriptList, null);
+            ExecuteScriptCB.DataBindings.Add("Enabled", startViewModel, "ExecuteScriptEnabled");
+            // 绑定脚本下拉项
+            startViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(startViewModel.ScriptList))
+                {
+                    ExecuteScriptCB.InvokeIfRequired(() =>
+                    {
+                        ExecuteScriptCB.DataSource = new BindingSource(startViewModel.ScriptList, null);
+                    });
+                }
+                if (e.PropertyName == nameof(startViewModel.SelectedScript))
+                {
+                    ExecuteScriptCB.InvokeIfRequired(() =>
+                    {
+                        if (!Equals(ExecuteScriptCB.SelectedItem, startViewModel.SelectedScript))
+                        {
+                            ExecuteScriptCB.SelectedItem = startViewModel.SelectedScript;
+                        }
+                    });
+                }
+            };
+
+            // 用户选择脚本时 → VM
+            ExecuteScriptCB.SelectedIndexChanged += (s, e) =>
+            {
+                startViewModel.SelectedScript = ExecuteScriptCB.Text;
+            };
+        }
+
+        private void BindPreviewListBox()
+        {
+            PreviewLB.SelectedIndexChanged += (s, e) =>
+            {
+                startViewModel.SelectedPreviewIndex = PreviewLB.SelectedIndex;
+            };
+
+            startViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(startViewModel.PreviewInstructions))
+                {
+                    PreviewLB.InvokeIfRequired(() =>
+                    {
+                        PreviewLB.DataSource = new BindingSource(startViewModel.PreviewInstructions, null);
+                    });
+                }
+                if (e.PropertyName == nameof(startViewModel.SelectedPreviewIndex))
+                {
+                    PreviewLB.InvokeIfRequired(() =>
+                    {
+                        PreviewLB.SelectedIndex = startViewModel.SelectedPreviewIndex;
+                    });
+                }
+            };
+        }
+
+        private void BindCurrentRoundLabel()
+        {
+            startViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(startViewModel.CurrentRound))
+                {
+                    CurrentRoundLB.InvokeIfRequired(() =>
+                    {
+                        CurrentRoundLB.Text = startViewModel.CurrentRound;
+                    });
+                }
+            };
+        }
+
+        private void BindCurrentGoldLabel()
+        {
+            startViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(startViewModel.CurrentGold))
+                {
+                    CurrentGoldLB.InvokeIfRequired(() =>
+                    {
+                        CurrentGoldLB.Text = startViewModel.CurrentGold;
+                    });
+                }
+            };
+        }
+
+        private void BindCurrentLifeLabel()
+        {
+            startViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(startViewModel.CurrentLife))
+                {
+                    CurrentLifeLB.InvokeIfRequired(() =>
+                    {
+                        CurrentLifeLB.Text = startViewModel.CurrentLife;
+                    });
+                }
+            };
+        }
+
+        private void BindCurrentInstructionRichTextBox()
+        {
+            startViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(startViewModel.CurrentInstructionText))
+                {
+                     CurrentInstructionRTB.InvokeIfRequired(() =>
+                    {
+                        CurrentInstructionRTB.Text = startViewModel.CurrentInstructionText;
+                    });
+                }
+            };
+        }
+
+        private void BindCurrentTriggerRichTextBox()
+        {
+            startViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(startViewModel.CurrentTriggerText))
+                {
+                    CurrentTriggerRTB.InvokeIfRequired(() =>
+                    {
+                        CurrentTriggerRTB.Text = startViewModel.CurrentTriggerText;
+                    });
+                }
+            };
+        }
+
+        private void BindLogsRichTextBox()
+        {
+            startViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(startViewModel.CurrentLog))
+                {
+                    logsRTB.InvokeIfRequired(() =>
+                    {
+                        var color = Color.Black;
+                        switch (startViewModel.CurrentLog.Level)
+                        {
+                            case LogLevel.Warning:
+                                color = Color.Blue;
+                                break;
+                            case LogLevel.Error:
+                                color = Color.Red;
+                                break;
+                            case LogLevel.Info:
+                                color = Color.Gray;
+                                break;
+                        }
                         if (logsRTB.Lines.Length >= 1000)
                         {
                             logsRTB.Text = string.Join("\n",
                                 logsRTB.Lines.Skip(logsRTB.Lines.Length - 1000));
                         }
                         logsRTB.SelectionColor = color;
-                        logsRTB.AppendText(msg + "\n");
+                        logsRTB.AppendText(startViewModel.CurrentLog.Message + "\n");
                         logsRTB.ScrollToCaret();
-                    }));
+                    });
                 }
-                else
-                {                // 删除多余行数
-                    if (logsRTB.Lines.Length >= 1000)
-                    {
-                        logsRTB.Text = string.Join("\n",
-                            logsRTB.Lines.Skip(logsRTB.Lines.Length - 1000));
-                    }
-                    logsRTB.SelectionColor = color;
-                    logsRTB.AppendText(msg + "\n");
-                    logsRTB.ScrollToCaret();
-                }
-            }
+            };
         }
 
-        private void ExecuteDifficultyCB_SelectedValueChanged(object sender, EventArgs e)
+        private void BindStartProgramButton()
         {
-            string selectDir1 = ExecuteMapCB.Text;
-            string selectDir2 = ExecuteDifficultyCB.Text;
-            //MessageBox.Show(selectDir1 + selectDir2);
-            string fullPath = Path.GetFullPath(Path.Combine("data", "我的脚本", selectDir1, selectDir2));
-            if (Directory.Exists(fullPath))
-            {
-                var files = Directory.GetFiles(fullPath).Select(file => Path.GetFileNameWithoutExtension(file)).ToList();
-                ExecuteScriptCB.DataSource = new BindingSource(files, null);
-            }
+            StartProgramBT.DataBindings.Add("Text", startViewModel, "StartButtonText");
+            StartProgramBT.Click += (s, e) => startViewModel.StartOrStopCommand.Execute(null);
         }
 
-        private void ExecuteScriptCB_SelectedIndexChanged(object sender, EventArgs e)
+        private void BindImportScriptButton()
         {
-            string selectDir1 = ExecuteMapCB.Text;
-            string selectDir2 = ExecuteDifficultyCB.Text;
-            string scriptName = ExecuteScriptCB.Text;
-            string filePath1 = Path.GetFullPath(Path.Combine("data", "我的脚本", selectDir1, selectDir2, scriptName + ".btd6"));
-            string filePath2 = Path.GetFullPath(Path.Combine("data", "我的脚本", selectDir1, selectDir2, scriptName + ".json"));
-
-            if (File.Exists(filePath1) || File.Exists(filePath2))
-            {
-                string filePath = File.Exists(filePath1) ? filePath1 : filePath2;
-                ExecuteScript.LoadInstructionsFromFile(filePath);
-
-                BindPreviewLB(ExecuteScript.Instructions.Instructions);
-            }
+            ImportScriptBT.Click += (s, e) => startViewModel.ImportScriptCommand.Execute(null);
         }
 
-        private void ExecuteModeCB_SelectedValueChanged(object sender, EventArgs e)
+        private void BindOutputScriptButton()
         {
-            if (!Enum.IsDefined(typeof(FunctionTypes), ExecuteModeCB.SelectedValue)) return;
-            if ((FunctionTypes)ExecuteModeCB.SelectedValue == FunctionTypes.Collection ||
-                (FunctionTypes)ExecuteModeCB.SelectedValue == FunctionTypes.BlackBorder)
-            {
-                ExecuteMapCB.Enabled = false;
-                ExecuteDifficultyCB.Enabled = false;
-                ExecuteScriptCB.Enabled = false;
-            }
-            else
-            {
-                ExecuteMapCB.Enabled = true;
-                ExecuteDifficultyCB.Enabled = true;
-                ExecuteScriptCB.Enabled = true;
-            }
+            OutputScriptBT.Click += (s, e) => startViewModel.OutputScriptCommand.Execute(null);
         }
 
-        private void PreviewLB_DragDrop(object sender, DragEventArgs e)
+        private void BindEditScriptButton()
         {
-            
+            IsStartPageEditButtonClicked = true;
+            EditScriptBT.Click += (s, e) => scriptEditorViewModel.EditScriptCommand.Execute(startViewModel.ScriptFullPath);
         }
 
-        private void ImportScriptBT_Click(object sender, EventArgs e)
-        {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                // 过滤器
-                openFileDialog.Filter = "脚本文件 (*.btd6)|*.btd6";
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string sourceFilePath = openFileDialog.FileName;
-                    ScriptFileManager scriptFileManager;
-                    ScriptModel scriptModel;
-
-
-                    if (Path.GetExtension(sourceFilePath) != ".btd6")
-                    {
-                        MessageBox.Show("脚本格式错误！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                    try
-                    {
-                        scriptFileManager = new ScriptFileManager();
-                        scriptModel = scriptFileManager.LoadScript(sourceFilePath);
-                        scriptFileManager.SaveScript(scriptModel);
-                        ExecuteMapCB.SelectedValue = scriptModel.Metadata.SelectedMap;
-                        ExecuteDifficultyCB.SelectedValue = scriptModel.Metadata.SelectedDifficulty;
-                        ExecuteDifficultyCB_SelectedValueChanged(ExecuteDifficultyCB, EventArgs.Empty);
-                        ExecuteScriptCB.SelectedIndex = ExecuteScriptCB.FindString(scriptModel.Metadata.ScriptName);
-                    }
-                    catch
-                    {
-                        MessageBox.Show("脚本内容错误！", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-            }
-        }
-
-        private void OutputScriptBT_Click(object sender, EventArgs e)
-        {
-            if (ExecuteScriptCB.Text == "")
-            {
-                MessageBox.Show("请选择脚本！");
-                return;
-            }
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                string scriptName = ExecuteScriptCB.Text;
-                saveFileDialog.FileName = scriptName;
-                saveFileDialog.Filter = "脚本文件 (*.btd6)|*.btd6";
-
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string sourceFilePath = $@"data\我的脚本\{Constants.GetTypeName((Maps)ExecuteMapCB.SelectedValue)}\{Constants.GetTypeName((LevelDifficulties)ExecuteDifficultyCB.SelectedValue)}\" + scriptName + ".btd6";
-                    string destinationFilePath = saveFileDialog.FileName;
-                    File.Copy(sourceFilePath, destinationFilePath, true);
-                }
-            }
-        }
-
-        private void EditScriptBT_Click(object sender, EventArgs e)
-        {
-            Maps selectedMap = (Maps)ExecuteMapCB.SelectedValue;
-            LevelDifficulties selectedDifficulty = (LevelDifficulties)ExecuteDifficultyCB.SelectedValue;
-            string scriptName = ExecuteScriptCB.Text;
-            string filePath = $@"data\我的脚本\{Constants.GetTypeName(selectedMap)}\{Constants.GetTypeName(selectedDifficulty)}\" + scriptName + ".btd6";
-            if (!File.Exists(filePath))
-            {
-                MessageBox.Show("请选择脚本！");
-                return;
-            }
-            try
-            {
-                myScript.ClearInstructions();
-                myScript.LoadInstructionsFromFile(filePath);
-                BindInstructionsViewLB();
-                LoadScriptMetaData();
-                StartPrgramTC.SelectedIndex = 1;
-                IsStartPageEditButtonClicked = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("请选择正确的脚本文件！" + ex.Message);
-            }
-        }
     }
 }

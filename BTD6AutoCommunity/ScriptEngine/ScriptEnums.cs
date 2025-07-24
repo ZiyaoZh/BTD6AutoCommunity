@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BTD6AutoCommunity.Core;
+using BTD6AutoCommunity.GameObjects;
 
 namespace BTD6AutoCommunity.ScriptEngine
 {
@@ -52,8 +53,36 @@ namespace BTD6AutoCommunity.ScriptEngine
         StartFreeplay = 16,             // 开启自由游戏
         EndFreeplay = 17,               // 结束自由游戏
         Jump = 18,                      // 指令跳转 
-        InstructionsBundle = 25         // 快捷指令包
+        InstructionsBundle = 25,        // 快捷指令包
+
+        Unknown = 255,                  // 未知指令
+            
     }
+
+    public class MonkeyId
+    { 
+        public int Id { get; set; }
+
+        public Monkeys Monkey => (Monkeys)(Id % 100);
+
+        public int Index => Id / 100;
+
+        public override string ToString()
+        {
+            return Constants.GetTypeName(Monkey) + Index.ToString();
+        }
+
+        public static explicit operator int(MonkeyId monkeyId)
+        {
+            return monkeyId.Id;
+        }
+
+        public static explicit operator MonkeyId(int id)
+        {
+            return new MonkeyId { Id = id };
+        }
+    }
+
 
     public enum TargetTypes
     { 

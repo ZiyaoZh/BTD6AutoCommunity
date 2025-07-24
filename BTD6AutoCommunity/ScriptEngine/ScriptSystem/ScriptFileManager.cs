@@ -14,10 +14,12 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
     public class ScriptFileManager
     {
         private readonly string basePath;
+        private readonly string deleteDir;
 
         public ScriptFileManager()
         {
             basePath = $@"data\我的脚本\";
+            deleteDir = $@"data\最近删除\";
         }
 
         public bool ScriptExists(string mapName, string difficultyName, string scriptName)
@@ -28,7 +30,15 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
 
         public string GetScriptFullPath(string mapName, string difficultyName, string scriptName)
         {
-            return Path.Combine(basePath, mapName, difficultyName, $"{scriptName}.btd6");
+            return Path.GetFullPath(Path.Combine(basePath, mapName, difficultyName, $"{scriptName}.btd6"));
+        }
+
+        public string GetScriptFullPath(ScriptModel scriptModel)
+        {
+            string mapName = Constants.GetTypeName(scriptModel.Metadata.SelectedMap);
+            string difficultyName = Constants.GetTypeName(scriptModel.Metadata.SelectedDifficulty);
+            string scriptName = scriptModel.Metadata.ScriptName;
+            return GetScriptFullPath(mapName, difficultyName, scriptName);
         }
 
         public string SaveScript(ScriptModel script)
@@ -50,18 +60,21 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
         public void DeleteScript(string fullpath)
         {
             // 将文件移入data/最近删除
-            string recentDeleteDir = Path.Combine(basePath, "最近删除");
-            Directory.CreateDirectory(recentDeleteDir);
+            Directory.CreateDirectory(deleteDir);
             // 名称加上日期事件信息
             string fileName = Path.GetFileName(fullpath) + "-" + DateTime.Now.ToString("yyyyMMddHHmmss");
-            string newPath = Path.Combine(recentDeleteDir, fileName);
+            string newPath = Path.Combine(deleteDir, fileName);
+            if (File.Exists(newPath))
+            {
+                File.Delete(newPath);
+            }
             File.Move(fullpath, newPath);
         }
 
         public ScriptModel LoadScript(string fullPath)
         {
             if (!File.Exists(fullPath))
-                throw new FileNotFoundException($"找不到脚本文件: {fullPath}");
+                return null;
 
             string json = File.ReadAllText(fullPath);
 

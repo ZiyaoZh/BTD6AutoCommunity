@@ -17,6 +17,7 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
         public int RoundTrigger { get => AllArguments[10]; set => AllArguments[10] = value; }
         public int CoinTrigger { get => AllArguments[11]; set => AllArguments[11] = value; }
 
+        public string InstructionString => ToString();
 
         public Instruction(
             ActionTypes type,
@@ -97,7 +98,7 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
             return true;
         }
 
-        public  override string ToString()
+        public override string ToString()
         {
             string content = "";
             switch (Type)
