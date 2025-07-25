@@ -831,7 +831,7 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                         IsVisible = true,
                         IsSelectable = true,
                         Options = instructionsBundle.BundleNames.Select(m => new DisplayItem<string>(m)).Cast<IDisplayItem>().ToList(),
-                        SelectedItem = null,
+                        SelectedItem = new DisplayItem<string>(instructionsBundle.BundleNames.FirstOrDefault()),
                         Placeholder = ""
                     },
                     new InstructionArgumentDefinition

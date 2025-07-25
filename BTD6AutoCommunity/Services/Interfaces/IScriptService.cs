@@ -48,7 +48,7 @@ namespace BTD6AutoCommunity.Services.Interfaces
         /// <param name="bundle"></param>
         /// <param name="times"></param>
         /// <returns></returns>
-        int AddInstructionBundle(InstructionSequence bundle, int times);
+        int AddInstructionBundle(string bundleName, int times);
 
         /// <summary>
         /// 插入指令
@@ -69,7 +69,7 @@ namespace BTD6AutoCommunity.Services.Interfaces
         /// <param name="bundle"></param>
         /// <param name="times"></param>
         /// <returns></returns>
-        int InsertInstructionBundle(int index, InstructionSequence bundle, int times);
+        int InsertInstructionBundle(int index, string bundleName, int times);
 
         /// <summary>
         /// 修改指令

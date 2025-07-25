@@ -394,6 +394,7 @@ namespace BTD6AutoCommunity.ViewModels
                 {
                     argument1 = value;
                     OnPropertyChanged(nameof(Argument1));
+                    argument1Value = argument1.GetValue();
                 }
             }
         }
@@ -423,6 +424,7 @@ namespace BTD6AutoCommunity.ViewModels
                 {
                     argument2 = value;
                     OnPropertyChanged(nameof(Argument2));
+                    Argument2Value = argument2.GetValue();
                 }
             }
         }
@@ -546,13 +548,20 @@ namespace BTD6AutoCommunity.ViewModels
         private void AddInstruction()
         {
             ActionTypes actionType = SelectedAction.Value;
-            List<int> arguments = GetArguments();
-            int roundTrigger = TriggerDefinition.GetRoundTrigger();
-            int coinTrigger = TriggerDefinition.GetCoinTrigger();
-            (int, int) coordinate = CoordinateDefinition.GetCoordinate();
+
             if (actionType != ActionTypes.InstructionsBundle)
             {
+                List<int> arguments = GetArguments();
+                int roundTrigger = TriggerDefinition.GetRoundTrigger();
+                int coinTrigger = TriggerDefinition.GetCoinTrigger();
+                (int, int) coordinate = CoordinateDefinition.GetCoordinate();
                 Instructions.Add(scriptService.AddInstruction(actionType, arguments, roundTrigger, coinTrigger, coordinate));
+            }
+            else
+            {
+                scriptService.AddInstructionBundle((string)Argument1Value, (int)Argument2.GetValue());
+                Instructions.Clear();
+                Instructions = new BindingList<Instruction>(scriptService.GetInstructionsCopy().InstructionsList);
             }
             List<int> indices = new List<int>
             {
@@ -568,18 +577,26 @@ namespace BTD6AutoCommunity.ViewModels
             if (SelectedInstructionIndices.Count == 0) return;
             if (SelectedInstructionIndices[0] == -1) return;
             int index = SelectedInstructionIndices[0];
+            int count = 1;
             ActionTypes actionType = SelectedAction.Value;
-            List<int> arguments = GetArguments();
-            int roundTrigger = TriggerDefinition.GetRoundTrigger();
-            int coinTrigger = TriggerDefinition.GetCoinTrigger();
-            (int, int) coordinate = CoordinateDefinition.GetCoordinate();
+
             if (actionType != ActionTypes.InstructionsBundle)
             {
+                List<int> arguments = GetArguments();
+                int roundTrigger = TriggerDefinition.GetRoundTrigger();
+                int coinTrigger = TriggerDefinition.GetCoinTrigger();
+                (int, int) coordinate = CoordinateDefinition.GetCoordinate();
                 Instructions.Insert(index + 1, scriptService.InsertInstruction(index + 1, actionType, arguments, roundTrigger, coinTrigger, coordinate));
+            }
+            else
+            {
+                count = scriptService.InsertInstructionBundle(index + 1, (string)Argument1Value, (int)Argument2.GetValue());
+                Instructions.Clear();
+                Instructions = new BindingList<Instruction>(scriptService.GetInstructionsCopy().InstructionsList);
             }
             List<int> indices = new List<int>
             {
-                index + 1
+                index + count
             };
             SelectedInstructionIndices = new List<int>(indices);
         }
@@ -613,6 +630,11 @@ namespace BTD6AutoCommunity.ViewModels
             }
             int index = SelectedInstructionIndices[0];
             ActionTypes instructionType = SelectedAction.Value;
+            if (instructionType == ActionTypes.InstructionsBundle)
+            {
+                IsModifyInstructionEnabled = false;
+                return;
+            }
             List<int> args = GetArguments();
             int RoundTrigger = TriggerDefinition.GetRoundTrigger();
             int CoinTrigger = TriggerDefinition.GetCoinTrigger();
@@ -695,10 +717,7 @@ namespace BTD6AutoCommunity.ViewModels
             }
             scriptService.BuildInstructions();
             Instructions.Clear();
-            foreach (Instruction instruction in scriptService.GetInstructionsCopy().InstructionsList)
-            {
-                Instructions.Add(instruction);
-            }
+            Instructions = new BindingList<Instruction>(scriptService.GetInstructionsCopy().InstructionsList);
             if (index > 0 && index < Instructions.Count)
             {
                 SelectedInstructionIndices = new List<int> { index };
