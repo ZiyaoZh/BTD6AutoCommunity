@@ -276,7 +276,7 @@ namespace BTD6AutoCommunity.UI.Main
                             Argument1CB.DataSource = scriptEditorViewModel.Argument1.Options;
                             Argument1CB.ValueMember = "Value";
                             Argument1CB.DisplayMember = "Name";
-                            Argument1CB.SelectedValue = scriptEditorViewModel.Argument1.SelectedItem.Value;
+                            Argument1CB.SelectedValue = scriptEditorViewModel.Argument1.SelectedItem.Value ?? -1;
                         }
                         else
                         {
@@ -334,7 +334,7 @@ namespace BTD6AutoCommunity.UI.Main
                     Argument2CB.DataSource = scriptEditorViewModel.Argument2.Options;
                     Argument2CB.ValueMember = "Value";
                     Argument2CB.DisplayMember = "Name";
-                    Argument2CB.SelectedValue = scriptEditorViewModel.Argument2.SelectedItem.Value;
+                    Argument2CB.SelectedValue = scriptEditorViewModel.Argument2.SelectedItem.Value ?? -1;
                 }
                 else
                 {

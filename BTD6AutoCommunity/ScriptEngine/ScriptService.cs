@@ -17,6 +17,8 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         private InstructionSequence instructions;
 
+        private InstructionsBundle bundle;
+
         private readonly InstructionFactory factory;
 
         private readonly ScriptFileManager fileManager;
@@ -25,6 +27,7 @@ namespace BTD6AutoCommunity.ScriptEngine
         {
             metadata = new ScriptMetadata();
             instructions = new InstructionSequence();
+            bundle = new InstructionsBundle();
             factory = new InstructionFactory();
             fileManager = new ScriptFileManager();
         }
@@ -63,9 +66,9 @@ namespace BTD6AutoCommunity.ScriptEngine
             return instructions.Last;
         }
 
-        public int AddInstructionBundle(InstructionSequence bundle, int times)
+        public int AddInstructionBundle(string bundleName, int times)
         {
-            return instructions.InsertBundle(instructions.Count, bundle, times);
+            return instructions.InsertBundle(instructions.Count, bundle.GetInstructionSequence(bundleName), times);
         }
 
         public Instruction InsertInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords)
@@ -83,9 +86,9 @@ namespace BTD6AutoCommunity.ScriptEngine
             return instructions[index];
         }
 
-        public int InsertInstructionBundle(int index, InstructionSequence bundle, int times)
+        public int InsertInstructionBundle(int index, string bundleName, int times)
         {
-            return instructions.InsertBundle(index, bundle, times);
+            return instructions.InsertBundle(index, bundle.GetInstructionSequence(bundleName), times);
         }
 
         public Instruction ModifyInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords)
