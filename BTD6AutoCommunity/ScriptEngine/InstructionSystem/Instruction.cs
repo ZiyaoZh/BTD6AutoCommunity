@@ -63,8 +63,7 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                 Type == ActionTypes.UpgradeMonkey || 
                 Type == ActionTypes.SwitchMonkeyTarget || 
                 Type == ActionTypes.SellMonkey || 
-                Type == ActionTypes.SetMonkeyFunction ||
-                Type == ActionTypes.AdjustMonkeyCoordinates
+                Type == ActionTypes.SetMonkeyFunction
                 )
                 return true;
             return false;

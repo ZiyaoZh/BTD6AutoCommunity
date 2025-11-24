@@ -248,7 +248,7 @@ namespace BTD6AutoCommunity.Core
         {
             if (index == -1) return false;
             System.Drawing.Point point = Constants.UpgradeYellowPosition[index * 5 + 5 - p];
-            Debug.WriteLine($"point: {point}");
+            //Debug.WriteLine($"point: {point}");
             Color c1 = GetGameColor(context, point);
             if (c1.B < 5 && c1.R > 40 && c1.G > 220)
             {
@@ -294,12 +294,12 @@ namespace BTD6AutoCommunity.Core
 
         public static bool IsLeftUpgrading(GameContext context)
         {
-            return CheckColor(context, 415, 120, 0xbe925a) && CheckColor(context, 415, 870, 0xb48149);
+            return CheckColor(context, 415, 120, 0xbe925a) && CheckColor(context, 415, 870, 0xb48149) && CheckColor(context, 400, 84, 0x623811);
         }
 
         public static bool IsRightUpgrading(GameContext context)
         {
-            return CheckColor(context, 1260, 200, 0xbe925a) && CheckColor(context, 1260, 870, 0xb48149);
+            return CheckColor(context, 1260, 200, 0xbe925a) && CheckColor(context, 1260, 870, 0xb48149) && CheckColor(context, 1620, 84, 0x623811);
         }
 
         public static int AbilityRgbSum(GameContext context, int index)
@@ -312,7 +312,12 @@ namespace BTD6AutoCommunity.Core
         {
             if (CheckColor(context, 630, 800, 0xFFFFFF)) return new System.Drawing.Point(630, 810);
             return new System.Drawing.Point(740, 810);
+        }
 
+        public static System.Drawing.Point GetSettlementScreenReturnPosition(GameContext context)
+        {
+            if (CheckColor(context, 840, 840, 0xFFFFFF)) return new System.Drawing.Point(840, 850);
+            return new System.Drawing.Point(720, 850);
         }
 
         public static System.Drawing.Point GetRestartPos(GameContext context)

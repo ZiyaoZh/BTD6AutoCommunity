@@ -57,6 +57,10 @@ namespace BTD6AutoCommunity.UI.Main
                     if (!Equals(StartPrgramTC.SelectedIndex, scriptEditorViewModel.SelectedTabIndex))
                     {
                         StartPrgramTC.SelectedIndex = scriptEditorViewModel.SelectedTabIndex;
+                        if (StartPrgramTC.SelectedIndex == 0)
+                        {
+                            startViewModel.UpdateSelectedScript();
+                        }
                     }
                 }
             };

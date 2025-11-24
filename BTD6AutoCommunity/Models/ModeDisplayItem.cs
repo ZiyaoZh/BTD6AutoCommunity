@@ -10,7 +10,7 @@ namespace BTD6AutoCommunity.Models
 {
     public class ModeDisplayItem
     {
-        public LevelMode Value { get; set; }
+        public LevelModes Value { get; set; }
 
         public string Name => Constants.GetTypeName(Value);
 

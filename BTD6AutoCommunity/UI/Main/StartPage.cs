@@ -149,10 +149,7 @@ namespace BTD6AutoCommunity.UI.Main
                 {
                     ExecuteScriptCB.InvokeIfRequired(() =>
                     {
-                        if (!Equals(ExecuteScriptCB.SelectedItem, startViewModel.SelectedScript))
-                        {
-                            ExecuteScriptCB.SelectedItem = startViewModel.SelectedScript;
-                        }
+                        ExecuteScriptCB.SelectedItem = startViewModel.SelectedScript;
                     });
                 }
             };
@@ -312,9 +309,11 @@ namespace BTD6AutoCommunity.UI.Main
 
         private void BindEditScriptButton()
         {
-            IsStartPageEditButtonClicked = true;
-            EditScriptBT.Click += (s, e) => scriptEditorViewModel.EditScriptCommand.Execute(startViewModel.ScriptFullPath);
+            EditScriptBT.Click += (s, e) =>
+            {
+                IsStartPageEditButtonClicked = true;
+                scriptEditorViewModel.EditScriptCommand.Execute(startViewModel.ScriptFullPath);
+            };
         }
-
     }
 }

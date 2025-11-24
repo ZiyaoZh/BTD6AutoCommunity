@@ -49,7 +49,7 @@ namespace BTD6AutoCommunity.ViewModels
             SelectedDifficulty = DifficultyOptions[0];
 
             ModeOptions = new List<ModeDisplayItem>();
-            foreach (LevelMode mode in Constants.ModesList)
+            foreach (LevelModes mode in Constants.ModesList)
             {
                 ModeOptions.Add(new ModeDisplayItem { Value = mode });
             }
@@ -207,7 +207,7 @@ namespace BTD6AutoCommunity.ViewModels
         {
             if (SelectedHero == null || SelectedMode == null) return;
             if (!Enum.IsDefined(typeof(Heroes), SelectedHero.Value) ||
-                !Enum.IsDefined(typeof(LevelMode), SelectedMode.Value))
+                !Enum.IsDefined(typeof(LevelModes), SelectedMode.Value))
                 return;
             int intTime = DateTime.Now.GetHashCode() % 1000;
             string Time = (intTime > 0 ? intTime : -1 * intTime).ToString();

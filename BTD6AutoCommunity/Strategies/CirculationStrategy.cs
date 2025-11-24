@@ -25,8 +25,8 @@ namespace BTD6AutoCommunity.Strategies
         private int levelChallengingCount = 0;
         private int returnableScreenCount = 0;
 
-        public CirculationStrategy(ScriptSettings settings, LogHandler logHandler, UserSelection userSelection)
-            : base(settings, logHandler)
+        public CirculationStrategy(LogHandler logHandler, UserSelection userSelection)
+            : base(logHandler)
         {
             DefaultDataReadInterval = 1000;
             DefaultOperationInterval = 200;
@@ -196,7 +196,7 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("地图选择未完成，无法进入简单模式，返回", LogLevel.Warning);
                 return;
             }
-            if (scriptMetadata.SelectedMode != LevelMode.Standard && 
+            if (scriptMetadata.SelectedMode != LevelModes.Standard && 
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Easy)
             {
                 HandleReturnableScreen();
@@ -232,7 +232,7 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("地图选择未完成，无法进入中级模式，返回", LogLevel.Warning);
                 return;
             }
-            if (scriptMetadata.SelectedMode != LevelMode.Standard &&
+            if (scriptMetadata.SelectedMode != LevelModes.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Medium)
             {
                 HandleReturnableScreen();
@@ -267,7 +267,7 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("地图选择未完成，无法进入困难模式，返回", LogLevel.Warning);
                 return;
             }
-            if (scriptMetadata.SelectedMode != LevelMode.Standard &&
+            if (scriptMetadata.SelectedMode != LevelModes.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Hard)
             {
                 HandleReturnableScreen();
@@ -313,8 +313,7 @@ namespace BTD6AutoCommunity.Strategies
             if (heroPosition.X == -1)
             {
                 Stop();
-                //MessageBox.Show("未找到英雄位置！");
-                _logs.Log("未找到英雄位置！收集结束，请卸下英雄皮肤，重新开始", LogLevel.Error);
+                _logs.Log("未找到英雄位置！请卸下英雄皮肤，重新开始", LogLevel.Error);
                 return;
             }
             InputSimulator.MouseMoveAndLeftClick(_context, heroPosition.X, heroPosition.Y);

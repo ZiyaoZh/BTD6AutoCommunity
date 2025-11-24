@@ -18,11 +18,11 @@ namespace BTD6AutoCommunity.Strategies
     {
         protected int startIndex = 0;
 
-        public CustomStrategy(ScriptSettings settings, LogHandler logHandler, UserSelection userSelection)
-            : base(settings, logHandler)
+        public CustomStrategy(LogHandler logHandler, UserSelection userSelection)
+            : base(logHandler)
         {
-            DefaultDataReadInterval = settings.DataReadInterval;
-            DefaultOperationInterval = settings.OperationInterval;
+            DefaultDataReadInterval = _settings.DataReadInterval;
+            DefaultOperationInterval = _settings.OperationInterval;
             startIndex = userSelection.selectedIndex;
             InitializeStateHandlers();
             GetExecutableInstructions(userSelection);

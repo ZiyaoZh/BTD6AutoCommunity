@@ -43,8 +43,8 @@ namespace BTD6AutoCommunity.Strategies
 
         private int returnableScreenCount = 0;
 
-        public CollectionStrategy(ScriptSettings settings, LogHandler logHandler)
-            : base(settings, logHandler)
+        public CollectionStrategy(LogHandler logHandler)
+            : base(logHandler)
         {
             DefaultDataReadInterval = 1000;
             DefaultOperationInterval = 200;
@@ -226,7 +226,7 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("脚本未加载，无法进入简单模式，返回", LogLevel.Warning);
                 return;
             }
-            if (scriptMetadata.SelectedMode != LevelMode.Standard &&
+            if (scriptMetadata.SelectedMode != LevelModes.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Easy)
             {
                 HandleReturnableScreen();
@@ -255,7 +255,7 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("脚本未加载，无法进入中级模式，返回", LogLevel.Warning);
                 return;
             }
-            if (scriptMetadata.SelectedMode != LevelMode.Standard &&
+            if (scriptMetadata.SelectedMode != LevelModes.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Medium)
             {
                 HandleReturnableScreen();
@@ -283,7 +283,7 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("脚本未加载，无法进入困难模式，返回", LogLevel.Warning);
                 return;
             }
-            if (scriptMetadata.SelectedMode != LevelMode.Standard &&
+            if (scriptMetadata.SelectedMode != LevelModes.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Hard)
             {
                 HandleReturnableScreen();
@@ -425,15 +425,15 @@ namespace BTD6AutoCommunity.Strategies
         private void HandleThreeChestsScreen()
         {
             InputSimulator.MouseMoveAndLeftClick(_context, 660, 540);
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
             InputSimulator.MouseMoveAndLeftClick(_context, 660, 540);
             Thread.Sleep(1000);
             InputSimulator.MouseMoveAndLeftClick(_context, 960, 540);
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
             InputSimulator.MouseMoveAndLeftClick(_context, 960, 540);
             Thread.Sleep(1000);
             InputSimulator.MouseMoveAndLeftClick(_context, 1260, 540);
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
             InputSimulator.MouseMoveAndLeftClick(_context, 1260, 540);
             Thread.Sleep(1000);
             _logs.Log("获得3个insta", LogLevel.Info);

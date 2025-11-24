@@ -92,6 +92,16 @@ namespace BTD6AutoCommunity.ViewModels
 
         #endregion
 
+        #region 脚本编辑器联动
+
+        public void UpdateSelectedScript()
+        {
+            LoadSelectedScript();
+        }
+
+
+        #endregion
+
         private int selectedTabIndex = 0;
         public int SelectedTabIndex
         {
@@ -462,20 +472,20 @@ namespace BTD6AutoCommunity.ViewModels
             switch (selection.selectedFunction)
             {
                 case FunctionTypes.Custom:
-                    currentStrategy = new CustomStrategy(scriptSettings, logHandler, selection);
+                    currentStrategy = new CustomStrategy(logHandler, selection);
                     break;
                 case FunctionTypes.Collection:
-                    currentStrategy = new CollectionStrategy(scriptSettings, logHandler);
+                    currentStrategy = new CollectionStrategy(logHandler);
                     break;
                 case FunctionTypes.Circulation:
-                    currentStrategy = new CirculationStrategy(scriptSettings, logHandler, selection);
+                    currentStrategy = new CirculationStrategy(logHandler, selection);
                     break;
                 case FunctionTypes.Race:
-                    currentStrategy = new RaceStrategy(scriptSettings, logHandler, selection);
+                    currentStrategy = new RaceStrategy(logHandler, selection);
                     break;
                 case FunctionTypes.BlackBorder:
-                    //ShowInfo("敬请期待！");
-                    return;
+                    currentStrategy = new BlackBorderStrategy(logHandler);
+                    break;
             }
 
             if (currentStrategy == null || !currentStrategy.ReadyToStart) return;

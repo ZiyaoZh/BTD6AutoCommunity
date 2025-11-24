@@ -62,7 +62,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Assets\Icons\favicon.ico</ApplicationIcon>
@@ -162,7 +162,6 @@
     <Compile Include="Services\MouseCoordinateDisplayService.cs" />
     <Compile Include="Services\StrategyManager.cs" />
     <Compile Include="Strategies\Base\BaseStrategy.cs" />
-    <Compile Include="Strategies\BlackBorderStrategy.cs" />
     <Compile Include="Strategies\CirculationStrategy.cs" />
     <Compile Include="Strategies\CollectionStrategy.cs" />
     <Compile Include="Core\Constants.cs" />
@@ -172,6 +171,7 @@
     <Compile Include="Core\InputSimulator.cs" />
     <Compile Include="Core\LevelDataMonitor.cs" />
     <Compile Include="Core\LogHandler.cs" />
+    <Compile Include="Strategies\BlackBorderStrategy.cs" />
     <Compile Include="Strategies\RaceStrategy.cs" />
     <Compile Include="Strategies\InGame\InGameActionExecutor.cs" />
     <Compile Include="Core\WindowApiWrapper.cs" />
