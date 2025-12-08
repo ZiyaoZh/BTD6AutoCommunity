@@ -19,8 +19,8 @@ namespace BTD6AutoCommunity.Strategies
         private int levelChallengingCount = 0;
 
 
-        public RaceStrategy(ScriptSettings settings, LogHandler logHandler, UserSelection userSelection)
-            : base(settings, logHandler)
+        public RaceStrategy(LogHandler logHandler, UserSelection userSelection)
+            : base(logHandler)
         {
             InitializeStateHandlers();
             GetExecutableInstructions(userSelection);

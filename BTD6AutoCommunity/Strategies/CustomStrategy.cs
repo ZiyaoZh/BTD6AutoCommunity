@@ -18,11 +18,11 @@ namespace BTD6AutoCommunity.Strategies
     {
         protected int startIndex = 0;
 
-        public CustomStrategy(ScriptSettings settings, LogHandler logHandler, UserSelection userSelection)
-            : base(settings, logHandler)
+        public CustomStrategy(LogHandler logHandler, UserSelection userSelection)
+            : base(logHandler)
         {
-            DefaultDataReadInterval = settings.DataReadInterval;
-            DefaultOperationInterval = settings.OperationInterval;
+            DefaultDataReadInterval = _settings.DataReadInterval;
+            DefaultOperationInterval = _settings.OperationInterval;
             startIndex = userSelection.selectedIndex;
             InitializeStateHandlers();
             GetExecutableInstructions(userSelection);
@@ -39,8 +39,8 @@ namespace BTD6AutoCommunity.Strategies
         protected override void OnPreStart()
         {
             _logs.Log($"开始自定义策略...", LogLevel.Info);
-            checkGameStateTimer?.Dispose();
-            checkGameStateTimer = null;
+            screenShotCaptureTimer?.Dispose();
+            screenShotCaptureTimer = null;
         }
 
         protected override void OnPostStart()

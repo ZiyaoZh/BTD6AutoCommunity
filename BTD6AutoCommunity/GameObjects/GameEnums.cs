@@ -12,6 +12,8 @@ namespace BTD6AutoCommunity.GameObjects
         MonkeyMeadow = 0,
         // 循环
         InTheLoop = 1,
+        //三矿回合
+        ThreeMilesRound = 24,
         // 道路中间
         MiddleOfTheRoad = 2,
         // 水疗温泉
@@ -104,6 +106,8 @@ namespace BTD6AutoCommunity.GameObjects
         SpiceIslands = 51,
         // 夜光海湾
         LuminousCove = 52,
+        // 失落冰隙
+        LostCrevasse = 53,
 
         // 高级图
         // 城堡复仇
@@ -150,6 +154,7 @@ namespace BTD6AutoCommunity.GameObjects
         SunsetGulch = 80,
 
         // 专家图
+
         // 冰河之径
         GlacialTrail = 90,
         // 黑暗地下城
@@ -174,11 +179,13 @@ namespace BTD6AutoCommunity.GameObjects
         MuddyPuddles = 100,
         // #哎哟
         Ouch = 101,
+        // 棘手的轨道
+        TrickyTracks = 102,
 
-        Unkown = 255
+        Unknown = 255
     }
 
-    public enum LevelMode
+    public enum LevelModes
     {
         /// <summary>标准模式（默认游戏模式）</summary>
         Standard = 0,
@@ -214,15 +221,6 @@ namespace BTD6AutoCommunity.GameObjects
         Impoppable = 7,
 
         /// <summary>CHIMPS模式（无收入/能量/出售）</summary>
-        /// <remarks>
-        /// 规则限制：
-        /// C - No Continues       (无继续)
-        /// H - Heartslost         (心数限制)
-        /// I - No Income           (无额外收入)
-        /// M - No Monkeys Knowledge(无猴子知识)
-        /// P - No Powerups         (无强化道具)
-        /// S - No Selling          (无法出售塔)
-        /// </remarks>
         CHIMPS = 8,
 
         Unkown = 255
@@ -267,7 +265,7 @@ namespace BTD6AutoCommunity.GameObjects
 
     public enum Heroes
     {
-        Quincy = 0,
+        Quincy = 0, 
         Gwendolin = 1,
         StrikerJones = 2,
         ObynGreenfoot = 3,
@@ -283,7 +281,7 @@ namespace BTD6AutoCommunity.GameObjects
         Psi = 13,
         Geraldo = 14,
         Corvus = 15,
-
+        Silas = 16,
         Unkown = 255
     }
 

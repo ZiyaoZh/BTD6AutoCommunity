@@ -5,14 +5,11 @@ using System.Linq;
 using BTD6AutoCommunity.Strategies;
 using BTD6AutoCommunity.ScriptEngine;
 using BTD6AutoCommunity.GameObjects;
-using System.Collections.ObjectModel;
-using System.Windows.Forms;
 
 namespace BTD6AutoCommunity.Core
 {
     public static class Constants
     {
-
         //public static Dictionary<int, string> InstructionPackages => new Dictionary<int, string>
         //{
         //    { 0, "022飞镖猴(模范)" },
@@ -53,20 +50,20 @@ namespace BTD6AutoCommunity.Core
         //    { 53, "032刺钉工厂(靠近)" }
         //};
 
-        public static Dictionary<LevelMode, LevelDifficulties> LevelModeToDifficulty => new Dictionary<LevelMode, LevelDifficulties>()
+        public static Dictionary<LevelModes, LevelDifficulties> LevelModeToDifficulty => new Dictionary<LevelModes, LevelDifficulties>()
         {
-            { LevelMode.Standard, LevelDifficulties.Any },
-            { LevelMode.PrimaryOnly, LevelDifficulties.Easy },
-            { LevelMode.Deflation, LevelDifficulties.Easy },
-            { LevelMode.MilitaryOnly, LevelDifficulties.Medium },
-            { LevelMode.Apopalypse, LevelDifficulties.Medium },
-            { LevelMode.Reverse, LevelDifficulties.Medium },
-            { LevelMode.MagicMonkeysOnly, LevelDifficulties.Hard },
-            { LevelMode.DoubleHpMoabs, LevelDifficulties.Hard },
-            { LevelMode.HalfCash, LevelDifficulties.Hard },
-            { LevelMode.AlternateBloonsRounds, LevelDifficulties.Hard },
-            { LevelMode.Impoppable, LevelDifficulties.Hard },
-            { LevelMode.CHIMPS, LevelDifficulties.Hard }
+            { LevelModes.Standard, LevelDifficulties.Any },
+            { LevelModes.PrimaryOnly, LevelDifficulties.Easy },
+            { LevelModes.Deflation, LevelDifficulties.Easy },
+            { LevelModes.MilitaryOnly, LevelDifficulties.Medium },
+            { LevelModes.Apopalypse, LevelDifficulties.Medium },
+            { LevelModes.Reverse, LevelDifficulties.Medium },
+            { LevelModes.MagicMonkeysOnly, LevelDifficulties.Hard },
+            { LevelModes.DoubleHpMoabs, LevelDifficulties.Hard },
+            { LevelModes.HalfCash, LevelDifficulties.Hard },
+            { LevelModes.AlternateBloonsRounds, LevelDifficulties.Hard },
+            { LevelModes.Impoppable, LevelDifficulties.Hard },
+            { LevelModes.CHIMPS, LevelDifficulties.Hard }
         };
 
         public static Dictionary<CollectionMode, string> CollectionScripts => new Dictionary<CollectionMode, string>()
@@ -77,23 +74,23 @@ namespace BTD6AutoCommunity.Core
         };
 
 
-        private static readonly Dictionary<LevelMode, Point> LevelModePoint = new Dictionary<LevelMode, Point>()
+        private static readonly Dictionary<LevelModes, Point> LevelModePoint = new Dictionary<LevelModes, Point>()
         {
-            { LevelMode.Standard, new Point(630, 590) },
-            { LevelMode.PrimaryOnly, new Point(960, 450) },
-            { LevelMode.Deflation, new Point(1300, 450) },
-            { LevelMode.MilitaryOnly, new Point(960, 450) },
-            { LevelMode.Apopalypse, new Point(1300, 450) },
-            { LevelMode.Reverse, new Point(960, 750) },
-            { LevelMode.MagicMonkeysOnly, new Point(960, 450) },
-            { LevelMode.DoubleHpMoabs, new Point(1300, 450) },
-            { LevelMode.HalfCash, new Point(1600, 450) },
-            { LevelMode.AlternateBloonsRounds, new Point(960, 750) },
-            { LevelMode.Impoppable, new Point(1300, 750) },
-            { LevelMode.CHIMPS, new Point(1600, 750) }
+            { LevelModes.Standard, new Point(630, 590) },
+            { LevelModes.PrimaryOnly, new Point(960, 450) },
+            { LevelModes.Deflation, new Point(1300, 450) },
+            { LevelModes.MilitaryOnly, new Point(960, 450) },
+            { LevelModes.Apopalypse, new Point(1300, 450) },
+            { LevelModes.Reverse, new Point(960, 750) },
+            { LevelModes.MagicMonkeysOnly, new Point(960, 450) },
+            { LevelModes.DoubleHpMoabs, new Point(1300, 450) },
+            { LevelModes.HalfCash, new Point(1600, 450) },
+            { LevelModes.AlternateBloonsRounds, new Point(960, 750) },
+            { LevelModes.Impoppable, new Point(1300, 750) },
+            { LevelModes.CHIMPS, new Point(1600, 750) }
         };
 
-        public static Point GetLevelModePos(LevelMode levelMode)
+        public static Point GetLevelModePos(LevelModes levelMode)
         {
             return LevelModePoint.TryGetValue(levelMode, out var pos)
                 ? pos
@@ -213,15 +210,15 @@ namespace BTD6AutoCommunity.Core
         }
 
         public static List<FunctionTypes> FunctionsList => new List<FunctionTypes>
-        { FunctionTypes.Custom, FunctionTypes.Collection, FunctionTypes.Circulation, FunctionTypes.Race};
+        { FunctionTypes.Custom, FunctionTypes.Collection, FunctionTypes.Circulation, FunctionTypes.Race, FunctionTypes.BlackBorder};
 
         private static readonly Dictionary<Heroes, string> _heroNames = new Dictionary<Heroes, string>
         {
             { Heroes.Quincy, "昆西" },
-            { Heroes.Gwendolin, "格温多林" },
+            { Heroes.Gwendolin, "格温多琳" },
             { Heroes.StrikerJones, "先锋琼斯"},
             { Heroes.ObynGreenfoot, "奥本"},
-            { Heroes.Rosalia, "罗莎莉亚" },
+            { Heroes.Rosalia, "罗莎莉娅" },
             { Heroes.CaptainChurchill, "上尉丘吉尔"},
             { Heroes.Benjamin, "本杰明"},
             { Heroes.PatFusty, "帕特"},
@@ -233,6 +230,7 @@ namespace BTD6AutoCommunity.Core
             { Heroes.Psi, "灵机"},
             { Heroes.Geraldo, "杰拉尔多"},
             { Heroes.Corvus, "科沃斯"},
+            { Heroes.Silas, "西拉斯" },
             { Heroes.Unkown, "未知英雄" }
         };
 
@@ -255,16 +253,18 @@ namespace BTD6AutoCommunity.Core
         public static List<Heroes> HeroesList => new List<Heroes>
         {
             Heroes.Quincy,
+            Heroes.Gwendolin,
             Heroes.StrikerJones,
             Heroes.ObynGreenfoot,
-            Heroes.Rosalia,
-            Heroes.CaptainChurchill,
+            Heroes.Silas,
             Heroes.Benjamin,
             Heroes.PatFusty,
+            Heroes.CaptainChurchill,
             Heroes.Ezili,
-            Heroes.Adora,
+            Heroes.Rosalia,
             Heroes.Etienne,
             Heroes.Sauda,
+            Heroes.Adora,
             Heroes.AdmiralBrickell,
             Heroes.Psi,
             Heroes.Geraldo,
@@ -351,6 +351,7 @@ namespace BTD6AutoCommunity.Core
         {
             { Maps.MonkeyMeadow, "猴子草甸" },
             { Maps.InTheLoop, "循环" },
+            { Maps.ThreeMilesRound, "三矿回合" },
             { Maps.MiddleOfTheRoad, "道路中间" },
             { Maps.TinkerTon, "汀克顿" },
             { Maps.SpaPits, "水疗温泉" },
@@ -396,6 +397,7 @@ namespace BTD6AutoCommunity.Core
             { Maps.Rake, "耙" },
             { Maps.SpiceIslands, "香料群岛" },
             { Maps.LuminousCove, "夜光海湾" },
+            { Maps.LostCrevasse, "失落冰隙" },
             { Maps.CastleRevenge, "城堡复仇" },
             { Maps.DarkPath, "黑暗之径" },
             { Maps.Erosion, "侵蚀" },
@@ -429,7 +431,8 @@ namespace BTD6AutoCommunity.Core
             { Maps.DarkCastle, "黑暗城堡" },
             { Maps.MuddyPuddles, "泥泞的水坑" },
             { Maps.Ouch, "#哎哟" },
-            { Maps.Unkown, "未知地图" }
+            { Maps.TrickyTracks, "棘手的轨道" },
+            { Maps.Unknown, "未知地图" }
         };
 
         // 获取中文名称
@@ -453,11 +456,12 @@ namespace BTD6AutoCommunity.Core
         {
             Maps.MonkeyMeadow,
             Maps.InTheLoop,
-            Maps.MiddleOfTheRoad,
+            Maps.ThreeMilesRound,
             Maps.SpaPits,
             Maps.TinkerTon,
             Maps.TreeStump,
             Maps.TownCenter,
+            Maps.MiddleOfTheRoad,
             Maps.OneTwoTree,
             Maps.ScrapYard,
             Maps.TheCabin,
@@ -475,6 +479,7 @@ namespace BTD6AutoCommunity.Core
             Maps.Hedge,
             Maps.EndOfTheRoad,
             Maps.Logs,
+            Maps.LostCrevasse,
             Maps.LuminousCove,
             Maps.SulfurSprings,
             Maps.WaterPark,
@@ -519,6 +524,7 @@ namespace BTD6AutoCommunity.Core
             Maps.OffTheCoast,
             Maps.Cornfield,
             Maps.Underground,
+            Maps.TrickyTracks,
             Maps.GlacialTrail,
             Maps.DarkDungeon,
             Maps.Sanctuary,
@@ -538,6 +544,7 @@ namespace BTD6AutoCommunity.Core
         {
             { Maps.MonkeyMeadow, MapTypes.Beginner },
             { Maps.InTheLoop, MapTypes.Beginner },
+            { Maps.ThreeMilesRound, MapTypes.Beginner },
             { Maps.MiddleOfTheRoad, MapTypes.Beginner },
             { Maps.TinkerTon, MapTypes.Beginner },
             { Maps.SpaPits, MapTypes.Beginner },
@@ -583,6 +590,7 @@ namespace BTD6AutoCommunity.Core
             { Maps.Rake, MapTypes.Intermediate },
             { Maps.SpiceIslands, MapTypes.Intermediate },
             { Maps.LuminousCove, MapTypes.Intermediate },
+            { Maps.LostCrevasse, MapTypes.Intermediate },
             { Maps.CastleRevenge, MapTypes.Advanced },
             { Maps.DarkPath, MapTypes.Advanced },
             { Maps.Erosion, MapTypes.Advanced },
@@ -604,6 +612,7 @@ namespace BTD6AutoCommunity.Core
             { Maps.LastResort, MapTypes.Advanced },
             { Maps.EnchantedGlade, MapTypes.Advanced },
             { Maps.SunsetGulch, MapTypes.Advanced },
+            { Maps.TrickyTracks, MapTypes.Expert },
             { Maps.GlacialTrail, MapTypes.Expert },
             { Maps.DarkDungeon, MapTypes.Expert },
             { Maps.Sanctuary, MapTypes.Expert },
@@ -626,24 +635,24 @@ namespace BTD6AutoCommunity.Core
         }
 
 
-        private static readonly Dictionary<LevelMode, string> _levelModeNames = new Dictionary<LevelMode, string>
+        private static readonly Dictionary<LevelModes, string> _levelModeNames = new Dictionary<LevelModes, string>
         {
-            { LevelMode.Standard, "标准" },
-            { LevelMode.PrimaryOnly, "仅初级" },
-            { LevelMode.Deflation, "放气" },
-            { LevelMode.MilitaryOnly, "仅军事" },
-            { LevelMode.Apopalypse, "天启" },
-            { LevelMode.Reverse, "相反" },
-            { LevelMode.MagicMonkeysOnly, "仅魔法" },
-            { LevelMode.DoubleHpMoabs, "双倍生命值MOAB" },
-            { LevelMode.HalfCash, "现金减半" },
-            { LevelMode.AlternateBloonsRounds, "代替气球回合" },
-            { LevelMode.Impoppable, "极难模式" },
-            { LevelMode.CHIMPS, "点击" }
+            { LevelModes.Standard, "标准" },
+            { LevelModes.PrimaryOnly, "仅初级" },
+            { LevelModes.Deflation, "放气" },
+            { LevelModes.MilitaryOnly, "仅军事" },
+            { LevelModes.Apopalypse, "天启" },
+            { LevelModes.Reverse, "相反" },
+            { LevelModes.MagicMonkeysOnly, "仅魔法" },
+            { LevelModes.DoubleHpMoabs, "双倍生命" },
+            { LevelModes.HalfCash, "现金减半" },
+            { LevelModes.AlternateBloonsRounds, "替代气球" },
+            { LevelModes.Impoppable, "极难" },
+            { LevelModes.CHIMPS, "点击" }
         };
 
         // 获取中文名称
-        public static string GetTypeName(LevelMode mode)
+        public static string GetTypeName(LevelModes mode)
         {
             return _levelModeNames.TryGetValue(mode, out var name)
                 ? name
@@ -651,27 +660,27 @@ namespace BTD6AutoCommunity.Core
         }
 
         // 通过数字获取枚举值
-        public static LevelMode GetLevelModeType(int id)
+        public static LevelModes GetLevelModeType(int id)
         {
-            return Enum.GetValues(typeof(LevelMode))
-                .Cast<LevelMode>()
+            return Enum.GetValues(typeof(LevelModes))
+                .Cast<LevelModes>()
                 .FirstOrDefault(e => (int)e == id);
         }
 
-        public static List<LevelMode> ModesList => new List<LevelMode>
+        public static List<LevelModes> ModesList => new List<LevelModes>
         {
-            LevelMode.Standard,
-            LevelMode.PrimaryOnly,
-            LevelMode.Deflation,
-            LevelMode.MilitaryOnly,
-            LevelMode.Apopalypse,
-            LevelMode.Reverse,
-            LevelMode.MagicMonkeysOnly,
-            LevelMode.DoubleHpMoabs,
-            LevelMode.HalfCash,
-            LevelMode.AlternateBloonsRounds,
-            LevelMode.Impoppable,
-            LevelMode.CHIMPS
+            LevelModes.Standard,
+            LevelModes.PrimaryOnly,
+            LevelModes.Deflation,
+            LevelModes.MilitaryOnly,
+            LevelModes.Apopalypse,
+            LevelModes.Reverse,
+            LevelModes.MagicMonkeysOnly,
+            LevelModes.DoubleHpMoabs,
+            LevelModes.HalfCash,
+            LevelModes.AlternateBloonsRounds,
+            LevelModes.Impoppable,
+            LevelModes.CHIMPS
         };
 
 
@@ -1039,9 +1048,9 @@ namespace BTD6AutoCommunity.Core
             {
                 return GetTypeName((Maps)obj);
             }
-            else if (type == typeof(LevelMode))
+            else if (type == typeof(LevelModes))
             {
-                return GetTypeName((LevelMode)obj);
+                return GetTypeName((LevelModes)obj);
             }
             else if (type == typeof(ActionTypes))
             {

@@ -61,7 +61,7 @@ namespace BTD6AutoCommunity.Core
             }
         }
 
-        public static int GetMapEreaIndex(GameContext context, System.Drawing.Point mapPos)
+        public static int GetMapEreaIndex(System.Drawing.Point mapPos)
         {
             if (mapPos.Y < 430 && mapPos.Y > 120)
             {
@@ -76,6 +76,31 @@ namespace BTD6AutoCommunity.Core
                 if (mapPos.X < 1600) return 5;
             }
             return -1;
+        }
+
+        public static Badges GetMapBadges(GameContext context, int mapEreaId, Bitmap bitmap)
+        {
+            if (mapEreaId == -1) return null;
+            Badges badges = new Badges();
+            int deltaX = (mapEreaId % 3) * 423;
+            int deltaY = (mapEreaId / 3) * 313;
+            badges.SetBadgeStatus(LevelDifficulties.Easy, LevelModes.Standard, !CheckColorFromBitmap(context, bitmap, badges.EasyStandardPos.X + deltaX, badges.EasyStandardPos.Y + deltaY, new List<int> { 0xA88859, 0xA9B9C4, 0xBE7813}));
+            badges.SetBadgeStatus(LevelDifficulties.Medium, LevelModes.Standard, !CheckColorFromBitmap(context, bitmap, badges.MediumStandardPos.X + deltaX, badges.MediumStandardPos.Y + deltaY, new List<int> { 0xA88859, 0xA9B9C4, 0xBE7813 }));
+            badges.SetBadgeStatus(LevelDifficulties.Hard, LevelModes.Standard, !CheckColorFromBitmap(context, bitmap, badges.HardStandardPos.X + deltaX, badges.HardStandardPos.Y + deltaY, new List<int> { 0xA88859, 0xA9B9C4, 0xBE7813 }));
+            badges.SetBadgeStatus(LevelDifficulties.Easy, LevelModes.PrimaryOnly, !CheckColorFromBitmap(context, bitmap, badges.PrimaryOnlyPos.X + deltaX, badges.PrimaryOnlyPos.Y + deltaY, new List<int> { 0xB08959, 0xA9BCCA, 0xC37503 }));
+            badges.SetBadgeStatus(LevelDifficulties.Medium, LevelModes.MilitaryOnly, !CheckColorFromBitmap(context, bitmap, badges.MilitaryOnlyPos.X + deltaX, badges.MilitaryOnlyPos.Y + deltaY, new List<int> { 0xB08959, 0xA9BCCA, 0xC37503 }));
+            badges.SetBadgeStatus(LevelDifficulties.Hard, LevelModes.MagicMonkeysOnly, !CheckColorFromBitmap(context, bitmap, badges.MagicMonkeysOnlyPos.X + deltaX, badges.MagicMonkeysOnlyPos.Y + deltaY, new List<int> { 0xB08959, 0xA9BCCA, 0xC37503 }));
+            badges.SetBadgeStatus(LevelDifficulties.Easy, LevelModes.Deflation, !CheckColorFromBitmap(context, bitmap, badges.DeflationPos.X + deltaX, badges.DeflationPos.Y + deltaY, new List<int> { 0xB08959, 0xA9BCCA, 0xC37503 }));
+            badges.SetBadgeStatus(LevelDifficulties.Medium, LevelModes.Apopalypse, !CheckColorFromBitmap(context, bitmap, badges.ApopalypsePos.X + deltaX, badges.ApopalypsePos.Y + deltaY, new List<int> { 0xB08959, 0xA9BCCA, 0xC37503 }));
+            badges.SetBadgeStatus(LevelDifficulties.Medium, LevelModes.Reverse, !CheckColorFromBitmap(context, bitmap, badges.ReversePos.X + deltaX, badges.ReversePos.Y + deltaY, new List<int> { 0xB08959, 0xA9BCCA, 0xC37503 }));
+            badges.SetBadgeStatus(LevelDifficulties.Hard, LevelModes.HalfCash, !CheckColorFromBitmap(context, bitmap, badges.HalfCashPos.X + deltaX, badges.HalfCashPos.Y + deltaY, new List<int> { 0xB08959, 0xA9BCCA, 0xC37503 }));
+            badges.SetBadgeStatus(LevelDifficulties.Hard, LevelModes.DoubleHpMoabs, !CheckColorFromBitmap(context, bitmap, badges.DoubleHpMoabsPos.X + deltaX, badges.DoubleHpMoabsPos.Y + deltaY, new List<int> { 0xB08959, 0xA9BCCA, 0xC37503 }));
+            badges.SetBadgeStatus(LevelDifficulties.Hard, LevelModes.AlternateBloonsRounds, !CheckColorFromBitmap(context, bitmap, badges.AlternateBloonsRoundsPos.X + deltaX, badges.AlternateBloonsRoundsPos.Y + deltaY, new List<int> { 0xB08959, 0xA9BCCA, 0xC37503 }));
+            badges.SetBadgeStatus(LevelDifficulties.Hard, LevelModes.Impoppable, !CheckColorFromBitmap(context, bitmap, badges.ImpoppablePos.X + deltaX, badges.ImpoppablePos.Y + deltaY, new List<int> { 0xA88859, 0xA9B9C4, 0xBE7813 }));
+            badges.SetBadgeStatus(LevelDifficulties.Hard, LevelModes.CHIMPS, !CheckColorFromBitmap(context, bitmap, badges.CHIMPSPos.X + deltaX, badges.CHIMPSPos.Y + deltaY, new List<int> { 0xB08959, 0xA9BCCA, 0xC37503 }));
+
+            return badges;
+
         }
 
         public static System.Drawing.Point GetHeroPosition(GameContext context, Heroes heroName)
@@ -219,7 +244,15 @@ namespace BTD6AutoCommunity.Core
             );
         }
 
-        private static Color GetGameColor(GameContext context, System.Drawing.Point basePoint)
+        private static Color GetGameColorFromBitmap(GameContext context, Bitmap bmp, System.Drawing.Point basePoint)
+        {
+            return bmp.GetPixel(
+                (int)(basePoint.X * context.ResolutionScale),
+                (int)(basePoint.Y * context.ResolutionScale)
+            );
+        }
+
+        private static Color GetGameColorFromScreen(GameContext context, System.Drawing.Point basePoint)
         {
             using (Bitmap bitmap = new Bitmap(1, 1))
             {
@@ -232,9 +265,67 @@ namespace BTD6AutoCommunity.Core
             }
         }
 
-        public static bool CheckColor(GameContext context, int x, int y, int expectedColor)
+        public static bool CheckColorFromBitmap(GameContext context, Bitmap bmp, int x, int y, int expectedColor, int tolerance = 50)
         {
-            Color color = GetGameColor(context, new System.Drawing.Point(x, y));
+            Color color = GetGameColorFromBitmap(context, bmp, new System.Drawing.Point(x, y));
+            Color expected = Color.FromArgb(expectedColor >> 16, (expectedColor >> 8) & 0xFF, expectedColor & 0xFF);
+
+            int diff = Math.Abs(color.R - expected.R)
+                     + Math.Abs(color.G - expected.G)
+                     + Math.Abs(color.B - expected.B);
+
+            return diff < tolerance;
+        }
+
+        public static bool CheckColorFromBitmap(GameContext context, Bitmap bmp, System.Drawing.Point point, int expectedColor, int tolerance = 50)
+        {
+            Color color = GetGameColorFromBitmap(context, bmp, point);
+            Color expected = Color.FromArgb(expectedColor >> 16, (expectedColor >> 8) & 0xFF, expectedColor & 0xFF);
+            int diff = Math.Abs(color.R - expected.R)
+                     + Math.Abs(color.G - expected.G)
+                     + Math.Abs(color.B - expected.B);
+            return diff < tolerance;
+        }
+
+        public static bool CheckColorFromBitmap(GameContext context, Bitmap bmp, int x, int y, List<int> expectedColors)
+        {
+            Color color = GetGameColorFromBitmap(context, bmp, new System.Drawing.Point(x, y));
+            foreach (var expectedColor in expectedColors)
+            {
+                Color expected = Color.FromArgb(expectedColor >> 16, (expectedColor >> 8) & 0xFF, expectedColor & 0xFF);
+                int diff = Math.Abs(color.R - expected.R)
+                         + Math.Abs(color.G - expected.G)
+                         + Math.Abs(color.B - expected.B);
+                if (diff < 50)
+                {
+                    Debug.WriteLine($"Found matching color at ({x}, {y}): R={color.R}, G={color.G}, B={color.B}");
+                    return true;
+                }
+                Debug.WriteLine($"No match for color at ({x}, {y}): R={color.R}, G={color.G}, B={color.B} vs Expected R={expected.R}, G={expected.G}, B={expected.B} with diff {diff}");
+            }
+            return false;
+        }
+
+        public static bool CheckColorFromBitmap(GameContext context, Bitmap bmp, System.Drawing.Point point, List<int> expectedColors)
+        {
+            Color color = GetGameColorFromBitmap(context, bmp, point);
+            foreach (var expectedColor in expectedColors)
+            {
+                Color expected = Color.FromArgb(expectedColor >> 16, (expectedColor >> 8) & 0xFF, expectedColor & 0xFF);
+                int diff = Math.Abs(color.R - expected.R)
+                         + Math.Abs(color.G - expected.G)
+                         + Math.Abs(color.B - expected.B);
+                if (diff < 50)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool CheckColorFromScreen(GameContext context, int x, int y, int expectedColor)
+        {
+            Color color = GetGameColorFromScreen(context, new System.Drawing.Point(x, y));
             Color expected = Color.FromArgb(expectedColor >> 16, (expectedColor >> 8) & 0xFF, expectedColor & 0xFF);
 
             int diff = Math.Abs(color.R - expected.R)
@@ -248,8 +339,8 @@ namespace BTD6AutoCommunity.Core
         {
             if (index == -1) return false;
             System.Drawing.Point point = Constants.UpgradeYellowPosition[index * 5 + 5 - p];
-            Debug.WriteLine($"point: {point}");
-            Color c1 = GetGameColor(context, point);
+            //Debug.WriteLine($"point: {point}");
+            Color c1 = GetGameColorFromScreen(context, point);
             if (c1.B < 5 && c1.R > 40 && c1.G > 220)
             {
                 return true;
@@ -259,7 +350,7 @@ namespace BTD6AutoCommunity.Core
 
         public static bool IsInGame(GameContext context)
         {
-            if (CheckColor(context, 1910, 40, 0xB1814A) && CheckColor(context, 13, 40, 0xB1814A))
+            if (CheckColorFromScreen(context, 1910, 40, 0xB1814A) && CheckColorFromScreen(context, 13, 40, 0xB1814A))
             {
                 return true;
             }
@@ -268,8 +359,8 @@ namespace BTD6AutoCommunity.Core
 
         public static bool IsMonkeyDeploy(GameContext context)
         {
-            Color c1 = GetGameColor(context, new System.Drawing.Point(1600, 120));
-            Color c2 = GetGameColor(context, new System.Drawing.Point(1600, 98));
+            Color c1 = GetGameColorFromScreen(context, new System.Drawing.Point(1600, 120));
+            Color c2 = GetGameColorFromScreen(context, new System.Drawing.Point(1600, 98));
             if (c1.R > 250 && c1.G > 250 && c1.B > 250
                 && Math.Abs(c2.R - 0xff) < 20 && Math.Abs(c2.G - 0x79) < 20 && Math.Abs(c2.B - 0x00) < 20)
             {
@@ -280,8 +371,8 @@ namespace BTD6AutoCommunity.Core
 
         public static bool IsHeroDeploy(GameContext context)
         {
-            Color c1 = GetGameColor(context, new System.Drawing.Point(1757, 272));
-            Color c2 = GetGameColor(context, new System.Drawing.Point(1670, 274));
+            Color c1 = GetGameColorFromScreen(context, new System.Drawing.Point(1757, 272));
+            Color c2 = GetGameColorFromScreen(context, new System.Drawing.Point(1670, 274));
             if ((c1.R > 245 && c1.B < 10) || (c2.R > 245 && c2.B < 10))
             {
                 return true;
@@ -294,32 +385,37 @@ namespace BTD6AutoCommunity.Core
 
         public static bool IsLeftUpgrading(GameContext context)
         {
-            return CheckColor(context, 415, 120, 0xbe925a) && CheckColor(context, 415, 870, 0xb48149);
+            return CheckColorFromScreen(context, 415, 120, 0xbe925a) && CheckColorFromScreen(context, 415, 870, 0xb48149) && CheckColorFromScreen(context, 400, 84, 0x623811);
         }
 
         public static bool IsRightUpgrading(GameContext context)
         {
-            return CheckColor(context, 1260, 200, 0xbe925a) && CheckColor(context, 1260, 870, 0xb48149);
+            return CheckColorFromScreen(context, 1260, 200, 0xbe925a) && CheckColorFromScreen(context, 1260, 870, 0xb48149) && CheckColorFromScreen(context, 1620, 84, 0x623811);
         }
 
         public static int AbilityRgbSum(GameContext context, int index)
         {
-            Color c1 = GetGameColor(context, new System.Drawing.Point(200 + index * 100, 1035));
+            Color c1 = GetGameColorFromScreen(context, new System.Drawing.Point(200 + index * 100, 1035));
             return c1.R + c1.G + c1.B;
         }
 
         public static System.Drawing.Point GetFailedScreenReturnPosition(GameContext context)
         {
-            if (CheckColor(context, 630, 800, 0xFFFFFF)) return new System.Drawing.Point(630, 810);
+            if (CheckColorFromScreen(context, 630, 800, 0xFFFFFF)) return new System.Drawing.Point(630, 810);
             return new System.Drawing.Point(740, 810);
+        }
 
+        public static System.Drawing.Point GetSettlementScreenReturnPosition(GameContext context)
+        {
+            if (CheckColorFromScreen(context, 840, 840, 0xFFFFFF)) return new System.Drawing.Point(840, 850);
+            return new System.Drawing.Point(720, 850);
         }
 
         public static System.Drawing.Point GetRestartPos(GameContext context)
         {
-            Color c1 = GetGameColor(context, new System.Drawing.Point(850, 765));
-            Color c2 = GetGameColor(context, new System.Drawing.Point(960, 765));
-            Color c3 = GetGameColor(context, new System.Drawing.Point(1330, 800));
+            Color c1 = GetGameColorFromScreen(context, new System.Drawing.Point(850, 765));
+            Color c2 = GetGameColorFromScreen(context, new System.Drawing.Point(960, 765));
+            Color c3 = GetGameColorFromScreen(context, new System.Drawing.Point(1330, 800));
             if (Math.Abs(c1.R - 0x71) < 30 && Math.Abs(c1.G - 0xe8) < 30 && Math.Abs(c1.B - 0x00) < 30)
             {
                 return new System.Drawing.Point(850, 815);
@@ -341,7 +437,7 @@ namespace BTD6AutoCommunity.Core
 
         public static int AbilityReady(GameContext context, int index)
         {
-            Color c1 = GetGameColor(context, new System.Drawing.Point(200 + index * 100, 1035));
+            Color c1 = GetGameColorFromScreen(context, new System.Drawing.Point(200 + index * 100, 1035));
             return c1.R + c1.G + c1.B;
         }
     }

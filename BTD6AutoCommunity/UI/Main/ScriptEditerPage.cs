@@ -89,9 +89,9 @@ namespace BTD6AutoCommunity.UI.Main
                 {
                     MapCB.InvokeIfRequired(() =>
                     {
-                        if (!Equals(MapCB.SelectedItem, scriptEditorViewModel.SelectedMap))
+                        if (!Equals(MapCB.SelectedValue, scriptEditorViewModel.SelectedMap.Value))
                         {
-                            MapCB.SelectedItem = scriptEditorViewModel.SelectedMap;
+                            MapCB.SelectedValue = scriptEditorViewModel.SelectedMap.Value;
                         }
                     });
                 }
@@ -120,9 +120,9 @@ namespace BTD6AutoCommunity.UI.Main
                 {
                     ModeCB.InvokeIfRequired(() =>
                     {
-                        if (!Equals(ModeCB.SelectedItem, scriptEditorViewModel.SelectedMode))
+                        if (!Equals(ModeCB.SelectedValue, scriptEditorViewModel.SelectedMode.Value))
                         {
-                            ModeCB.SelectedItem = scriptEditorViewModel.SelectedMode;
+                            ModeCB.SelectedValue = scriptEditorViewModel.SelectedMode.Value;
                         }
                     });
                 }
@@ -195,6 +195,17 @@ namespace BTD6AutoCommunity.UI.Main
         private void BindScriptNameTextBox()
         {
             ScriptNameTB.DataBindings.Add("Text", scriptEditorViewModel, "ScriptName");
+
+            scriptEditorViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(scriptEditorViewModel.ScriptName))
+                {
+                    if (!Equals(ScriptNameTB.Text, scriptEditorViewModel.ScriptName))
+                    {
+                        ScriptNameTB.Text = scriptEditorViewModel.ScriptName;
+                    }
+                }
+            };
         }
 
         private void BindAnchorCoordsControls()

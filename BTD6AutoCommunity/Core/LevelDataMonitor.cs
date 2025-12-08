@@ -217,7 +217,7 @@ namespace BTD6AutoCommunity.Core
                     tryGet++;
                     Cv2.MatchTemplate(image, template.Value, result, TemplateMatchModes.SqDiffNormed, mask);
                     Cv2.MinMaxLoc(result, out double minVal, out double maxVal, out OpenCvSharp.Point minLoc, out OpenCvSharp.Point maxLoc);
-                    //Debug.WriteLine($"num: {template.Key} minVal: {minVal}");
+                    Debug.WriteLine($"num: {template.Key} minVal: {minVal}");
                     if (minVal <= 0.075)
                     {
                         digits.Add((minLoc.X, template.Key));

@@ -62,7 +62,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Assets\Icons\favicon.ico</ApplicationIcon>
@@ -105,6 +105,7 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.0\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -119,7 +120,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\ScreenshotCapturer.cs" />
     <Compile Include="GameObjects\GameEnums.cs" />
+    <Compile Include="GameObjects\MapInfo.cs" />
     <Compile Include="Models\DifficultyDisplayItem.cs" />
     <Compile Include="Models\FunctionDisplayItem.cs" />
     <Compile Include="Models\HeroDisplayItem.cs" />
@@ -162,7 +165,6 @@
     <Compile Include="Services\MouseCoordinateDisplayService.cs" />
     <Compile Include="Services\StrategyManager.cs" />
     <Compile Include="Strategies\Base\BaseStrategy.cs" />
-    <Compile Include="Strategies\BlackBorderStrategy.cs" />
     <Compile Include="Strategies\CirculationStrategy.cs" />
     <Compile Include="Strategies\CollectionStrategy.cs" />
     <Compile Include="Core\Constants.cs" />
@@ -172,6 +174,7 @@
     <Compile Include="Core\InputSimulator.cs" />
     <Compile Include="Core\LevelDataMonitor.cs" />
     <Compile Include="Core\LogHandler.cs" />
+    <Compile Include="Strategies\BlackBorderStrategy.cs" />
     <Compile Include="Strategies\RaceStrategy.cs" />
     <Compile Include="Strategies\InGame\InGameActionExecutor.cs" />
     <Compile Include="Core\WindowApiWrapper.cs" />

@@ -15,7 +15,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
         public string ScriptName { get; set; }
         public Maps SelectedMap { get; set; }
         public LevelDifficulties SelectedDifficulty { get; set; }
-        public LevelMode SelectedMode { get; set; }
+        public LevelModes SelectedMode { get; set; }
         public Heroes SelectedHero { get; set; }
         public (int X, int Y) AnchorCoords { get; set; }
 
@@ -25,7 +25,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             string scriptName,
             Maps selectedMap,
             LevelDifficulties selectedDifficulty,
-            LevelMode selectedMode,
+            LevelModes selectedMode,
             Heroes selectedHero,
             (int x, int y) anchorCoords)
         {
@@ -39,7 +39,10 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
 
         public override string ToString()
         {
-            return $"[{SelectedMap}-{SelectedDifficulty}-{SelectedMode}-{SelectedHero}] Anchor: ({AnchorCoords.X},{AnchorCoords.Y})";
+            return $"[{Constants.GetTypeName(SelectedMap)}-" +
+                $"{Constants.GetTypeName(SelectedDifficulty)}-" +
+                $"{Constants.GetTypeName(SelectedMode)}-" +
+                $"{Constants.GetTypeName(SelectedHero)}]";
         }
     }
 }

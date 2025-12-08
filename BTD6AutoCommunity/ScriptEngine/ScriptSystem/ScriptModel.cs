@@ -248,7 +248,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
     {
         public Maps SelectedMap { get; set; }
         public LevelDifficulties SelectedDifficulty { get; set; }
-        public LevelMode SelectedMode { get; set; }
+        public LevelModes SelectedMode { get; set; }
         public Heroes SelectedHero { get; set; }
         public (int, int) AnchorCoords { get; set; }
         public List<int> ObjectCount { get; set; } // 猴子的数量

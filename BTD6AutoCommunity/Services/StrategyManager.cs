@@ -74,7 +74,7 @@ namespace BTD6AutoCommunity.Services
 
         private void RunCustomStrategy(UserSelection selection)
         {
-            CustomStrategy = new CustomStrategy(_settings, _logHandler, selection);
+            CustomStrategy = new CustomStrategy(_logHandler, selection);
             if (CustomStrategy.ReadyToStart)
             {
                 CustomStrategy.Start();
@@ -83,7 +83,7 @@ namespace BTD6AutoCommunity.Services
 
         private void RunCollectionStrategy()
         {
-            CollectionStrategy = new CollectionStrategy(_settings, _logHandler);
+            CollectionStrategy = new CollectionStrategy(_logHandler);
             if (CollectionStrategy.ReadyToStart)
             {
                 CollectionStrategy.Start();
@@ -92,7 +92,7 @@ namespace BTD6AutoCommunity.Services
 
         private void RunCirculationStrategy(UserSelection selection)
         {
-            CirculationStrategy = new CirculationStrategy(_settings, _logHandler, selection);
+            CirculationStrategy = new CirculationStrategy(_logHandler, selection);
             if (CirculationStrategy.ReadyToStart)
             {
                 CirculationStrategy.Start();
@@ -101,7 +101,7 @@ namespace BTD6AutoCommunity.Services
 
         private void RunRaceStrategy(UserSelection selection)
         {
-            RaceStrategy = new RaceStrategy(_settings, _logHandler, selection);
+            RaceStrategy = new RaceStrategy(_logHandler, selection);
             if (RaceStrategy.ReadyToStart)
             {
                 RaceStrategy.Start();

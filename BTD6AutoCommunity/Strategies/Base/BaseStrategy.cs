@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BTD6AutoCommunity.Services.Interfaces;
+using System.Drawing;
 
 
 
@@ -28,7 +29,9 @@ namespace BTD6AutoCommunity.Strategies.Base
         // 控制
         protected readonly object _checkStateTimerLock = new object();
         protected volatile bool _isProcessing = false;
-        protected System.Timers.Timer checkGameStateTimer;
+        protected System.Timers.Timer screenShotCaptureTimer;
+        protected ScreenCapturer screenshotCapturer;
+
         public bool ReadyToStart { get; protected set; } = true;
 
         // 事件
@@ -55,16 +58,17 @@ namespace BTD6AutoCommunity.Strategies.Base
         protected System.Timers.Timer LevelDataMonitorTimer;
         protected System.Timers.Timer InGameActionExecutorTimer;
 
-        protected const int DefaulCheckStateInterval = 1500;
+        protected const int DefaultScreenShotCaptureInterval = 1500;
         protected int DefaultDataReadInterval = 1000;
         protected int DefaultOperationInterval = 200;
 
 
-        protected BaseStrategy(ScriptSettings settings, LogHandler logHandler)
+        protected BaseStrategy(LogHandler logHandler)
         {
             _logs = logHandler;
             _context = new GameContext();
-            _settings = settings;
+            scriptFileManager = new ScriptFileManager();
+            _settings = ScriptSettings.LoadJsonSettings();
             if (!_context.IsValid)
             {
                 ReadyToStart = false;
@@ -73,11 +77,11 @@ namespace BTD6AutoCommunity.Strategies.Base
             }
 
             _logs.Log(_context.ToString(), LogLevel.Info);
+            screenshotCapturer = new ScreenCapturer(_context);
             stateMachine = new GameStateMachine(_context);
 
-            scriptFileManager = new ScriptFileManager();
-            //InitializeStateHandlers();
-            SetupGameStateTimer();
+            InitializeStateHandlers();
+            SetupScreenShotCaptureTimer();
         }
 
         protected void GetExecutableInstructions(UserSelection userSelection)
@@ -99,42 +103,55 @@ namespace BTD6AutoCommunity.Strategies.Base
                 scriptMetadata = scriptModel.Metadata;
                 executableInstructions = CompileScript(scriptModel);
 
-                _logs.Log($"已加载脚本：{scriptPath}", LogLevel.Info);
+                _logs.Log($"已加载脚本：{scriptMetadata}", LogLevel.Info);
             }
             catch (Exception ex)
             {
                 
                 ReadyToStart = false;
-                _logs.Log("脚本加载失败，请确认脚本是否正确\n错误信息: " + ex.Message, LogLevel.Error);
+                _logs.Log($"脚本{scriptMetadata}加载失败，请确认脚本是否正确\n错误信息: " + ex.Message, LogLevel.Error);
                 return;
             }
         }
 
-        protected void GetExecutableInstructions(string scriptPath)
+        protected bool GetExecutableInstructions(string scriptPath, bool isEcho = true)
         {
             if (scriptPath == null)
             {
                 ReadyToStart = false;
                 _logs.Log("脚本未选择，请确选择脚本", LogLevel.Error);
-                return;
+                return false;
             }
             try
             {
                 ScriptModel scriptModel = LoadScript(scriptPath);
-
+                if (scriptModel == null)
+                {
+                    ReadyToStart = false;
+                    _logs.Log($"脚本{scriptPath}加载失败，请确认脚本是否正确", LogLevel.Error);
+                    return false;
+                }
                 scriptMetadata = scriptModel.Metadata;
                 executableInstructions = CompileScript(scriptModel);
 
-                OnScriptLoaded?.Invoke(scriptModel.Metadata);
-
-                _logs.Log($"已加载脚本：{scriptPath}", LogLevel.Info);
+                if (isEcho)
+                {
+                    EchoScript();
+                }
+                return true;
             }
             catch
             {
                 ReadyToStart = false;
-                _logs.Log("脚本加载失败，请确认脚本是否正确", LogLevel.Error);
-                return;
+                _logs.Log($"脚本{scriptPath}加载失败，请确认脚本是否正确", LogLevel.Error);
+                return false;
             }
+        }
+
+        protected void EchoScript()
+        {
+            OnScriptLoaded?.Invoke(scriptMetadata);
+            _logs.Log($"已加载脚本：{scriptMetadata}", LogLevel.Info);
         }
         
         // 加载脚本
@@ -161,7 +178,7 @@ namespace BTD6AutoCommunity.Strategies.Base
             OnPreStart();
 
             // 2. 启动状态检测
-            checkGameStateTimer?.Start();
+            screenShotCaptureTimer?.Start();
 
             // 3. 子类可添加额外行为，如开启数据监控、启动执行器等
             OnPostStart();
@@ -173,7 +190,7 @@ namespace BTD6AutoCommunity.Strategies.Base
 
         public virtual void Stop()
         {
-            checkGameStateTimer?.Stop();
+            screenShotCaptureTimer?.Stop();
             StopLevelTimer();
             lock (_checkStateTimerLock)
             {
@@ -188,11 +205,11 @@ namespace BTD6AutoCommunity.Strategies.Base
             _logs.Log("策略已停止!", LogLevel.Info);
         }
 
-        protected void SetupGameStateTimer()
+        protected void SetupScreenShotCaptureTimer()
         {
-            checkGameStateTimer = new System.Timers.Timer(DefaulCheckStateInterval);
-            checkGameStateTimer.Elapsed += (s, e) => CheckGameState();
-            checkGameStateTimer.AutoReset = true;
+            screenShotCaptureTimer = new System.Timers.Timer(DefaultScreenShotCaptureInterval);
+            screenShotCaptureTimer.Elapsed += (s, e) => CheckGameState();
+            screenShotCaptureTimer.AutoReset = true;
         }
 
         protected void SetupLevelDataMonitorTimer(bool useRecommendInterval = false)
@@ -276,7 +293,9 @@ namespace BTD6AutoCommunity.Strategies.Base
             }
             try
             {
-                var currentState = stateMachine.GetCurrentState();
+                Bitmap screenshot = screenshotCapturer.CaptureFullAndGetClone();
+
+                var currentState = stateMachine.GetCurrentState(screenshot);
                 if (currentState != lastState)
                 {
                     _logs.Log($"当前状态：{GameStateDescription.GetChineseDescription(currentState)}", LogLevel.Info);
