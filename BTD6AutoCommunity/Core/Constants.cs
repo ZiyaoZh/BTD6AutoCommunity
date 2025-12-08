@@ -431,6 +431,7 @@ namespace BTD6AutoCommunity.Core
             { Maps.DarkCastle, "黑暗城堡" },
             { Maps.MuddyPuddles, "泥泞的水坑" },
             { Maps.Ouch, "#哎哟" },
+            { Maps.TrickyTracks, "棘手的轨道" },
             { Maps.Unknown, "未知地图" }
         };
 
@@ -523,6 +524,7 @@ namespace BTD6AutoCommunity.Core
             Maps.OffTheCoast,
             Maps.Cornfield,
             Maps.Underground,
+            Maps.TrickyTracks,
             Maps.GlacialTrail,
             Maps.DarkDungeon,
             Maps.Sanctuary,
@@ -610,6 +612,7 @@ namespace BTD6AutoCommunity.Core
             { Maps.LastResort, MapTypes.Advanced },
             { Maps.EnchantedGlade, MapTypes.Advanced },
             { Maps.SunsetGulch, MapTypes.Advanced },
+            { Maps.TrickyTracks, MapTypes.Expert },
             { Maps.GlacialTrail, MapTypes.Expert },
             { Maps.DarkDungeon, MapTypes.Expert },
             { Maps.Sanctuary, MapTypes.Expert },

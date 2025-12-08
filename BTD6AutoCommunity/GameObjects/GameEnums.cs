@@ -154,6 +154,7 @@ namespace BTD6AutoCommunity.GameObjects
         SunsetGulch = 80,
 
         // 专家图
+
         // 冰河之径
         GlacialTrail = 90,
         // 黑暗地下城
@@ -178,6 +179,8 @@ namespace BTD6AutoCommunity.GameObjects
         MuddyPuddles = 100,
         // #哎哟
         Ouch = 101,
+        // 棘手的轨道
+        TrickyTracks = 102,
 
         Unknown = 255
     }

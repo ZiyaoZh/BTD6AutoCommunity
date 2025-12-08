@@ -39,7 +39,10 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
 
         public override string ToString()
         {
-            return $"[{SelectedMap}-{SelectedDifficulty}-{SelectedMode}-{SelectedHero}]";
+            return $"[{Constants.GetTypeName(SelectedMap)}-" +
+                $"{Constants.GetTypeName(SelectedDifficulty)}-" +
+                $"{Constants.GetTypeName(SelectedMode)}-" +
+                $"{Constants.GetTypeName(SelectedHero)}]";
         }
     }
 }

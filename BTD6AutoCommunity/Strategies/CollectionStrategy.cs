@@ -28,9 +28,9 @@ namespace BTD6AutoCommunity.Strategies
     public class CollectionStrategy : Base.BaseStrategy
     {
         // 收集设置常量
-        private const int CollectMapCount = 12;          // 每次运行收集地图数量
+        private const int CollectMapCount = 13;          // 每次运行收集地图数量
         private const int ExpertMapStartId = 90;        // 专家级地图起始ID
-        private const int ExpertMapEndId = 101;           // 专家级地图终止ID
+        private const int ExpertMapEndId = 102;           // 专家级地图终止ID
 
 
         private Dictionary<int, string> collectionScripts; // mapId -> 脚本路径

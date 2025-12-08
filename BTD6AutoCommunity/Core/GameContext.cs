@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Drawing;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using static BTD6AutoCommunity.Core.WindowApiWrapper;
 
 namespace BTD6AutoCommunity.Core
@@ -131,6 +132,8 @@ namespace BTD6AutoCommunity.Core
                 point.Y * 65535 / screenHeight
             );
         }
+
+
         public override string ToString()
         {
             return $"游戏窗口上下文[Valid={IsValid} | Handle={WindowHandle} " +

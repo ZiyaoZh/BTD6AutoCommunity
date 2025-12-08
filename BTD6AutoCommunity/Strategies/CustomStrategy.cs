@@ -39,8 +39,8 @@ namespace BTD6AutoCommunity.Strategies
         protected override void OnPreStart()
         {
             _logs.Log($"开始自定义策略...", LogLevel.Info);
-            checkGameStateTimer?.Dispose();
-            checkGameStateTimer = null;
+            screenShotCaptureTimer?.Dispose();
+            screenShotCaptureTimer = null;
         }
 
         protected override void OnPostStart()

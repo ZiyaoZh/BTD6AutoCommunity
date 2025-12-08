@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BTD6AutoCommunity.Services.Interfaces;
+using System.Drawing;
 
 
 
@@ -28,7 +29,9 @@ namespace BTD6AutoCommunity.Strategies.Base
         // 控制
         protected readonly object _checkStateTimerLock = new object();
         protected volatile bool _isProcessing = false;
-        protected System.Timers.Timer checkGameStateTimer;
+        protected System.Timers.Timer screenShotCaptureTimer;
+        protected ScreenCapturer screenshotCapturer;
+
         public bool ReadyToStart { get; protected set; } = true;
 
         // 事件
@@ -55,7 +58,7 @@ namespace BTD6AutoCommunity.Strategies.Base
         protected System.Timers.Timer LevelDataMonitorTimer;
         protected System.Timers.Timer InGameActionExecutorTimer;
 
-        protected const int DefaulCheckStateInterval = 1500;
+        protected const int DefaultScreenShotCaptureInterval = 1500;
         protected int DefaultDataReadInterval = 1000;
         protected int DefaultOperationInterval = 200;
 
@@ -74,10 +77,11 @@ namespace BTD6AutoCommunity.Strategies.Base
             }
 
             _logs.Log(_context.ToString(), LogLevel.Info);
+            screenshotCapturer = new ScreenCapturer(_context);
             stateMachine = new GameStateMachine(_context);
 
             InitializeStateHandlers();
-            SetupGameStateTimer();
+            SetupScreenShotCaptureTimer();
         }
 
         protected void GetExecutableInstructions(UserSelection userSelection)
@@ -174,7 +178,7 @@ namespace BTD6AutoCommunity.Strategies.Base
             OnPreStart();
 
             // 2. 启动状态检测
-            checkGameStateTimer?.Start();
+            screenShotCaptureTimer?.Start();
 
             // 3. 子类可添加额外行为，如开启数据监控、启动执行器等
             OnPostStart();
@@ -186,7 +190,7 @@ namespace BTD6AutoCommunity.Strategies.Base
 
         public virtual void Stop()
         {
-            checkGameStateTimer?.Stop();
+            screenShotCaptureTimer?.Stop();
             StopLevelTimer();
             lock (_checkStateTimerLock)
             {
@@ -201,11 +205,11 @@ namespace BTD6AutoCommunity.Strategies.Base
             _logs.Log("策略已停止!", LogLevel.Info);
         }
 
-        protected void SetupGameStateTimer()
+        protected void SetupScreenShotCaptureTimer()
         {
-            checkGameStateTimer = new System.Timers.Timer(DefaulCheckStateInterval);
-            checkGameStateTimer.Elapsed += (s, e) => CheckGameState();
-            checkGameStateTimer.AutoReset = true;
+            screenShotCaptureTimer = new System.Timers.Timer(DefaultScreenShotCaptureInterval);
+            screenShotCaptureTimer.Elapsed += (s, e) => CheckGameState();
+            screenShotCaptureTimer.AutoReset = true;
         }
 
         protected void SetupLevelDataMonitorTimer(bool useRecommendInterval = false)
@@ -289,7 +293,9 @@ namespace BTD6AutoCommunity.Strategies.Base
             }
             try
             {
-                var currentState = stateMachine.GetCurrentState();
+                Bitmap screenshot = screenshotCapturer.CaptureFullAndGetClone();
+
+                var currentState = stateMachine.GetCurrentState(screenshot);
                 if (currentState != lastState)
                 {
                     _logs.Log($"当前状态：{GameStateDescription.GetChineseDescription(currentState)}", LogLevel.Info);

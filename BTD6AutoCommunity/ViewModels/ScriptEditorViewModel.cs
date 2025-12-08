@@ -530,17 +530,31 @@ namespace BTD6AutoCommunity.ViewModels
 
         private void UpdateCoordinate()
         {
-            if (Argument1 == null || Argument2 == null) return;
-            if (Argument1.SelectedItem == null || Argument2.SelectedItem == null) return;
-            if (Argument1.SelectedItem.Name.Contains("有坐标") || Argument2.SelectedItem.Name.Contains("有坐标"))
+            if (Argument1 != null && Argument1.SelectedItem != null)
             {
-                CoordinateDefinition.IsVisible = true;
-                OnPropertyChanged(nameof(CoordinateDefinition));
+                if (Argument1.SelectedItem.Name.Contains("有坐标"))
+                {
+                    CoordinateDefinition.IsVisible = true;
+                    OnPropertyChanged(nameof(CoordinateDefinition));
+                }
+                if (Argument1.SelectedItem.Name.Contains("无坐标"))
+                {
+                    CoordinateDefinition.IsVisible = false;
+                    OnPropertyChanged(nameof(CoordinateDefinition));
+                }
             }
-            if (Argument1.SelectedItem.Name.Contains("无坐标") || Argument2.SelectedItem.Name.Contains("无坐标"))
+            if (Argument2 != null && Argument2.SelectedItem != null)
             {
-                CoordinateDefinition.IsVisible = false;
-                OnPropertyChanged(nameof(CoordinateDefinition));
+                if (Argument2.SelectedItem.Name.Contains("有坐标"))
+                {
+                    CoordinateDefinition.IsVisible = true;
+                    OnPropertyChanged(nameof(CoordinateDefinition));
+                }
+                if (Argument2.SelectedItem.Name.Contains("无坐标"))
+                {
+                    CoordinateDefinition.IsVisible = false;
+                    OnPropertyChanged(nameof(CoordinateDefinition));
+                }
             }
         }
 

@@ -23,6 +23,14 @@ namespace BTD6AutoCommunity.Strategies
         public HashSet<string> FailedScriptsToLoad {  get; set; } = new HashSet<string>();
         // 加载成功但未挑战的脚本
         public HashSet<string> UnChallengingScripts {  get; set; } = new HashSet<string>();
+
+        public bool IsValid()
+        {
+            return FailedScripts != null &&
+                   PassedScripts != null &&
+                   FailedScriptsToLoad != null &&
+                   UnChallengingScripts != null;
+        }
     }
 
     public class BlackBorderStrategy : Base.BaseStrategy
@@ -37,10 +45,12 @@ namespace BTD6AutoCommunity.Strategies
         private int levelChallengingCount = 0;
         private int returnableScreenCount = 0;
 
-        private readonly List<(LevelDifficulties, LevelModes)> scriptSequence;
+        private readonly List<(LevelDifficulties levelDifficulties, LevelModes levelModes)> scriptSequence;
         private int scriptIndex = 0;
         private readonly List<Maps> mapList;
         private int mapIndex = 0;
+
+        private MapInfo mapInfo = new MapInfo();
 
         private BlackBorderStrategyInfo strategyInfo = new BlackBorderStrategyInfo();
 
@@ -80,6 +90,11 @@ namespace BTD6AutoCommunity.Strategies
             }
             string json = File.ReadAllText(@"config\BlackBorderStrategyInfo.json");
             strategyInfo = JsonConvert.DeserializeObject<BlackBorderStrategyInfo>(json);
+            if (strategyInfo == null)
+            {
+                strategyInfo = new BlackBorderStrategyInfo();
+                SaveInfo();
+            }
         }
 
         private void SaveInfo()
@@ -161,10 +176,16 @@ namespace BTD6AutoCommunity.Strategies
         private bool LoadScript()
         {
             string mapName = Constants.GetTypeName(mapList[mapIndex]);
-            string difficultyName = Constants.GetTypeName(scriptSequence[scriptIndex].Item1);
-            string modeName = Constants.GetTypeName(scriptSequence[scriptIndex].Item2);
+            string difficultyName = Constants.GetTypeName(scriptSequence[scriptIndex].levelDifficulties);
+            string modeName = Constants.GetTypeName(scriptSequence[scriptIndex].levelModes);
             string scriptName = modeName + "-黑框";
             string scriptPath = scriptFileManager.GetScriptFullPath(mapName, difficultyName, scriptName);
+            if (mapInfo.GetBadgeStatus(mapList[mapIndex], scriptSequence[scriptIndex].levelDifficulties, scriptSequence[scriptIndex].levelModes))
+            {
+                _logs.Log($"地图{mapName}已通过{Constants.GetTypeName(scriptSequence[scriptIndex].levelDifficulties)}难度的{Constants.GetTypeName(scriptSequence[scriptIndex].levelModes)}模式，无需重复挑战，开始尝试下一脚本！", LogLevel.Info);
+                if (!NextScript()) return true;
+                return false;
+            }
             if (!GetExecutableInstructions(scriptPath, false))
             {
                 _logs.Log($"脚本{scriptPath}加载失败：开始下一脚本加载！", LogLevel.Warning);
@@ -242,33 +263,33 @@ namespace BTD6AutoCommunity.Strategies
         {
             InputSimulator.MouseMoveAndLeftClick(_context, 960, 800);
             Thread.Sleep(500);
-            HandleReturnableScreen();
+            Return();
             Thread.Sleep(500);
-            HandleReturnableScreen();
+            Return();
             Thread.Sleep(500);
-            HandleReturnableScreen();
+            Return();
             Thread.Sleep(500);
-            HandleReturnableScreen();
+            Return();
         }
 
         private void HandleBossResultsScreen()
         {
             InputSimulator.MouseMoveAndLeftClick(_context, 960, 880);
             Thread.Sleep(500);
-            HandleReturnableScreen();
+            Return();
             Thread.Sleep(500);
-            HandleReturnableScreen();
+            Return();
             Thread.Sleep(500);
-            HandleReturnableScreen();
+            Return();
             Thread.Sleep(500);
-            HandleReturnableScreen();
+            Return();
         }
 
         private void HandleLevelSelection()
         {
             if (executableInstructions == null || scriptMetadata == null)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("脚本未加载，无法选择难度，返回", LogLevel.Warning);
                 return;
             }
@@ -289,22 +310,39 @@ namespace BTD6AutoCommunity.Strategies
                 InputSimulator.MouseMoveAndLeftClick(_context, mapTypePos.X, mapTypePos.Y);
                 return;
             }
-            InputSimulator.MouseMoveAndLeftClick(_context, mapPos.X, mapPos.Y);
-            IsMapSelectionComplete = true;
-            _logs.Log($"已选择地图：{Constants.GetTypeName(scriptMetadata.SelectedMap)}", LogLevel.Info);
+            if (!mapInfo.IsMapChecked(scriptMetadata.SelectedMap))
+            {
+                Badges badges = GameVisionRecognizer.GetMapBadges(_context, GameVisionRecognizer.GetMapEreaIndex(mapPos), screenshotCapturer.CurrentScreenshot);
+                _logs.Log($"地图徽章信息：{badges}", LogLevel.Info);
+                mapInfo.SetBadges(scriptMetadata.SelectedMap, badges);
+                mapInfo.SetMapChecked(scriptMetadata.SelectedMap, true);
+            }
+            else             
+            {
+                Badges badges = mapInfo.GetBadges(scriptMetadata.SelectedMap);
+                if (badges.GetBadgeStatus(scriptMetadata.SelectedDifficulty, scriptMetadata.SelectedMode))
+                {
+                    _logs.Log($"地图已通过{Constants.GetTypeName(scriptMetadata.SelectedDifficulty)}难度的{Constants.GetTypeName(scriptMetadata.SelectedMode)}模式，无需重复挑战，开始尝试下一脚本！", LogLevel.Info);
+                    NextScript();
+                    return;
+                }
+                InputSimulator.MouseMoveAndLeftClick(_context, mapPos.X, mapPos.Y);
+                IsMapSelectionComplete = true;
+                _logs.Log($"已选择地图：{Constants.GetTypeName(scriptMetadata.SelectedMap)}", LogLevel.Info);
+            }
         }
 
         private void HandleLevelDifficultySelection()
         {
             if (executableInstructions == null || scriptMetadata == null)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("脚本未加载，返回", LogLevel.Warning);
                 return;
             }
             if (!IsMapSelectionComplete)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("地图选择未完成，无法选择难度，返回", LogLevel.Warning);
                 return;
             }
@@ -326,20 +364,20 @@ namespace BTD6AutoCommunity.Strategies
         {
             if (executableInstructions == null || scriptMetadata == null)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("脚本未加载，无法进入简单模式，返回", LogLevel.Warning);
                 return;
             }
             if (!IsMapSelectionComplete)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("地图选择未完成，无法进入简单模式，返回", LogLevel.Warning);
                 return;
             }
             if (scriptMetadata.SelectedMode != LevelModes.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Easy)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("当前模式不是简单模式，无法进入简单模式，返回", LogLevel.Warning);
                 return;
             }
@@ -352,7 +390,7 @@ namespace BTD6AutoCommunity.Strategies
             }
             else
             {
-                if (modeReTryCount > 7)
+                if (modeReTryCount > 2)
                 {
                     modeReTryCount = 0;
                     strategyInfo.UnChallengingScripts.Add(scriptMetadata.ToString());
@@ -369,20 +407,20 @@ namespace BTD6AutoCommunity.Strategies
         {
             if (executableInstructions == null || scriptMetadata == null)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("脚本未加载，无法进入中级模式，返回", LogLevel.Warning);
                 return;
             }
             if (!IsMapSelectionComplete)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("地图选择未完成，无法进入中级模式，返回", LogLevel.Warning);
                 return;
             }
             if (scriptMetadata.SelectedMode != LevelModes.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Medium)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("当前模式不是中级模式，无法进入中级模式，返回", LogLevel.Warning);
                 return;
             }
@@ -394,7 +432,7 @@ namespace BTD6AutoCommunity.Strategies
             }
             else
             {
-                if (modeReTryCount > 7)
+                if (modeReTryCount > 2)
                 {
                     modeReTryCount = 0;
                     strategyInfo.UnChallengingScripts.Add(scriptMetadata.ToString());
@@ -411,20 +449,20 @@ namespace BTD6AutoCommunity.Strategies
         {
             if (executableInstructions == null || scriptMetadata == null)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("脚本未加载，无法进入困难模式，返回", LogLevel.Warning);
                 return;
             }
             if (!IsMapSelectionComplete)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("地图选择未完成，无法进入困难模式，返回", LogLevel.Warning);
                 return;
             }
             if (scriptMetadata.SelectedMode != LevelModes.Standard &&
                 Constants.LevelModeToDifficulty[scriptMetadata.SelectedMode] != LevelDifficulties.Hard)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("当前模式不是困难模式，无法进入困难模式，返回", LogLevel.Warning);
                 return;
             }
@@ -436,7 +474,7 @@ namespace BTD6AutoCommunity.Strategies
             }
             else
             {
-                if (modeReTryCount > 7)
+                if (modeReTryCount > 2)
                 {
                     modeReTryCount = 0;
                     strategyInfo.UnChallengingScripts.Add(scriptMetadata.ToString());
@@ -453,13 +491,13 @@ namespace BTD6AutoCommunity.Strategies
         {
             if (executableInstructions == null || scriptMetadata == null)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("脚本未加载，无法选择英雄，返回", LogLevel.Warning);
                 return;
             }
             if (IsHeroSelectionComplete || scriptMetadata == null)
             {
-                HandleReturnableScreen();
+                Return();
                 _logs.Log("英雄选择已完成，返回", LogLevel.Warning);
                 return;
             }
@@ -575,6 +613,11 @@ namespace BTD6AutoCommunity.Strategies
             if (returnableScreenCount < 2) return;
             InputSimulator.MouseMoveAndLeftClick(_context, 80, 55);
             returnableScreenCount = 0;
+        }
+
+        private void Return()
+        {
+            InputSimulator.MouseMoveAndLeftClick(_context, 80, 55);
         }
 
         private void HandleChestCollection()
