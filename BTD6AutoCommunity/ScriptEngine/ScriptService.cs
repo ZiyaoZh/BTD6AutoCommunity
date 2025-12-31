@@ -68,6 +68,7 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public int AddInstructionBundle(string bundleName, int times)
         {
+            bundle = new InstructionsBundle();
             return instructions.InsertBundle(instructions.Count, bundle.GetInstructionSequence(bundleName), times);
         }
 

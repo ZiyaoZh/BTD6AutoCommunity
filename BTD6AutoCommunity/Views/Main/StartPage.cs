@@ -17,7 +17,7 @@ using BTD6AutoCommunity.ViewModels;
 using BTD6AutoCommunity.Models;
 using BTD6AutoCommunity.Services.Interfaces;
 
-namespace BTD6AutoCommunity.UI.Main
+namespace BTD6AutoCommunity.Views.Main
 {
     public partial class BTD6AutoUI
     {

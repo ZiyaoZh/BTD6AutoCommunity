@@ -1,4 +1,4 @@
-﻿namespace BTD6AutoCommunity.UI.Main
+﻿namespace BTD6AutoCommunity.Views.Main
 {
     partial class BTD6AutoUI
     {
@@ -260,13 +260,18 @@
             this.label80 = new System.Windows.Forms.Label();
             this.DesperadoHotkeyBT = new System.Windows.Forms.Button();
             this.label41 = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.EnableLoggingCB = new System.Windows.Forms.CheckBox();
             this.label81 = new System.Windows.Forms.Label();
             this.tableLayoutPanel11 = new System.Windows.Forms.TableLayoutPanel();
             this.AddBundleBT = new System.Windows.Forms.Button();
             this.DeleteBundleBT = new System.Windows.Forms.Button();
             this.BundleNamesCB = new System.Windows.Forms.ComboBox();
+            this.label82 = new System.Windows.Forms.Label();
+            this.tableLayoutPanel21 = new System.Windows.Forms.TableLayoutPanel();
+            this.CheckUpdateBT = new System.Windows.Forms.Button();
+            this.VersionLB = new System.Windows.Forms.Label();
+            this.tableLayoutPanel24 = new System.Windows.Forms.TableLayoutPanel();
+            this.EnableLoggingCB = new System.Windows.Forms.CheckBox();
+            this.EnableMaskWindowCB = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel23 = new System.Windows.Forms.TableLayoutPanel();
             this.SaveSettingsBT = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -317,8 +322,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.GetGameDataIntervalUD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExecuteIntervalUD)).BeginInit();
             this.tableLayoutPanel17.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.tableLayoutPanel11.SuspendLayout();
+            this.tableLayoutPanel21.SuspendLayout();
+            this.tableLayoutPanel24.SuspendLayout();
             this.tableLayoutPanel23.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tableLayoutPanel14.SuspendLayout();
@@ -1469,19 +1475,23 @@
             this.tableLayoutPanel18.Controls.Add(this.tableLayoutPanel19, 1, 0);
             this.tableLayoutPanel18.Controls.Add(this.label12, 0, 1);
             this.tableLayoutPanel18.Controls.Add(this.tableLayoutPanel17, 1, 1);
-            this.tableLayoutPanel18.Controls.Add(this.label41, 0, 3);
-            this.tableLayoutPanel18.Controls.Add(this.panel2, 1, 3);
+            this.tableLayoutPanel18.Controls.Add(this.label41, 0, 4);
             this.tableLayoutPanel18.Controls.Add(this.label81, 0, 2);
             this.tableLayoutPanel18.Controls.Add(this.tableLayoutPanel11, 1, 2);
+            this.tableLayoutPanel18.Controls.Add(this.label82, 0, 3);
+            this.tableLayoutPanel18.Controls.Add(this.tableLayoutPanel21, 1, 3);
+            this.tableLayoutPanel18.Controls.Add(this.tableLayoutPanel24, 1, 4);
             this.tableLayoutPanel18.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.tableLayoutPanel18.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel18.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel18.Name = "tableLayoutPanel18";
-            this.tableLayoutPanel18.RowCount = 4;
+            this.tableLayoutPanel18.RowCount = 5;
             this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 208F));
             this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 1380F));
             this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
             this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableLayoutPanel18.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel18.Size = new System.Drawing.Size(682, 582);
             this.tableLayoutPanel18.TabIndex = 0;
             // 
@@ -1520,7 +1530,7 @@
             this.tableLayoutPanel19.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel19.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel19.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel19.Size = new System.Drawing.Size(558, 202);
+            this.tableLayoutPanel19.Size = new System.Drawing.Size(553, 202);
             this.tableLayoutPanel19.TabIndex = 1;
             // 
             // label10
@@ -1572,6 +1582,7 @@
             0,
             0,
             0});
+            this.GetGameDataIntervalUD.ValueChanged += new System.EventHandler(this.GetGameDataIntervalUD_ValueChanged);
             // 
             // label8
             // 
@@ -1611,6 +1622,7 @@
             0,
             0,
             0});
+            this.ExecuteIntervalUD.ValueChanged += new System.EventHandler(this.ExecuteIntervalUD_ValueChanged);
             // 
             // GameDpiCB
             // 
@@ -1623,6 +1635,7 @@
             this.GameDpiCB.Name = "GameDpiCB";
             this.GameDpiCB.Size = new System.Drawing.Size(139, 31);
             this.GameDpiCB.TabIndex = 5;
+            this.GameDpiCB.SelectedIndexChanged += new System.EventHandler(this.GameDpiCB_SelectedIndexChanged);
             // 
             // EnableDoubleCoinCB
             // 
@@ -1634,6 +1647,7 @@
             this.EnableDoubleCoinCB.TabIndex = 6;
             this.EnableDoubleCoinCB.Text = "双金";
             this.EnableDoubleCoinCB.UseVisualStyleBackColor = true;
+            this.EnableDoubleCoinCB.CheckedChanged += new System.EventHandler(this.EnableDoubleCoinCB_CheckedChanged);
             // 
             // EnableFastPathCB
             // 
@@ -1641,10 +1655,11 @@
             this.EnableFastPathCB.Dock = System.Windows.Forms.DockStyle.Fill;
             this.EnableFastPathCB.Location = new System.Drawing.Point(263, 163);
             this.EnableFastPathCB.Name = "EnableFastPathCB";
-            this.EnableFastPathCB.Size = new System.Drawing.Size(292, 36);
+            this.EnableFastPathCB.Size = new System.Drawing.Size(287, 36);
             this.EnableFastPathCB.TabIndex = 7;
             this.EnableFastPathCB.Text = "快速路径";
             this.EnableFastPathCB.UseVisualStyleBackColor = true;
+            this.EnableFastPathCB.CheckedChanged += new System.EventHandler(this.EnableFastPathCB_CheckedChanged);
             // 
             // EnableRecommendIntervalCB
             // 
@@ -1656,6 +1671,7 @@
             this.EnableRecommendIntervalCB.TabIndex = 8;
             this.EnableRecommendIntervalCB.Text = "使用推荐间隔";
             this.EnableRecommendIntervalCB.UseVisualStyleBackColor = true;
+            this.EnableRecommendIntervalCB.CheckedChanged += new System.EventHandler(this.EnableRecommendIntervalCB_CheckedChanged);
             // 
             // label12
             // 
@@ -1845,7 +1861,7 @@
             this.tableLayoutPanel17.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel17.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel17.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel17.Size = new System.Drawing.Size(558, 1374);
+            this.tableLayoutPanel17.Size = new System.Drawing.Size(553, 1374);
             this.tableLayoutPanel17.TabIndex = 3;
             // 
             // SpikeFactoryHotkeyBT
@@ -1853,7 +1869,7 @@
             this.SpikeFactoryHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SpikeFactoryHotkeyBT.Location = new System.Drawing.Point(128, 443);
             this.SpikeFactoryHotkeyBT.Name = "SpikeFactoryHotkeyBT";
-            this.SpikeFactoryHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.SpikeFactoryHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.SpikeFactoryHotkeyBT.TabIndex = 41;
             this.SpikeFactoryHotkeyBT.Tag = "31";
             this.SpikeFactoryHotkeyBT.Text = "button42";
@@ -1863,9 +1879,9 @@
             // BananaFarmHotkeyBT
             // 
             this.BananaFarmHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BananaFarmHotkeyBT.Location = new System.Drawing.Point(407, 403);
+            this.BananaFarmHotkeyBT.Location = new System.Drawing.Point(404, 403);
             this.BananaFarmHotkeyBT.Name = "BananaFarmHotkeyBT";
-            this.BananaFarmHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.BananaFarmHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.BananaFarmHotkeyBT.TabIndex = 39;
             this.BananaFarmHotkeyBT.Tag = "30";
             this.BananaFarmHotkeyBT.Text = "30";
@@ -1877,7 +1893,7 @@
             this.MerMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MerMonkeyHotkeyBT.Location = new System.Drawing.Point(128, 403);
             this.MerMonkeyHotkeyBT.Name = "MerMonkeyHotkeyBT";
-            this.MerMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.MerMonkeyHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.MerMonkeyHotkeyBT.TabIndex = 37;
             this.MerMonkeyHotkeyBT.Tag = "25";
             this.MerMonkeyHotkeyBT.Text = "button38";
@@ -1887,9 +1903,9 @@
             // DruidHotkeyBT
             // 
             this.DruidHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DruidHotkeyBT.Location = new System.Drawing.Point(407, 363);
+            this.DruidHotkeyBT.Location = new System.Drawing.Point(404, 363);
             this.DruidHotkeyBT.Name = "DruidHotkeyBT";
-            this.DruidHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.DruidHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.DruidHotkeyBT.TabIndex = 35;
             this.DruidHotkeyBT.Tag = "24";
             this.DruidHotkeyBT.Text = "button36";
@@ -1901,7 +1917,7 @@
             this.AlchemistHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.AlchemistHotkeyBT.Location = new System.Drawing.Point(128, 363);
             this.AlchemistHotkeyBT.Name = "AlchemistHotkeyBT";
-            this.AlchemistHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.AlchemistHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.AlchemistHotkeyBT.TabIndex = 33;
             this.AlchemistHotkeyBT.Tag = "23";
             this.AlchemistHotkeyBT.Text = "button34";
@@ -1911,9 +1927,9 @@
             // NinjaMonkeyHotkeyBT
             // 
             this.NinjaMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.NinjaMonkeyHotkeyBT.Location = new System.Drawing.Point(407, 323);
+            this.NinjaMonkeyHotkeyBT.Location = new System.Drawing.Point(404, 323);
             this.NinjaMonkeyHotkeyBT.Name = "NinjaMonkeyHotkeyBT";
-            this.NinjaMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.NinjaMonkeyHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.NinjaMonkeyHotkeyBT.TabIndex = 31;
             this.NinjaMonkeyHotkeyBT.Tag = "22";
             this.NinjaMonkeyHotkeyBT.Text = "button32";
@@ -1925,7 +1941,7 @@
             this.SuperMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SuperMonkeyHotkeyBT.Location = new System.Drawing.Point(128, 323);
             this.SuperMonkeyHotkeyBT.Name = "SuperMonkeyHotkeyBT";
-            this.SuperMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.SuperMonkeyHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.SuperMonkeyHotkeyBT.TabIndex = 29;
             this.SuperMonkeyHotkeyBT.Tag = "21";
             this.SuperMonkeyHotkeyBT.Text = "button30";
@@ -1935,9 +1951,9 @@
             // WizardMonkeyHotkeyBT
             // 
             this.WizardMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.WizardMonkeyHotkeyBT.Location = new System.Drawing.Point(407, 283);
+            this.WizardMonkeyHotkeyBT.Location = new System.Drawing.Point(404, 283);
             this.WizardMonkeyHotkeyBT.Name = "WizardMonkeyHotkeyBT";
-            this.WizardMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.WizardMonkeyHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.WizardMonkeyHotkeyBT.TabIndex = 27;
             this.WizardMonkeyHotkeyBT.Tag = "20";
             this.WizardMonkeyHotkeyBT.Text = "20";
@@ -1949,7 +1965,7 @@
             this.DartlingGunnerHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DartlingGunnerHotkeyBT.Location = new System.Drawing.Point(128, 283);
             this.DartlingGunnerHotkeyBT.Name = "DartlingGunnerHotkeyBT";
-            this.DartlingGunnerHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.DartlingGunnerHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.DartlingGunnerHotkeyBT.TabIndex = 25;
             this.DartlingGunnerHotkeyBT.Tag = "16";
             this.DartlingGunnerHotkeyBT.Text = "button26";
@@ -1959,9 +1975,9 @@
             // MortarMonkeyHotkeyBT
             // 
             this.MortarMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MortarMonkeyHotkeyBT.Location = new System.Drawing.Point(407, 243);
+            this.MortarMonkeyHotkeyBT.Location = new System.Drawing.Point(404, 243);
             this.MortarMonkeyHotkeyBT.Name = "MortarMonkeyHotkeyBT";
-            this.MortarMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.MortarMonkeyHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.MortarMonkeyHotkeyBT.TabIndex = 23;
             this.MortarMonkeyHotkeyBT.Tag = "15";
             this.MortarMonkeyHotkeyBT.Text = "button24";
@@ -1973,7 +1989,7 @@
             this.HeliPilotHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeliPilotHotkeyBT.Location = new System.Drawing.Point(128, 243);
             this.HeliPilotHotkeyBT.Name = "HeliPilotHotkeyBT";
-            this.HeliPilotHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeliPilotHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.HeliPilotHotkeyBT.TabIndex = 21;
             this.HeliPilotHotkeyBT.Tag = "14";
             this.HeliPilotHotkeyBT.Text = "button22";
@@ -1983,9 +1999,9 @@
             // MonkeyAceHotkeyBT
             // 
             this.MonkeyAceHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MonkeyAceHotkeyBT.Location = new System.Drawing.Point(407, 203);
+            this.MonkeyAceHotkeyBT.Location = new System.Drawing.Point(404, 203);
             this.MonkeyAceHotkeyBT.Name = "MonkeyAceHotkeyBT";
-            this.MonkeyAceHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.MonkeyAceHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.MonkeyAceHotkeyBT.TabIndex = 19;
             this.MonkeyAceHotkeyBT.Tag = "13";
             this.MonkeyAceHotkeyBT.Text = "button20";
@@ -1997,7 +2013,7 @@
             this.MonkeyBuccaneerHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MonkeyBuccaneerHotkeyBT.Location = new System.Drawing.Point(128, 203);
             this.MonkeyBuccaneerHotkeyBT.Name = "MonkeyBuccaneerHotkeyBT";
-            this.MonkeyBuccaneerHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.MonkeyBuccaneerHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.MonkeyBuccaneerHotkeyBT.TabIndex = 17;
             this.MonkeyBuccaneerHotkeyBT.Tag = "12";
             this.MonkeyBuccaneerHotkeyBT.Text = "button18";
@@ -2007,9 +2023,9 @@
             // MonkeySubHotkeyBT
             // 
             this.MonkeySubHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MonkeySubHotkeyBT.Location = new System.Drawing.Point(407, 163);
+            this.MonkeySubHotkeyBT.Location = new System.Drawing.Point(404, 163);
             this.MonkeySubHotkeyBT.Name = "MonkeySubHotkeyBT";
-            this.MonkeySubHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.MonkeySubHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.MonkeySubHotkeyBT.TabIndex = 15;
             this.MonkeySubHotkeyBT.Tag = "11";
             this.MonkeySubHotkeyBT.Text = "button16";
@@ -2021,7 +2037,7 @@
             this.SniperMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SniperMonkeyHotkeyBT.Location = new System.Drawing.Point(128, 163);
             this.SniperMonkeyHotkeyBT.Name = "SniperMonkeyHotkeyBT";
-            this.SniperMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.SniperMonkeyHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.SniperMonkeyHotkeyBT.TabIndex = 13;
             this.SniperMonkeyHotkeyBT.Tag = "10";
             this.SniperMonkeyHotkeyBT.Text = "button14";
@@ -2031,9 +2047,9 @@
             // GlueGunnerHotkeyBT
             // 
             this.GlueGunnerHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.GlueGunnerHotkeyBT.Location = new System.Drawing.Point(407, 123);
+            this.GlueGunnerHotkeyBT.Location = new System.Drawing.Point(404, 123);
             this.GlueGunnerHotkeyBT.Name = "GlueGunnerHotkeyBT";
-            this.GlueGunnerHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.GlueGunnerHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.GlueGunnerHotkeyBT.TabIndex = 11;
             this.GlueGunnerHotkeyBT.Tag = "5";
             this.GlueGunnerHotkeyBT.Text = "button12";
@@ -2045,7 +2061,7 @@
             this.IceMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.IceMonkeyHotkeyBT.Location = new System.Drawing.Point(128, 123);
             this.IceMonkeyHotkeyBT.Name = "IceMonkeyHotkeyBT";
-            this.IceMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.IceMonkeyHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.IceMonkeyHotkeyBT.TabIndex = 9;
             this.IceMonkeyHotkeyBT.Tag = "4";
             this.IceMonkeyHotkeyBT.Text = "button10";
@@ -2055,9 +2071,9 @@
             // TackShooterHotkeyBT
             // 
             this.TackShooterHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TackShooterHotkeyBT.Location = new System.Drawing.Point(407, 83);
+            this.TackShooterHotkeyBT.Location = new System.Drawing.Point(404, 83);
             this.TackShooterHotkeyBT.Name = "TackShooterHotkeyBT";
-            this.TackShooterHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.TackShooterHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.TackShooterHotkeyBT.TabIndex = 7;
             this.TackShooterHotkeyBT.Tag = "3";
             this.TackShooterHotkeyBT.Text = "button8";
@@ -2069,7 +2085,7 @@
             this.BombShooterHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.BombShooterHotkeyBT.Location = new System.Drawing.Point(128, 83);
             this.BombShooterHotkeyBT.Name = "BombShooterHotkeyBT";
-            this.BombShooterHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.BombShooterHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.BombShooterHotkeyBT.TabIndex = 5;
             this.BombShooterHotkeyBT.Tag = "2";
             this.BombShooterHotkeyBT.Text = "button6";
@@ -2081,7 +2097,7 @@
             this.DartMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DartMonkeyHotkeyBT.Location = new System.Drawing.Point(128, 43);
             this.DartMonkeyHotkeyBT.Name = "DartMonkeyHotkeyBT";
-            this.DartMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.DartMonkeyHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.DartMonkeyHotkeyBT.TabIndex = 0;
             this.DartMonkeyHotkeyBT.Tag = "";
             this.DartMonkeyHotkeyBT.Text = "Hot1";
@@ -2091,9 +2107,9 @@
             // BoomerangMonkeyHotkeyBT
             // 
             this.BoomerangMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BoomerangMonkeyHotkeyBT.Location = new System.Drawing.Point(407, 43);
+            this.BoomerangMonkeyHotkeyBT.Location = new System.Drawing.Point(404, 43);
             this.BoomerangMonkeyHotkeyBT.Name = "BoomerangMonkeyHotkeyBT";
-            this.BoomerangMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.BoomerangMonkeyHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.BoomerangMonkeyHotkeyBT.TabIndex = 1;
             this.BoomerangMonkeyHotkeyBT.Tag = "1";
             this.BoomerangMonkeyHotkeyBT.Text = "button2";
@@ -2103,9 +2119,9 @@
             // MonkeyVillageHotkeyBT
             // 
             this.MonkeyVillageHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MonkeyVillageHotkeyBT.Location = new System.Drawing.Point(407, 443);
+            this.MonkeyVillageHotkeyBT.Location = new System.Drawing.Point(404, 443);
             this.MonkeyVillageHotkeyBT.Name = "MonkeyVillageHotkeyBT";
-            this.MonkeyVillageHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.MonkeyVillageHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.MonkeyVillageHotkeyBT.TabIndex = 42;
             this.MonkeyVillageHotkeyBT.Tag = "32";
             this.MonkeyVillageHotkeyBT.Text = "button3";
@@ -2117,7 +2133,7 @@
             this.EngineerMonkeyHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.EngineerMonkeyHotkeyBT.Location = new System.Drawing.Point(128, 483);
             this.EngineerMonkeyHotkeyBT.Name = "EngineerMonkeyHotkeyBT";
-            this.EngineerMonkeyHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.EngineerMonkeyHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.EngineerMonkeyHotkeyBT.TabIndex = 43;
             this.EngineerMonkeyHotkeyBT.Tag = "33";
             this.EngineerMonkeyHotkeyBT.Text = "button4";
@@ -2127,9 +2143,9 @@
             // BeastHandlerHotkeyBT
             // 
             this.BeastHandlerHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BeastHandlerHotkeyBT.Location = new System.Drawing.Point(407, 483);
+            this.BeastHandlerHotkeyBT.Location = new System.Drawing.Point(404, 483);
             this.BeastHandlerHotkeyBT.Name = "BeastHandlerHotkeyBT";
-            this.BeastHandlerHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.BeastHandlerHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.BeastHandlerHotkeyBT.TabIndex = 44;
             this.BeastHandlerHotkeyBT.Tag = "34";
             this.BeastHandlerHotkeyBT.Text = "button5";
@@ -2151,7 +2167,7 @@
             // 
             this.label16.AutoSize = true;
             this.label16.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label16.Location = new System.Drawing.Point(282, 40);
+            this.label16.Location = new System.Drawing.Point(279, 40);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(119, 40);
             this.label16.TabIndex = 48;
@@ -2173,7 +2189,7 @@
             // 
             this.label18.AutoSize = true;
             this.label18.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label18.Location = new System.Drawing.Point(282, 80);
+            this.label18.Location = new System.Drawing.Point(279, 80);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(119, 40);
             this.label18.TabIndex = 50;
@@ -2184,7 +2200,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label19.Location = new System.Drawing.Point(282, 120);
+            this.label19.Location = new System.Drawing.Point(279, 120);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(119, 40);
             this.label19.TabIndex = 51;
@@ -2206,7 +2222,7 @@
             // 
             this.label21.AutoSize = true;
             this.label21.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label21.Location = new System.Drawing.Point(282, 160);
+            this.label21.Location = new System.Drawing.Point(279, 160);
             this.label21.Name = "label21";
             this.label21.Size = new System.Drawing.Size(119, 40);
             this.label21.TabIndex = 53;
@@ -2228,7 +2244,7 @@
             // 
             this.label23.AutoSize = true;
             this.label23.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label23.Location = new System.Drawing.Point(282, 200);
+            this.label23.Location = new System.Drawing.Point(279, 200);
             this.label23.Name = "label23";
             this.label23.Size = new System.Drawing.Size(119, 40);
             this.label23.TabIndex = 55;
@@ -2250,7 +2266,7 @@
             // 
             this.label25.AutoSize = true;
             this.label25.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label25.Location = new System.Drawing.Point(282, 240);
+            this.label25.Location = new System.Drawing.Point(279, 240);
             this.label25.Name = "label25";
             this.label25.Size = new System.Drawing.Size(119, 40);
             this.label25.TabIndex = 57;
@@ -2272,7 +2288,7 @@
             // 
             this.label27.AutoSize = true;
             this.label27.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label27.Location = new System.Drawing.Point(282, 280);
+            this.label27.Location = new System.Drawing.Point(279, 280);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(119, 40);
             this.label27.TabIndex = 59;
@@ -2294,7 +2310,7 @@
             // 
             this.label29.AutoSize = true;
             this.label29.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label29.Location = new System.Drawing.Point(282, 320);
+            this.label29.Location = new System.Drawing.Point(279, 320);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(119, 40);
             this.label29.TabIndex = 61;
@@ -2327,7 +2343,7 @@
             // 
             this.label32.AutoSize = true;
             this.label32.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label32.Location = new System.Drawing.Point(282, 360);
+            this.label32.Location = new System.Drawing.Point(279, 360);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(119, 40);
             this.label32.TabIndex = 64;
@@ -2349,7 +2365,7 @@
             // 
             this.label34.AutoSize = true;
             this.label34.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label34.Location = new System.Drawing.Point(282, 400);
+            this.label34.Location = new System.Drawing.Point(279, 400);
             this.label34.Name = "label34";
             this.label34.Size = new System.Drawing.Size(119, 40);
             this.label34.TabIndex = 66;
@@ -2371,7 +2387,7 @@
             // 
             this.label36.AutoSize = true;
             this.label36.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label36.Location = new System.Drawing.Point(282, 440);
+            this.label36.Location = new System.Drawing.Point(279, 440);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(119, 40);
             this.label36.TabIndex = 68;
@@ -2393,7 +2409,7 @@
             // 
             this.label38.AutoSize = true;
             this.label38.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label38.Location = new System.Drawing.Point(282, 480);
+            this.label38.Location = new System.Drawing.Point(279, 480);
             this.label38.Name = "label38";
             this.label38.Size = new System.Drawing.Size(119, 40);
             this.label38.TabIndex = 70;
@@ -2416,7 +2432,7 @@
             this.HeroHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroHotkeyBT.Location = new System.Drawing.Point(128, 563);
             this.HeroHotkeyBT.Name = "HeroHotkeyBT";
-            this.HeroHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.HeroHotkeyBT.TabIndex = 45;
             this.HeroHotkeyBT.Text = "button7";
             this.HeroHotkeyBT.UseVisualStyleBackColor = true;
@@ -2438,7 +2454,7 @@
             this.UpgradeTopPathHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UpgradeTopPathHotkeyBT.Location = new System.Drawing.Point(128, 603);
             this.UpgradeTopPathHotkeyBT.Name = "UpgradeTopPathHotkeyBT";
-            this.UpgradeTopPathHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.UpgradeTopPathHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.UpgradeTopPathHotkeyBT.TabIndex = 46;
             this.UpgradeTopPathHotkeyBT.Text = "button9";
             this.UpgradeTopPathHotkeyBT.UseVisualStyleBackColor = true;
@@ -2448,7 +2464,7 @@
             // 
             this.label42.AutoSize = true;
             this.label42.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label42.Location = new System.Drawing.Point(282, 600);
+            this.label42.Location = new System.Drawing.Point(279, 600);
             this.label42.Name = "label42";
             this.label42.Size = new System.Drawing.Size(119, 40);
             this.label42.TabIndex = 73;
@@ -2481,7 +2497,7 @@
             // 
             this.label45.AutoSize = true;
             this.label45.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label45.Location = new System.Drawing.Point(282, 680);
+            this.label45.Location = new System.Drawing.Point(279, 680);
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(119, 40);
             this.label45.TabIndex = 76;
@@ -2503,7 +2519,7 @@
             // 
             this.label47.AutoSize = true;
             this.label47.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label47.Location = new System.Drawing.Point(282, 720);
+            this.label47.Location = new System.Drawing.Point(279, 720);
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(119, 40);
             this.label47.TabIndex = 78;
@@ -2526,7 +2542,7 @@
             this.UpgradeBottomPathHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UpgradeBottomPathHotkeyBT.Location = new System.Drawing.Point(128, 643);
             this.UpgradeBottomPathHotkeyBT.Name = "UpgradeBottomPathHotkeyBT";
-            this.UpgradeBottomPathHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.UpgradeBottomPathHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.UpgradeBottomPathHotkeyBT.TabIndex = 91;
             this.UpgradeBottomPathHotkeyBT.Text = "button1";
             this.UpgradeBottomPathHotkeyBT.UseVisualStyleBackColor = true;
@@ -2537,7 +2553,7 @@
             this.SwitchTargetHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SwitchTargetHotkeyBT.Location = new System.Drawing.Point(128, 683);
             this.SwitchTargetHotkeyBT.Name = "SwitchTargetHotkeyBT";
-            this.SwitchTargetHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.SwitchTargetHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.SwitchTargetHotkeyBT.TabIndex = 92;
             this.SwitchTargetHotkeyBT.Text = "button2";
             this.SwitchTargetHotkeyBT.UseVisualStyleBackColor = true;
@@ -2548,7 +2564,7 @@
             this.SetFunction1HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SetFunction1HotkeyBT.Location = new System.Drawing.Point(128, 723);
             this.SetFunction1HotkeyBT.Name = "SetFunction1HotkeyBT";
-            this.SetFunction1HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.SetFunction1HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.SetFunction1HotkeyBT.TabIndex = 93;
             this.SetFunction1HotkeyBT.Text = "button3";
             this.SetFunction1HotkeyBT.UseVisualStyleBackColor = true;
@@ -2559,7 +2575,7 @@
             this.NextRoundHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.NextRoundHotkeyBT.Location = new System.Drawing.Point(128, 763);
             this.NextRoundHotkeyBT.Name = "NextRoundHotkeyBT";
-            this.NextRoundHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.NextRoundHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.NextRoundHotkeyBT.TabIndex = 94;
             this.NextRoundHotkeyBT.Text = "button4";
             this.NextRoundHotkeyBT.UseVisualStyleBackColor = true;
@@ -2568,9 +2584,9 @@
             // UpgradeMiddlePathHotkeyBT
             // 
             this.UpgradeMiddlePathHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.UpgradeMiddlePathHotkeyBT.Location = new System.Drawing.Point(407, 603);
+            this.UpgradeMiddlePathHotkeyBT.Location = new System.Drawing.Point(404, 603);
             this.UpgradeMiddlePathHotkeyBT.Name = "UpgradeMiddlePathHotkeyBT";
-            this.UpgradeMiddlePathHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.UpgradeMiddlePathHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.UpgradeMiddlePathHotkeyBT.TabIndex = 99;
             this.UpgradeMiddlePathHotkeyBT.Text = "button9";
             this.UpgradeMiddlePathHotkeyBT.UseVisualStyleBackColor = true;
@@ -2579,9 +2595,9 @@
             // ReverseSwitchTargetHotkeyBT
             // 
             this.ReverseSwitchTargetHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ReverseSwitchTargetHotkeyBT.Location = new System.Drawing.Point(407, 683);
+            this.ReverseSwitchTargetHotkeyBT.Location = new System.Drawing.Point(404, 683);
             this.ReverseSwitchTargetHotkeyBT.Name = "ReverseSwitchTargetHotkeyBT";
-            this.ReverseSwitchTargetHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.ReverseSwitchTargetHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.ReverseSwitchTargetHotkeyBT.TabIndex = 100;
             this.ReverseSwitchTargetHotkeyBT.Text = "button10";
             this.ReverseSwitchTargetHotkeyBT.UseVisualStyleBackColor = true;
@@ -2590,9 +2606,9 @@
             // SetFunction2HotkeyBT
             // 
             this.SetFunction2HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SetFunction2HotkeyBT.Location = new System.Drawing.Point(407, 723);
+            this.SetFunction2HotkeyBT.Location = new System.Drawing.Point(404, 723);
             this.SetFunction2HotkeyBT.Name = "SetFunction2HotkeyBT";
-            this.SetFunction2HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.SetFunction2HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.SetFunction2HotkeyBT.TabIndex = 101;
             this.SetFunction2HotkeyBT.Text = "button11";
             this.SetFunction2HotkeyBT.UseVisualStyleBackColor = true;
@@ -2614,7 +2630,7 @@
             this.Skill11HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Skill11HotkeyBT.Location = new System.Drawing.Point(128, 1003);
             this.Skill11HotkeyBT.Name = "Skill11HotkeyBT";
-            this.Skill11HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill11HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.Skill11HotkeyBT.TabIndex = 108;
             this.Skill11HotkeyBT.Text = "button18";
             this.Skill11HotkeyBT.UseVisualStyleBackColor = true;
@@ -2623,9 +2639,9 @@
             // Skill10HotkeyBT
             // 
             this.Skill10HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Skill10HotkeyBT.Location = new System.Drawing.Point(407, 963);
+            this.Skill10HotkeyBT.Location = new System.Drawing.Point(404, 963);
             this.Skill10HotkeyBT.Name = "Skill10HotkeyBT";
-            this.Skill10HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill10HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.Skill10HotkeyBT.TabIndex = 107;
             this.Skill10HotkeyBT.Text = "button17";
             this.Skill10HotkeyBT.UseVisualStyleBackColor = true;
@@ -2635,7 +2651,7 @@
             // 
             this.label58.AutoSize = true;
             this.label58.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label58.Location = new System.Drawing.Point(282, 960);
+            this.label58.Location = new System.Drawing.Point(279, 960);
             this.label58.Name = "label58";
             this.label58.Size = new System.Drawing.Size(119, 40);
             this.label58.TabIndex = 89;
@@ -2658,7 +2674,7 @@
             this.Skill9HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Skill9HotkeyBT.Location = new System.Drawing.Point(128, 963);
             this.Skill9HotkeyBT.Name = "Skill9HotkeyBT";
-            this.Skill9HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill9HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.Skill9HotkeyBT.TabIndex = 106;
             this.Skill9HotkeyBT.Text = "button16";
             this.Skill9HotkeyBT.UseVisualStyleBackColor = true;
@@ -2667,9 +2683,9 @@
             // Skill8HotkeyBT
             // 
             this.Skill8HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Skill8HotkeyBT.Location = new System.Drawing.Point(407, 923);
+            this.Skill8HotkeyBT.Location = new System.Drawing.Point(404, 923);
             this.Skill8HotkeyBT.Name = "Skill8HotkeyBT";
-            this.Skill8HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill8HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.Skill8HotkeyBT.TabIndex = 98;
             this.Skill8HotkeyBT.Text = "button8";
             this.Skill8HotkeyBT.UseVisualStyleBackColor = true;
@@ -2679,7 +2695,7 @@
             // 
             this.label56.AutoSize = true;
             this.label56.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label56.Location = new System.Drawing.Point(282, 920);
+            this.label56.Location = new System.Drawing.Point(279, 920);
             this.label56.Name = "label56";
             this.label56.Size = new System.Drawing.Size(119, 40);
             this.label56.TabIndex = 87;
@@ -2702,7 +2718,7 @@
             this.Skill7HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Skill7HotkeyBT.Location = new System.Drawing.Point(128, 923);
             this.Skill7HotkeyBT.Name = "Skill7HotkeyBT";
-            this.Skill7HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill7HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.Skill7HotkeyBT.TabIndex = 105;
             this.Skill7HotkeyBT.Text = "button15";
             this.Skill7HotkeyBT.UseVisualStyleBackColor = true;
@@ -2711,9 +2727,9 @@
             // Skill6HotkeyBT
             // 
             this.Skill6HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Skill6HotkeyBT.Location = new System.Drawing.Point(407, 883);
+            this.Skill6HotkeyBT.Location = new System.Drawing.Point(404, 883);
             this.Skill6HotkeyBT.Name = "Skill6HotkeyBT";
-            this.Skill6HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill6HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.Skill6HotkeyBT.TabIndex = 97;
             this.Skill6HotkeyBT.Text = "button7";
             this.Skill6HotkeyBT.UseVisualStyleBackColor = true;
@@ -2723,7 +2739,7 @@
             // 
             this.label54.AutoSize = true;
             this.label54.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label54.Location = new System.Drawing.Point(282, 880);
+            this.label54.Location = new System.Drawing.Point(279, 880);
             this.label54.Name = "label54";
             this.label54.Size = new System.Drawing.Size(119, 40);
             this.label54.TabIndex = 85;
@@ -2746,7 +2762,7 @@
             this.Skill5HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Skill5HotkeyBT.Location = new System.Drawing.Point(128, 883);
             this.Skill5HotkeyBT.Name = "Skill5HotkeyBT";
-            this.Skill5HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill5HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.Skill5HotkeyBT.TabIndex = 104;
             this.Skill5HotkeyBT.Text = "button14";
             this.Skill5HotkeyBT.UseVisualStyleBackColor = true;
@@ -2755,9 +2771,9 @@
             // Skill4HotkeyBT
             // 
             this.Skill4HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Skill4HotkeyBT.Location = new System.Drawing.Point(407, 843);
+            this.Skill4HotkeyBT.Location = new System.Drawing.Point(404, 843);
             this.Skill4HotkeyBT.Name = "Skill4HotkeyBT";
-            this.Skill4HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill4HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.Skill4HotkeyBT.TabIndex = 96;
             this.Skill4HotkeyBT.Text = "button6";
             this.Skill4HotkeyBT.UseVisualStyleBackColor = true;
@@ -2767,7 +2783,7 @@
             // 
             this.label52.AutoSize = true;
             this.label52.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label52.Location = new System.Drawing.Point(282, 840);
+            this.label52.Location = new System.Drawing.Point(279, 840);
             this.label52.Name = "label52";
             this.label52.Size = new System.Drawing.Size(119, 40);
             this.label52.TabIndex = 83;
@@ -2790,7 +2806,7 @@
             this.Skill3HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Skill3HotkeyBT.Location = new System.Drawing.Point(128, 843);
             this.Skill3HotkeyBT.Name = "Skill3HotkeyBT";
-            this.Skill3HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill3HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.Skill3HotkeyBT.TabIndex = 103;
             this.Skill3HotkeyBT.Text = "button13";
             this.Skill3HotkeyBT.UseVisualStyleBackColor = true;
@@ -2799,9 +2815,9 @@
             // Skill2HotkeyBT
             // 
             this.Skill2HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Skill2HotkeyBT.Location = new System.Drawing.Point(407, 803);
+            this.Skill2HotkeyBT.Location = new System.Drawing.Point(404, 803);
             this.Skill2HotkeyBT.Name = "Skill2HotkeyBT";
-            this.Skill2HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill2HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.Skill2HotkeyBT.TabIndex = 95;
             this.Skill2HotkeyBT.Text = "button5";
             this.Skill2HotkeyBT.UseVisualStyleBackColor = true;
@@ -2811,7 +2827,7 @@
             // 
             this.label50.AutoSize = true;
             this.label50.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label50.Location = new System.Drawing.Point(282, 800);
+            this.label50.Location = new System.Drawing.Point(279, 800);
             this.label50.Name = "label50";
             this.label50.Size = new System.Drawing.Size(119, 40);
             this.label50.TabIndex = 81;
@@ -2834,7 +2850,7 @@
             this.Skill1HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Skill1HotkeyBT.Location = new System.Drawing.Point(128, 803);
             this.Skill1HotkeyBT.Name = "Skill1HotkeyBT";
-            this.Skill1HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill1HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.Skill1HotkeyBT.TabIndex = 102;
             this.Skill1HotkeyBT.Text = "button12";
             this.Skill1HotkeyBT.UseVisualStyleBackColor = true;
@@ -2844,7 +2860,7 @@
             // 
             this.label60.AutoSize = true;
             this.label60.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label60.Location = new System.Drawing.Point(282, 1000);
+            this.label60.Location = new System.Drawing.Point(279, 1000);
             this.label60.Name = "label60";
             this.label60.Size = new System.Drawing.Size(119, 40);
             this.label60.TabIndex = 109;
@@ -2854,9 +2870,9 @@
             // Skill12HotkeyBT
             // 
             this.Skill12HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Skill12HotkeyBT.Location = new System.Drawing.Point(407, 1003);
+            this.Skill12HotkeyBT.Location = new System.Drawing.Point(404, 1003);
             this.Skill12HotkeyBT.Name = "Skill12HotkeyBT";
-            this.Skill12HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.Skill12HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.Skill12HotkeyBT.TabIndex = 110;
             this.Skill12HotkeyBT.Text = "button1";
             this.Skill12HotkeyBT.UseVisualStyleBackColor = true;
@@ -2866,7 +2882,7 @@
             // 
             this.label61.AutoSize = true;
             this.label61.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label61.Location = new System.Drawing.Point(282, 760);
+            this.label61.Location = new System.Drawing.Point(279, 760);
             this.label61.Name = "label61";
             this.label61.Size = new System.Drawing.Size(119, 40);
             this.label61.TabIndex = 111;
@@ -2876,9 +2892,9 @@
             // ChangeSpeedHotkeyBT
             // 
             this.ChangeSpeedHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ChangeSpeedHotkeyBT.Location = new System.Drawing.Point(407, 763);
+            this.ChangeSpeedHotkeyBT.Location = new System.Drawing.Point(404, 763);
             this.ChangeSpeedHotkeyBT.Name = "ChangeSpeedHotkeyBT";
-            this.ChangeSpeedHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.ChangeSpeedHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.ChangeSpeedHotkeyBT.TabIndex = 112;
             this.ChangeSpeedHotkeyBT.Text = "button1";
             this.ChangeSpeedHotkeyBT.UseVisualStyleBackColor = true;
@@ -2986,7 +3002,7 @@
             // 
             this.label70.AutoSize = true;
             this.label70.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label70.Location = new System.Drawing.Point(282, 1040);
+            this.label70.Location = new System.Drawing.Point(279, 1040);
             this.label70.Name = "label70";
             this.label70.Size = new System.Drawing.Size(119, 40);
             this.label70.TabIndex = 122;
@@ -2997,7 +3013,7 @@
             // 
             this.label71.AutoSize = true;
             this.label71.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label71.Location = new System.Drawing.Point(282, 1080);
+            this.label71.Location = new System.Drawing.Point(279, 1080);
             this.label71.Name = "label71";
             this.label71.Size = new System.Drawing.Size(119, 40);
             this.label71.TabIndex = 123;
@@ -3008,7 +3024,7 @@
             // 
             this.label72.AutoSize = true;
             this.label72.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label72.Location = new System.Drawing.Point(282, 1120);
+            this.label72.Location = new System.Drawing.Point(279, 1120);
             this.label72.Name = "label72";
             this.label72.Size = new System.Drawing.Size(119, 40);
             this.label72.TabIndex = 124;
@@ -3019,7 +3035,7 @@
             // 
             this.label73.AutoSize = true;
             this.label73.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label73.Location = new System.Drawing.Point(282, 1160);
+            this.label73.Location = new System.Drawing.Point(279, 1160);
             this.label73.Name = "label73";
             this.label73.Size = new System.Drawing.Size(119, 40);
             this.label73.TabIndex = 125;
@@ -3030,7 +3046,7 @@
             // 
             this.label74.AutoSize = true;
             this.label74.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label74.Location = new System.Drawing.Point(282, 1200);
+            this.label74.Location = new System.Drawing.Point(279, 1200);
             this.label74.Name = "label74";
             this.label74.Size = new System.Drawing.Size(119, 40);
             this.label74.TabIndex = 126;
@@ -3041,7 +3057,7 @@
             // 
             this.label75.AutoSize = true;
             this.label75.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label75.Location = new System.Drawing.Point(282, 1240);
+            this.label75.Location = new System.Drawing.Point(279, 1240);
             this.label75.Name = "label75";
             this.label75.Size = new System.Drawing.Size(119, 40);
             this.label75.TabIndex = 127;
@@ -3052,7 +3068,7 @@
             // 
             this.label76.AutoSize = true;
             this.label76.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label76.Location = new System.Drawing.Point(282, 1280);
+            this.label76.Location = new System.Drawing.Point(279, 1280);
             this.label76.Name = "label76";
             this.label76.Size = new System.Drawing.Size(119, 40);
             this.label76.TabIndex = 128;
@@ -3063,7 +3079,7 @@
             // 
             this.label77.AutoSize = true;
             this.label77.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label77.Location = new System.Drawing.Point(282, 1320);
+            this.label77.Location = new System.Drawing.Point(279, 1320);
             this.label77.Name = "label77";
             this.label77.Size = new System.Drawing.Size(119, 40);
             this.label77.TabIndex = 129;
@@ -3075,7 +3091,7 @@
             this.HeroObject1HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject1HotkeyBT.Location = new System.Drawing.Point(128, 1043);
             this.HeroObject1HotkeyBT.Name = "HeroObject1HotkeyBT";
-            this.HeroObject1HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject1HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.HeroObject1HotkeyBT.TabIndex = 130;
             this.HeroObject1HotkeyBT.Text = "button1";
             this.HeroObject1HotkeyBT.UseVisualStyleBackColor = true;
@@ -3084,9 +3100,9 @@
             // HeroObject2HotkeyBT
             // 
             this.HeroObject2HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject2HotkeyBT.Location = new System.Drawing.Point(407, 1043);
+            this.HeroObject2HotkeyBT.Location = new System.Drawing.Point(404, 1043);
             this.HeroObject2HotkeyBT.Name = "HeroObject2HotkeyBT";
-            this.HeroObject2HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject2HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject2HotkeyBT.TabIndex = 131;
             this.HeroObject2HotkeyBT.Text = "button2";
             this.HeroObject2HotkeyBT.UseVisualStyleBackColor = true;
@@ -3097,7 +3113,7 @@
             this.HeroObject3HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject3HotkeyBT.Location = new System.Drawing.Point(128, 1083);
             this.HeroObject3HotkeyBT.Name = "HeroObject3HotkeyBT";
-            this.HeroObject3HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject3HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.HeroObject3HotkeyBT.TabIndex = 132;
             this.HeroObject3HotkeyBT.Text = "button3";
             this.HeroObject3HotkeyBT.UseVisualStyleBackColor = true;
@@ -3106,9 +3122,9 @@
             // HeroObject4HotkeyBT
             // 
             this.HeroObject4HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject4HotkeyBT.Location = new System.Drawing.Point(407, 1083);
+            this.HeroObject4HotkeyBT.Location = new System.Drawing.Point(404, 1083);
             this.HeroObject4HotkeyBT.Name = "HeroObject4HotkeyBT";
-            this.HeroObject4HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject4HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject4HotkeyBT.TabIndex = 133;
             this.HeroObject4HotkeyBT.Text = "button4";
             this.HeroObject4HotkeyBT.UseVisualStyleBackColor = true;
@@ -3119,7 +3135,7 @@
             this.HeroObject5HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject5HotkeyBT.Location = new System.Drawing.Point(128, 1123);
             this.HeroObject5HotkeyBT.Name = "HeroObject5HotkeyBT";
-            this.HeroObject5HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject5HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.HeroObject5HotkeyBT.TabIndex = 134;
             this.HeroObject5HotkeyBT.Text = "button5";
             this.HeroObject5HotkeyBT.UseVisualStyleBackColor = true;
@@ -3128,9 +3144,9 @@
             // HeroObject6HotkeyBT
             // 
             this.HeroObject6HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject6HotkeyBT.Location = new System.Drawing.Point(407, 1123);
+            this.HeroObject6HotkeyBT.Location = new System.Drawing.Point(404, 1123);
             this.HeroObject6HotkeyBT.Name = "HeroObject6HotkeyBT";
-            this.HeroObject6HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject6HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject6HotkeyBT.TabIndex = 135;
             this.HeroObject6HotkeyBT.Text = "button6";
             this.HeroObject6HotkeyBT.UseVisualStyleBackColor = true;
@@ -3141,7 +3157,7 @@
             this.HeroObject7HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject7HotkeyBT.Location = new System.Drawing.Point(128, 1163);
             this.HeroObject7HotkeyBT.Name = "HeroObject7HotkeyBT";
-            this.HeroObject7HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject7HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.HeroObject7HotkeyBT.TabIndex = 136;
             this.HeroObject7HotkeyBT.Text = "button7";
             this.HeroObject7HotkeyBT.UseVisualStyleBackColor = true;
@@ -3150,9 +3166,9 @@
             // HeroObject8HotkeyBT
             // 
             this.HeroObject8HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject8HotkeyBT.Location = new System.Drawing.Point(407, 1163);
+            this.HeroObject8HotkeyBT.Location = new System.Drawing.Point(404, 1163);
             this.HeroObject8HotkeyBT.Name = "HeroObject8HotkeyBT";
-            this.HeroObject8HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject8HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject8HotkeyBT.TabIndex = 137;
             this.HeroObject8HotkeyBT.Text = "button8";
             this.HeroObject8HotkeyBT.UseVisualStyleBackColor = true;
@@ -3163,7 +3179,7 @@
             this.HeroObject9HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject9HotkeyBT.Location = new System.Drawing.Point(128, 1203);
             this.HeroObject9HotkeyBT.Name = "HeroObject9HotkeyBT";
-            this.HeroObject9HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject9HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.HeroObject9HotkeyBT.TabIndex = 138;
             this.HeroObject9HotkeyBT.Text = "button9";
             this.HeroObject9HotkeyBT.UseVisualStyleBackColor = true;
@@ -3172,9 +3188,9 @@
             // HeroObject10HotkeyBT
             // 
             this.HeroObject10HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject10HotkeyBT.Location = new System.Drawing.Point(407, 1203);
+            this.HeroObject10HotkeyBT.Location = new System.Drawing.Point(404, 1203);
             this.HeroObject10HotkeyBT.Name = "HeroObject10HotkeyBT";
-            this.HeroObject10HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject10HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject10HotkeyBT.TabIndex = 139;
             this.HeroObject10HotkeyBT.Text = "button10";
             this.HeroObject10HotkeyBT.UseVisualStyleBackColor = true;
@@ -3185,7 +3201,7 @@
             this.HeroObject11HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject11HotkeyBT.Location = new System.Drawing.Point(128, 1243);
             this.HeroObject11HotkeyBT.Name = "HeroObject11HotkeyBT";
-            this.HeroObject11HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject11HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.HeroObject11HotkeyBT.TabIndex = 140;
             this.HeroObject11HotkeyBT.Text = "button11";
             this.HeroObject11HotkeyBT.UseVisualStyleBackColor = true;
@@ -3194,9 +3210,9 @@
             // HeroObject12HotkeyBT
             // 
             this.HeroObject12HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject12HotkeyBT.Location = new System.Drawing.Point(407, 1243);
+            this.HeroObject12HotkeyBT.Location = new System.Drawing.Point(404, 1243);
             this.HeroObject12HotkeyBT.Name = "HeroObject12HotkeyBT";
-            this.HeroObject12HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject12HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject12HotkeyBT.TabIndex = 141;
             this.HeroObject12HotkeyBT.Text = "button12";
             this.HeroObject12HotkeyBT.UseVisualStyleBackColor = true;
@@ -3207,7 +3223,7 @@
             this.HeroObject13HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject13HotkeyBT.Location = new System.Drawing.Point(128, 1283);
             this.HeroObject13HotkeyBT.Name = "HeroObject13HotkeyBT";
-            this.HeroObject13HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject13HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.HeroObject13HotkeyBT.TabIndex = 142;
             this.HeroObject13HotkeyBT.Text = "button13";
             this.HeroObject13HotkeyBT.UseVisualStyleBackColor = true;
@@ -3216,9 +3232,9 @@
             // HeroObject14HotkeyBT
             // 
             this.HeroObject14HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject14HotkeyBT.Location = new System.Drawing.Point(407, 1283);
+            this.HeroObject14HotkeyBT.Location = new System.Drawing.Point(404, 1283);
             this.HeroObject14HotkeyBT.Name = "HeroObject14HotkeyBT";
-            this.HeroObject14HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject14HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject14HotkeyBT.TabIndex = 143;
             this.HeroObject14HotkeyBT.Text = "button14";
             this.HeroObject14HotkeyBT.UseVisualStyleBackColor = true;
@@ -3229,7 +3245,7 @@
             this.HeroObject15HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.HeroObject15HotkeyBT.Location = new System.Drawing.Point(128, 1323);
             this.HeroObject15HotkeyBT.Name = "HeroObject15HotkeyBT";
-            this.HeroObject15HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject15HotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.HeroObject15HotkeyBT.TabIndex = 144;
             this.HeroObject15HotkeyBT.Text = "button15";
             this.HeroObject15HotkeyBT.UseVisualStyleBackColor = true;
@@ -3238,9 +3254,9 @@
             // HeroObject16HotkeyBT
             // 
             this.HeroObject16HotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.HeroObject16HotkeyBT.Location = new System.Drawing.Point(407, 1323);
+            this.HeroObject16HotkeyBT.Location = new System.Drawing.Point(404, 1323);
             this.HeroObject16HotkeyBT.Name = "HeroObject16HotkeyBT";
-            this.HeroObject16HotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.HeroObject16HotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.HeroObject16HotkeyBT.TabIndex = 145;
             this.HeroObject16HotkeyBT.Text = "button16";
             this.HeroObject16HotkeyBT.UseVisualStyleBackColor = true;
@@ -3250,7 +3266,7 @@
             // 
             this.label78.AutoSize = true;
             this.label78.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label78.Location = new System.Drawing.Point(282, 640);
+            this.label78.Location = new System.Drawing.Point(279, 640);
             this.label78.Name = "label78";
             this.label78.Size = new System.Drawing.Size(119, 40);
             this.label78.TabIndex = 146;
@@ -3260,9 +3276,9 @@
             // SellHotkeyBT
             // 
             this.SellHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SellHotkeyBT.Location = new System.Drawing.Point(407, 643);
+            this.SellHotkeyBT.Location = new System.Drawing.Point(404, 643);
             this.SellHotkeyBT.Name = "SellHotkeyBT";
-            this.SellHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.SellHotkeyBT.Size = new System.Drawing.Size(146, 34);
             this.SellHotkeyBT.TabIndex = 147;
             this.SellHotkeyBT.Text = "button1";
             this.SellHotkeyBT.UseVisualStyleBackColor = true;
@@ -3285,7 +3301,7 @@
             this.DesperadoHotkeyBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DesperadoHotkeyBT.Location = new System.Drawing.Point(128, 523);
             this.DesperadoHotkeyBT.Name = "DesperadoHotkeyBT";
-            this.DesperadoHotkeyBT.Size = new System.Drawing.Size(148, 34);
+            this.DesperadoHotkeyBT.Size = new System.Drawing.Size(145, 34);
             this.DesperadoHotkeyBT.TabIndex = 149;
             this.DesperadoHotkeyBT.Tag = "6";
             this.DesperadoHotkeyBT.Text = "button1";
@@ -3297,34 +3313,12 @@
             this.label41.AutoSize = true;
             this.label41.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label41.Font = new System.Drawing.Font("黑体", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label41.Location = new System.Drawing.Point(4, 1637);
+            this.label41.Location = new System.Drawing.Point(4, 1683);
             this.label41.Name = "label41";
             this.label41.Size = new System.Drawing.Size(101, 50);
             this.label41.TabIndex = 4;
-            this.label41.Text = "日志";
+            this.label41.Text = "提示";
             this.label41.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.EnableLoggingCB);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(112, 1640);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(558, 44);
-            this.panel2.TabIndex = 5;
-            // 
-            // EnableLoggingCB
-            // 
-            this.EnableLoggingCB.AutoSize = true;
-            this.EnableLoggingCB.Checked = true;
-            this.EnableLoggingCB.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.EnableLoggingCB.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.EnableLoggingCB.Location = new System.Drawing.Point(0, 0);
-            this.EnableLoggingCB.Name = "EnableLoggingCB";
-            this.EnableLoggingCB.Size = new System.Drawing.Size(558, 44);
-            this.EnableLoggingCB.TabIndex = 0;
-            this.EnableLoggingCB.Text = "启用日志输出";
-            this.EnableLoggingCB.UseVisualStyleBackColor = true;
             // 
             // label81
             // 
@@ -3355,13 +3349,13 @@
             this.tableLayoutPanel11.Name = "tableLayoutPanel11";
             this.tableLayoutPanel11.RowCount = 1;
             this.tableLayoutPanel11.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel11.Size = new System.Drawing.Size(558, 39);
+            this.tableLayoutPanel11.Size = new System.Drawing.Size(553, 39);
             this.tableLayoutPanel11.TabIndex = 7;
             // 
             // AddBundleBT
             // 
             this.AddBundleBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.AddBundleBT.Location = new System.Drawing.Point(361, 3);
+            this.AddBundleBT.Location = new System.Drawing.Point(356, 3);
             this.AddBundleBT.Name = "AddBundleBT";
             this.AddBundleBT.Size = new System.Drawing.Size(74, 33);
             this.AddBundleBT.TabIndex = 0;
@@ -3372,7 +3366,7 @@
             // DeleteBundleBT
             // 
             this.DeleteBundleBT.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DeleteBundleBT.Location = new System.Drawing.Point(461, 3);
+            this.DeleteBundleBT.Location = new System.Drawing.Point(456, 3);
             this.DeleteBundleBT.Name = "DeleteBundleBT";
             this.DeleteBundleBT.Size = new System.Drawing.Size(74, 33);
             this.DeleteBundleBT.TabIndex = 1;
@@ -3388,8 +3382,101 @@
             this.BundleNamesCB.FormattingEnabled = true;
             this.BundleNamesCB.Location = new System.Drawing.Point(3, 3);
             this.BundleNamesCB.Name = "BundleNamesCB";
-            this.BundleNamesCB.Size = new System.Drawing.Size(252, 28);
+            this.BundleNamesCB.Size = new System.Drawing.Size(247, 28);
             this.BundleNamesCB.TabIndex = 2;
+            // 
+            // label82
+            // 
+            this.label82.AutoSize = true;
+            this.label82.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label82.Font = new System.Drawing.Font("黑体", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label82.Location = new System.Drawing.Point(4, 1637);
+            this.label82.Name = "label82";
+            this.label82.Size = new System.Drawing.Size(101, 45);
+            this.label82.TabIndex = 8;
+            this.label82.Text = "版本";
+            this.label82.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // tableLayoutPanel21
+            // 
+            this.tableLayoutPanel21.AutoSize = true;
+            this.tableLayoutPanel21.ColumnCount = 4;
+            this.tableLayoutPanel21.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel21.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel21.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.tableLayoutPanel21.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+            this.tableLayoutPanel21.Controls.Add(this.CheckUpdateBT, 2, 0);
+            this.tableLayoutPanel21.Controls.Add(this.VersionLB, 0, 0);
+            this.tableLayoutPanel21.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel21.Location = new System.Drawing.Point(112, 1640);
+            this.tableLayoutPanel21.Name = "tableLayoutPanel21";
+            this.tableLayoutPanel21.RowCount = 1;
+            this.tableLayoutPanel21.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel21.Size = new System.Drawing.Size(553, 39);
+            this.tableLayoutPanel21.TabIndex = 9;
+            // 
+            // CheckUpdateBT
+            // 
+            this.CheckUpdateBT.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CheckUpdateBT.Location = new System.Drawing.Point(356, 3);
+            this.CheckUpdateBT.Name = "CheckUpdateBT";
+            this.CheckUpdateBT.Size = new System.Drawing.Size(114, 33);
+            this.CheckUpdateBT.TabIndex = 0;
+            this.CheckUpdateBT.Text = "检查更新";
+            this.CheckUpdateBT.UseVisualStyleBackColor = true;
+            this.CheckUpdateBT.Click += new System.EventHandler(this.CheckUpdateBT_Click);
+            // 
+            // VersionLB
+            // 
+            this.VersionLB.AutoSize = true;
+            this.VersionLB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.VersionLB.Location = new System.Drawing.Point(3, 0);
+            this.VersionLB.Name = "VersionLB";
+            this.VersionLB.Size = new System.Drawing.Size(247, 39);
+            this.VersionLB.TabIndex = 1;
+            this.VersionLB.Text = "当前版本：";
+            this.VersionLB.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tableLayoutPanel24
+            // 
+            this.tableLayoutPanel24.ColumnCount = 2;
+            this.tableLayoutPanel24.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel24.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel24.Controls.Add(this.EnableLoggingCB, 0, 0);
+            this.tableLayoutPanel24.Controls.Add(this.EnableMaskWindowCB, 1, 0);
+            this.tableLayoutPanel24.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel24.Location = new System.Drawing.Point(112, 1686);
+            this.tableLayoutPanel24.Name = "tableLayoutPanel24";
+            this.tableLayoutPanel24.RowCount = 1;
+            this.tableLayoutPanel24.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel24.Size = new System.Drawing.Size(553, 44);
+            this.tableLayoutPanel24.TabIndex = 10;
+            // 
+            // EnableLoggingCB
+            // 
+            this.EnableLoggingCB.AutoSize = true;
+            this.EnableLoggingCB.Checked = true;
+            this.EnableLoggingCB.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.EnableLoggingCB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EnableLoggingCB.Location = new System.Drawing.Point(3, 3);
+            this.EnableLoggingCB.Name = "EnableLoggingCB";
+            this.EnableLoggingCB.Size = new System.Drawing.Size(270, 38);
+            this.EnableLoggingCB.TabIndex = 0;
+            this.EnableLoggingCB.Text = "启用日志输出";
+            this.EnableLoggingCB.UseVisualStyleBackColor = true;
+            this.EnableLoggingCB.CheckedChanged += new System.EventHandler(this.EnableLoggingCB_CheckedChanged);
+            // 
+            // EnableMaskWindowCB
+            // 
+            this.EnableMaskWindowCB.AutoSize = true;
+            this.EnableMaskWindowCB.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.EnableMaskWindowCB.Location = new System.Drawing.Point(279, 3);
+            this.EnableMaskWindowCB.Name = "EnableMaskWindowCB";
+            this.EnableMaskWindowCB.Size = new System.Drawing.Size(271, 38);
+            this.EnableMaskWindowCB.TabIndex = 1;
+            this.EnableMaskWindowCB.Text = "读屏标记";
+            this.EnableMaskWindowCB.UseVisualStyleBackColor = true;
+            this.EnableMaskWindowCB.CheckedChanged += new System.EventHandler(this.EnableMaskWindowCB_CheckedChanged);
             // 
             // tableLayoutPanel23
             // 
@@ -3626,9 +3713,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.ExecuteIntervalUD)).EndInit();
             this.tableLayoutPanel17.ResumeLayout(false);
             this.tableLayoutPanel17.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.tableLayoutPanel11.ResumeLayout(false);
+            this.tableLayoutPanel21.ResumeLayout(false);
+            this.tableLayoutPanel21.PerformLayout();
+            this.tableLayoutPanel24.ResumeLayout(false);
+            this.tableLayoutPanel24.PerformLayout();
             this.tableLayoutPanel23.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.tableLayoutPanel14.ResumeLayout(false);
@@ -3790,7 +3879,6 @@
         private System.Windows.Forms.RichTextBox logsRTB;
         private System.Windows.Forms.Label logsLB;
         private System.Windows.Forms.Label label41;
-        private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.CheckBox EnableLoggingCB;
         private System.Windows.Forms.Label label42;
         private System.Windows.Forms.Label label43;
@@ -3890,6 +3978,12 @@
         private System.Windows.Forms.Button AddBundleBT;
         private System.Windows.Forms.Button DeleteBundleBT;
         private System.Windows.Forms.ComboBox BundleNamesCB;
+        private System.Windows.Forms.Label label82;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel21;
+        private System.Windows.Forms.Button CheckUpdateBT;
+        private System.Windows.Forms.Label VersionLB;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel24;
+        private System.Windows.Forms.CheckBox EnableMaskWindowCB;
     }
 }
 

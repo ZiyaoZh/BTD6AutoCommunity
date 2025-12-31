@@ -13,8 +13,9 @@ using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
 using BTD6AutoCommunity.ScriptEngine.ScriptSystem;
 using System.Diagnostics;
 using BTD6AutoCommunity;
+using BTD6AutoCommunity.Services;
 
-namespace BTD6AutoCommunity.UI.Main
+namespace BTD6AutoCommunity.Views.Main
 {
     // 选项设置页面
     public partial class BTD6AutoUI
@@ -34,6 +35,7 @@ namespace BTD6AutoCommunity.UI.Main
             isSettingHotKey = false;
             LoadSettings();
             LoadBundles();
+            LoadVersion();
         }
 
         private void InitHotKeyButton()
@@ -186,12 +188,13 @@ namespace BTD6AutoCommunity.UI.Main
             scriptSettings.EnableDoubleCoin = EnableDoubleCoinCB.Checked;
             scriptSettings.EnableFastPath = EnableFastPathCB.Checked;
             scriptSettings.EnableLogging = EnableLoggingCB.Checked;
+            scriptSettings.EnableMaskWindow = EnableMaskWindowCB.Checked;
             scriptSettings.EnableRecommendInterval = EnableRecommendIntervalCB.Checked;
             //foreach (var buttonKeyPairs in hotKeysMap)
             //{
             //    scriptSettings.HotKey[Int32.Parse(buttonKeyPairs.Key.Tag.ToString())] = buttonKeyPairs.Value;
             //}
-            scriptSettings.SaveSettings();
+            scriptSettings.SaveAllSettings();
         }
 
         private void LoadSettings()
@@ -205,6 +208,7 @@ namespace BTD6AutoCommunity.UI.Main
             EnableFastPathCB.Checked = scriptSettings.EnableFastPath;
             EnableRecommendIntervalCB.Checked = scriptSettings.EnableRecommendInterval;
             EnableLoggingCB.Checked = scriptSettings.EnableLogging;
+            EnableMaskWindowCB.Checked = scriptSettings.EnableMaskWindow;
             InitHotKeyButton();
             RefreshHotkeyText();
         }
@@ -217,6 +221,17 @@ namespace BTD6AutoCommunity.UI.Main
             {
                 BundleNamesCB.Items.Add(bundle);
             }
+        }
+
+        public void LoadVersion()
+        {
+            string version = updateService.GetCurrentVersion();
+            VersionLB.Text = $"当前版本: {version}";
+        }
+
+        private async void CheckUpdateBT_Click(object sender, EventArgs e)
+        {
+            await updateService.CheckUpdateAsync(true);
         }
 
         private void HotkeyBT_Click(object sender, EventArgs e)
@@ -247,8 +262,8 @@ namespace BTD6AutoCommunity.UI.Main
                 else if (currentType == typeof(HotkeyAction))
                 {
                     // 升级指令不推荐使用Ctrl+Shift+Alt
-                    if ((HotkeyAction)currentButton.Tag == HotkeyAction.UpgradeTopPath || 
-                        (HotkeyAction)currentButton.Tag == HotkeyAction.UpgradeMiddlePath || 
+                    if ((HotkeyAction)currentButton.Tag == HotkeyAction.UpgradeTopPath ||
+                        (HotkeyAction)currentButton.Tag == HotkeyAction.UpgradeMiddlePath ||
                         (HotkeyAction)currentButton.Tag == HotkeyAction.UpgradeBottomPath)
                     {
                         config.Control = false;
@@ -342,6 +357,54 @@ namespace BTD6AutoCommunity.UI.Main
                 bundles.SaveBundle();
                 BundleNamesCB.Items.Remove(BundleNamesCB.SelectedItem);
             }
+        }
+
+        private void GetGameDataIntervalUD_ValueChanged(object sender, EventArgs e)
+        {
+            scriptSettings.DataReadInterval = (int)GetGameDataIntervalUD.Value;
+            scriptSettings.SaveAllSettings();
+        }
+
+        private void ExecuteIntervalUD_ValueChanged(object sender, EventArgs e)
+        {
+            scriptSettings.OperationInterval = (int)ExecuteIntervalUD.Value;
+            scriptSettings.SaveAllSettings();
+        }
+
+        private void EnableRecommendIntervalCB_CheckedChanged(object sender, EventArgs e)
+        {
+            scriptSettings.EnableRecommendInterval = EnableRecommendIntervalCB.Checked;
+            scriptSettings.SaveAllSettings();
+        }
+
+        private void EnableDoubleCoinCB_CheckedChanged(object sender, EventArgs e)
+        {
+            scriptSettings.EnableDoubleCoin = EnableDoubleCoinCB.Checked;
+            scriptSettings.SaveAllSettings();
+        }
+
+        private void EnableFastPathCB_CheckedChanged(object sender, EventArgs e)
+        {
+            scriptSettings.EnableFastPath = EnableFastPathCB.Checked;
+            scriptSettings.SaveAllSettings();
+        }
+
+        private void GameDpiCB_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            scriptSettings.GameDpi = GameDpiCB.SelectedIndex;
+            scriptSettings.SaveAllSettings();
+        }
+
+        private void EnableMaskWindowCB_CheckedChanged(object sender, EventArgs e)
+        {
+            scriptSettings.EnableMaskWindow = EnableMaskWindowCB.Checked;
+            scriptSettings.SaveAllSettings();
+        }
+
+        private void EnableLoggingCB_CheckedChanged(object sender, EventArgs e)
+        {
+            scriptSettings.EnableLogging = EnableLoggingCB.Checked;
+            scriptSettings.SaveAllSettings();
         }
     }
 }

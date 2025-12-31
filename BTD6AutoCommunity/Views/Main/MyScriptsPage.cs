@@ -12,7 +12,7 @@ using BTD6AutoCommunity.ScriptEngine;
 using BTD6AutoCommunity.GameObjects;
 using BTD6AutoCommunity.ScriptEngine.ScriptSystem;
 
-namespace BTD6AutoCommunity.UI.Main
+namespace BTD6AutoCommunity.Views.Main
 {
     // 我的脚本页面
     public partial class BTD6AutoUI

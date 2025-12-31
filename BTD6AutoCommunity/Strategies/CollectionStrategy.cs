@@ -187,7 +187,7 @@ namespace BTD6AutoCommunity.Strategies
 
         private void HandleLevelSearched()
         {
-            currentMapId = GameVisionRecognizer.RecognizeMapId(_context);
+            currentMapId = GameVisionRecognizer.RecognizeMapId(_context, ExpertMapStartId, ExpertMapEndId);
             //Debug.WriteLine("MapId: " + currentMapId);
             InputSimulator.MouseMoveAndLeftClick(_context, 540, 650);
             _logs.Log($"已识别到地图：{Constants.GetTypeName((Maps)currentMapId)}", LogLevel.Info);

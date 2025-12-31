@@ -1,6 +1,6 @@
 ﻿using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.GameObjects;
-using BTD6AutoCommunity.UI.Main;
+using BTD6AutoCommunity.Views.Main;
 using System;
 using System.Collections.Generic;
 using System.Linq;

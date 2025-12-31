@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BTD6AutoCommunity.UI
+namespace BTD6AutoCommunity.Views
 {
     public static class ControlExtensions
     {

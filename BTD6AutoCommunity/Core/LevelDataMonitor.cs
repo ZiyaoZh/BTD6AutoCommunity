@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using static BTD6AutoCommunity.Core.GameVisionRecognizer;
 using static System.Net.Mime.MediaTypeNames;
 using System.Diagnostics;
+using BTD6AutoCommunity.Views;
 
 namespace BTD6AutoCommunity.Core
 {
@@ -33,7 +34,7 @@ namespace BTD6AutoCommunity.Core
         private Rectangle cashNumberArea;
         private Rectangle leftUpGradeCashNumberArea;
         private Rectangle lifeNumberArea;
-        private Rectangle leftUpGradelifeNumberArea;
+        private Rectangle leftUpGradeLifeNumberArea;
 
         private readonly GameContext _context;
         private const string templatePath = @"data\templates\digits\"; // 模板图片路径
@@ -53,7 +54,7 @@ namespace BTD6AutoCommunity.Core
             cashNumberArea = ConvertToScreenRectangle(baseCashNumberArea, _context);
             leftUpGradeCashNumberArea = ConvertToScreenRectangle(baseLeftUpGradeCashNumberArea, _context);
             lifeNumberArea = ConvertToScreenRectangle(baseLifeNumberArea, _context);
-            leftUpGradelifeNumberArea = ConvertToScreenRectangle(baseLeftUpGradeLifeNumberArea, _context);
+            leftUpGradeLifeNumberArea = ConvertToScreenRectangle(baseLeftUpGradeLifeNumberArea, _context);
 
             lifeAndCashNumberTemplates = new Dictionary<int, Mat>();
             roundNumberTemplates = new Dictionary<int, Mat>();
@@ -84,20 +85,28 @@ namespace BTD6AutoCommunity.Core
             if (IsRightUpgrading(_context)) // 右侧升级
             {
                 tasks[0] = Task.Run(() => GetNumberFromScreenArea(rightUpGradeRoundNumberArea, NumberType.Round));
+                MaskWindow.Instance.ShowRectangle(baseRightUpGradeRoundNumberArea, _context);
             }
             else
             {
                 tasks[0] = Task.Run(() => GetNumberFromScreenArea(roundNumberArea, NumberType.Round));
+                MaskWindow.Instance.ShowRectangle(baseRoundNumberArea, _context);
             }
             if (IsLeftUpgrading(_context)) // 左侧升级
             {
                 tasks[1] = Task.Run(() => GetNumberFromScreenArea(leftUpGradeCashNumberArea, NumberType.Cash));
-                tasks[2] = Task.Run(() => GetNumberFromScreenArea(leftUpGradelifeNumberArea, NumberType.Life));
+                tasks[2] = Task.Run(() => GetNumberFromScreenArea(leftUpGradeLifeNumberArea, NumberType.Life));
+                MaskWindow.Instance.ShowRectangle(baseLeftUpGradeCashNumberArea, _context);
+                MaskWindow.Instance.ShowRectangle(baseLeftUpGradeLifeNumberArea, _context);
+
             }
             else
             {
                 tasks[1] = Task.Run(() => GetNumberFromScreenArea(cashNumberArea, NumberType.Cash));
                 tasks[2] = Task.Run(() => GetNumberFromScreenArea(lifeNumberArea, NumberType.Life));
+                MaskWindow.Instance.ShowRectangle(baseCashNumberArea, _context);
+                MaskWindow.Instance.ShowRectangle(baseLifeNumberArea, _context);
+
             }
 
             // 等待所有任务完成
