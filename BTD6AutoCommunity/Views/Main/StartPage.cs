@@ -34,6 +34,7 @@ namespace BTD6AutoCommunity.Views.Main
             BindScriptComboBox();
             BindPreviewListBox();
             BindStartProgramButton();
+            BindPauseButton();
             BindImportScriptButton();
             BindOutputScriptButton();
             BindEditScriptButton();
@@ -278,11 +279,18 @@ namespace BTD6AutoCommunity.Views.Main
                                 color = Color.Gray;
                                 break;
                         }
+
+                        // 当行数超过1000时，移除顶部的行
                         if (logsRTB.Lines.Length >= 1000)
                         {
-                            logsRTB.Text = string.Join("\n",
-                                logsRTB.Lines.Skip(logsRTB.Lines.Length - 1000));
+                            logsRTB.SelectionStart = 0;
+                            logsRTB.SelectionLength = logsRTB.GetFirstCharIndexFromLine(1);
+                            logsRTB.SelectedText = "";
                         }
+
+                        // 将光标移到末尾并以指定颜色追加新日志
+                        logsRTB.SelectionStart = logsRTB.TextLength;
+                        logsRTB.SelectionLength = 0;
                         logsRTB.SelectionColor = color;
                         logsRTB.AppendText(startViewModel.CurrentLog.Message + "\n");
                         logsRTB.ScrollToCaret();
@@ -295,6 +303,13 @@ namespace BTD6AutoCommunity.Views.Main
         {
             StartProgramBT.DataBindings.Add("Text", startViewModel, "StartButtonText");
             StartProgramBT.Click += (s, e) => startViewModel.StartOrStopCommand.Execute(null);
+        }
+
+        private void BindPauseButton()
+        {
+            PauseBT.DataBindings.Add("Enabled", startViewModel, "PauseButtonEnabled");
+            PauseBT.DataBindings.Add("Text", startViewModel, "PauseButtonText");
+            PauseBT.Click += (s, e) => startViewModel.PauseOrResumeCommand.Execute(null);
         }
 
         private void BindImportScriptButton()
