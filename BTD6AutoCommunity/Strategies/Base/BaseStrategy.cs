@@ -34,6 +34,7 @@ namespace BTD6AutoCommunity.Strategies.Base
         protected ScreenCapturer screenshotCapturer;
 
         public bool ReadyToStart { get; protected set; } = true;
+        public bool IsPaused { get; protected set; } = false;
 
         // 事件
         public event Action OnStopTriggered;
@@ -191,6 +192,32 @@ namespace BTD6AutoCommunity.Strategies.Base
         protected virtual void OnPreStart() { }
 
         protected virtual void OnPostStart() { }
+
+        public virtual void Pause()
+        {
+            if (IsPaused) return;
+
+            IsPaused = true;
+            _logs.Log("策略已暂停", LogLevel.Info);
+
+            screenShotCaptureTimer?.Stop();
+            LevelDataMonitorTimer?.Stop();
+            InGameActionExecutorTimer?.Stop();
+
+            InputSimulator.ReleaseAllKeys();
+        }
+
+        public virtual void Resume()
+        {
+            if (!IsPaused) return;
+
+            IsPaused = false;
+            _logs.Log("策略已恢复", LogLevel.Info);
+
+            screenShotCaptureTimer?.Start();
+            LevelDataMonitorTimer?.Start();
+            InGameActionExecutorTimer?.Start();
+        }
 
         public virtual void Stop()
         {

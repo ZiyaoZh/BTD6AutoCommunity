@@ -11,11 +11,17 @@ namespace BTD6AutoCommunity.Services.Interfaces
     public interface IStrategyExecutor
     {
         bool ReadyToStart { get; }
+        bool IsPaused { get; }
         event Action OnStopTriggered;
         event Action<List<string>> OnGameDataUpdated;
         event Action<ExecutableInstruction> OnCurrentInstructionCompleted;
         event Action<ScriptMetadata> OnScriptLoaded;
         void Start();
+
+        void Pause();
+
+        void Resume();
+
         void Stop();
     }
 }

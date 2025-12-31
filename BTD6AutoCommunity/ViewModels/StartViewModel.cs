@@ -61,6 +61,7 @@ namespace BTD6AutoCommunity.ViewModels
 
             SelectScriptCommand = new RelayCommand<string>(SelectScript);
             StartOrStopCommand = new RelayCommand(ExecuteStartOrStop);
+            PauseOrResumeCommand = new RelayCommand(ExecutePauseOrResume);
             ImportScriptCommand = new RelayCommand(ImportScript);
             OutputScriptCommand = new RelayCommand(OutputScript);
         }
@@ -393,6 +394,8 @@ namespace BTD6AutoCommunity.ViewModels
         private IStrategyExecutor currentStrategy;
         private readonly ScriptSettings scriptSettings;
         private readonly LogHandler logHandler = new LogHandler();
+
+
         private bool isRunning = false;
 
         public bool IsRunning
@@ -409,6 +412,35 @@ namespace BTD6AutoCommunity.ViewModels
         public string StartButtonText => IsRunning ? "终止" : "启动";
 
         public ICommand StartOrStopCommand { get; }
+
+        private bool pauseButtonEnabled = false;
+
+        public bool PauseButtonEnabled
+        {
+            get => pauseButtonEnabled;
+            set
+            {
+                pauseButtonEnabled = value;
+                OnPropertyChanged(nameof(PauseButtonEnabled));
+            }
+        }
+
+        private bool isPaused = false;
+
+        public bool IsPaused
+        {
+            get => isPaused;
+            set
+            {
+                isPaused = value;
+                OnPropertyChanged(nameof(IsPaused));
+                OnPropertyChanged(nameof(PauseButtonText));
+            }
+        }
+
+        public ICommand PauseOrResumeCommand { get; }
+
+        public string PauseButtonText => IsRunning ? (IsPaused ? "继续" : "暂停") : "暂停";
 
         private int selectedPreviewIndex = -1;
         public int SelectedPreviewIndex
@@ -458,6 +490,7 @@ namespace BTD6AutoCommunity.ViewModels
             {
                 currentStrategy.Stop();
                 IsRunning = false;
+                pauseButtonEnabled = false;
                 return;
             }
 
@@ -492,10 +525,27 @@ namespace BTD6AutoCommunity.ViewModels
             if (currentStrategy == null || !currentStrategy.ReadyToStart) return;
 
             SubscribeToStrategyEvents(currentStrategy);
-            IsRunning = true;
 
+            IsRunning = true;
+            PauseButtonEnabled = true;
+            IsPaused = false;
 
             currentStrategy.Start();
+        }
+
+        private void ExecutePauseOrResume()
+        {
+            if (!IsRunning) return;
+            if (IsPaused)
+            {
+                currentStrategy.Resume();
+                IsPaused = false;
+                return;
+            }
+
+            currentStrategy.Pause();
+            IsPaused = true;
+
         }
 
         private string currentRound = "";
@@ -545,6 +595,7 @@ namespace BTD6AutoCommunity.ViewModels
             strategy.OnStopTriggered += () =>
             {
                 IsRunning = false;
+                pauseButtonEnabled = false;
             };
 
             strategy.OnGameDataUpdated += data =>
@@ -628,6 +679,7 @@ namespace BTD6AutoCommunity.ViewModels
 
 
         private ObservableCollection<LogItem> logs = new ObservableCollection<LogItem>();
+
         public ObservableCollection<LogItem> Logs => logs;
 
         private LogItem currentLog = new LogItem();
