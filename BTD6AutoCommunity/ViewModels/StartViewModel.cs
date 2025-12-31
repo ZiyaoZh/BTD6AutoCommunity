@@ -6,6 +6,7 @@ using BTD6AutoCommunity.ScriptEngine.InstructionSystem;
 using BTD6AutoCommunity.Services;
 using BTD6AutoCommunity.Services.Interfaces;
 using BTD6AutoCommunity.Strategies;
+using BTD6AutoCommunity.Views;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -492,6 +493,8 @@ namespace BTD6AutoCommunity.ViewModels
 
             SubscribeToStrategyEvents(currentStrategy);
             IsRunning = true;
+
+
             currentStrategy.Start();
         }
 

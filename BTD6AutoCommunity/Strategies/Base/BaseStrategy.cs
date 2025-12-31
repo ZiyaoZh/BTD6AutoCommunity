@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BTD6AutoCommunity.Services.Interfaces;
 using System.Drawing;
+using BTD6AutoCommunity.Views;
 
 
 
@@ -174,13 +175,16 @@ namespace BTD6AutoCommunity.Strategies.Base
 
         public virtual void Start()
         {
-            // 1. 子类可预处理（如设置状态、构造字典等）
+            // 前置行为
             OnPreStart();
 
-            // 2. 启动状态检测
+            if (_settings.EnableMaskWindow) {
+                MaskWindow.Open(_context);
+            }
+
             screenShotCaptureTimer?.Start();
 
-            // 3. 子类可添加额外行为，如开启数据监控、启动执行器等
+            // 子类可添加额外行为，如开启数据监控、启动执行器等
             OnPostStart();
         }
 
@@ -190,6 +194,7 @@ namespace BTD6AutoCommunity.Strategies.Base
 
         public virtual void Stop()
         {
+            MaskWindow.CloseWindow();
             screenShotCaptureTimer?.Stop();
             StopLevelTimer();
             lock (_checkStateTimerLock)

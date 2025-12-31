@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,7 +17,7 @@ namespace BTD6AutoCommunity
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new BTD6AutoCommunity.UI.Main.BTD6AutoUI());
+            Application.Run(new BTD6AutoCommunity.Views.Main.BTD6AutoUI());
         }
     }
 }

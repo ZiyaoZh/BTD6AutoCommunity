@@ -1,16 +1,16 @@
-﻿using OpenCvSharp.Extensions;
+﻿using BTD6AutoCommunity.GameObjects;
+using BTD6AutoCommunity.Services;
+using BTD6AutoCommunity.Views;
 using OpenCvSharp;
+using OpenCvSharp.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
-using System.Diagnostics;
-using System.Runtime.Remoting.Contexts;
 using System.Windows.Forms;
-using BTD6AutoCommunity.GameObjects;
 
 
 namespace BTD6AutoCommunity.Core
@@ -19,8 +19,7 @@ namespace BTD6AutoCommunity.Core
     {
         private const double MatchThreshold = 0.90;
 
-
-        public static int RecognizeMapId(GameContext context)
+        public static int RecognizeMapId(GameContext context, int startId, int endId)
         {
             // 获取截图区域（基于GameContext计算）
             Rectangle captureArea = CalculateCaptureArea(context);
@@ -29,7 +28,7 @@ namespace BTD6AutoCommunity.Core
             using (var screenImage = CaptureScreenRegion(captureArea))
             {
                 // 执行模板匹配
-                return MatchTemplateWithDpi(context, screenImage, startId: 90, endId: 101);
+                return MatchTemplateWithDpi(context, screenImage, startId, endId);
             }
         }
 
@@ -246,6 +245,8 @@ namespace BTD6AutoCommunity.Core
 
         private static Color GetGameColorFromBitmap(GameContext context, Bitmap bmp, System.Drawing.Point basePoint)
         {
+            MaskWindow.Instance.ShowCrosshair(basePoint, context);
+
             return bmp.GetPixel(
                 (int)(basePoint.X * context.ResolutionScale),
                 (int)(basePoint.Y * context.ResolutionScale)
@@ -254,6 +255,7 @@ namespace BTD6AutoCommunity.Core
 
         private static Color GetGameColorFromScreen(GameContext context, System.Drawing.Point basePoint)
         {
+            MaskWindow.Instance.ShowCrosshair(basePoint, context);
             using (Bitmap bitmap = new Bitmap(1, 1))
             {
                 using (Graphics g = Graphics.FromImage(bitmap))
@@ -261,7 +263,8 @@ namespace BTD6AutoCommunity.Core
                     var point = context.ConvertGamePosition(basePoint);
                     g.CopyFromScreen(point.X, point.Y, 0, 0, new System.Drawing.Size(1, 1));
                 }
-                return bitmap.GetPixel(0, 0);
+                var color = bitmap.GetPixel(0, 0);
+                return color;
             }
         }
 
@@ -328,6 +331,8 @@ namespace BTD6AutoCommunity.Core
             Color color = GetGameColorFromScreen(context, new System.Drawing.Point(x, y));
             Color expected = Color.FromArgb(expectedColor >> 16, (expectedColor >> 8) & 0xFF, expectedColor & 0xFF);
 
+            Debug.WriteLine($"Checking color at ({x}, {y}): R={color.R}, G={color.G}, B={color.B} vs Expected R={expected.R}, G={expected.G}, B={expected.B}");
+
             int diff = Math.Abs(color.R - expected.R)
                      + Math.Abs(color.G - expected.G)
                      + Math.Abs(color.B - expected.B);
@@ -385,12 +390,12 @@ namespace BTD6AutoCommunity.Core
 
         public static bool IsLeftUpgrading(GameContext context)
         {
-            return CheckColorFromScreen(context, 415, 120, 0xbe925a) && CheckColorFromScreen(context, 415, 870, 0xb48149) && CheckColorFromScreen(context, 400, 84, 0x623811);
+            return CheckColorFromScreen(context, 415, 120, 0xbe925a) && CheckColorFromScreen(context, 415, 870, 0xb48149) && CheckColorFromScreen(context, 400, 82, 0x623811);
         }
 
         public static bool IsRightUpgrading(GameContext context)
         {
-            return CheckColorFromScreen(context, 1260, 200, 0xbe925a) && CheckColorFromScreen(context, 1260, 870, 0xb48149) && CheckColorFromScreen(context, 1620, 84, 0x623811);
+            return CheckColorFromScreen(context, 1260, 200, 0xbe925a) && CheckColorFromScreen(context, 1260, 870, 0xb48149) && CheckColorFromScreen(context, 1620, 82, 0x623811);
         }
 
         public static int AbilityRgbSum(GameContext context, int index)

@@ -25,7 +25,7 @@ using BTD6AutoCommunity.Models.Instruction;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json.Bson;
 
-namespace BTD6AutoCommunity.UI.Main
+namespace BTD6AutoCommunity.Views.Main
 {
     // 脚本编辑器界面
     public partial class BTD6AutoUI

@@ -23,18 +23,20 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.Services;
 
-namespace BTD6AutoCommunity.UI.Main
+namespace BTD6AutoCommunity.Views.Main
 {
     public partial class BTD6AutoUI : Form
     {
         private bool IsStartPageEditButtonClicked = false;
         private MessageBoxService messageBoxService;
+        private readonly UpdateService updateService;
 
         public BTD6AutoUI()
         {
             InitializeComponent();
 
             messageBoxService = new MessageBoxService();
+            updateService = new UpdateService(messageBoxService);
 
             InitializeStartPage();
             InitializeScriptsEditor();
@@ -42,6 +44,8 @@ namespace BTD6AutoCommunity.UI.Main
             InitializeMyScriptsPage();
 
             BindTabControl();
+
+            //MessageBox.Show("test1");
         }
 
         private void BindTabControl()
@@ -98,7 +102,8 @@ namespace BTD6AutoCommunity.UI.Main
             }
         }
 
-        private void BTD6AutoCommunity_Load(object sender, EventArgs e)
+        // 将 Load 事件处理器改为异步，以便在 UI 线程安全地 await 更新检查
+        private async void BTD6AutoCommunity_Load(object sender, EventArgs e)
         {
             WindowApiWrapper.RegisterHotKey(Handle, 101, 0, Keys.F1); //注册F1热键,根据id值101来判断需要执行哪个函数
             WindowApiWrapper.RegisterHotKey(Handle, 102, 1, Keys.F1);
@@ -108,6 +113,8 @@ namespace BTD6AutoCommunity.UI.Main
             WindowApiWrapper.RegisterHotKey(Handle, 106, 5, Keys.F1);
             WindowApiWrapper.RegisterHotKey(Handle, 107, 6, Keys.F1);
             WindowApiWrapper.RegisterHotKey(Handle, 108, 7, Keys.F1);
+
+            await updateService.CheckUpdateAsync();
         }
 
         protected override void WndProc(ref Message m) // 重载WndProc函数
@@ -137,5 +144,7 @@ namespace BTD6AutoCommunity.UI.Main
             }
             base.WndProc(ref m);
         }
+
+
     }
 }

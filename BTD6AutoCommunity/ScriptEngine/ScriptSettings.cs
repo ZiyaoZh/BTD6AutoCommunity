@@ -28,6 +28,8 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public bool EnableLogging { get; set; }
 
+        public bool EnableMaskWindow { get; set; }
+
         public bool EnableRecommendInterval { get; set; }
 
         public Dictionary<Monkeys, HotKey> UserMonkeyHotKey { get; set; }
@@ -134,6 +136,7 @@ namespace BTD6AutoCommunity.ScriptEngine
             EnableFastPath = false;
             EnableLogging = true;
             EnableRecommendInterval = true;
+            EnableMaskWindow = true;
         }
 
         public void RestoreDefaultHotKey()
@@ -205,7 +208,7 @@ namespace BTD6AutoCommunity.ScriptEngine
             UserMonkeyHotKey[monkey] = hotKey;
         }
 
-        public void SaveSettings()
+        public void SaveAllSettings()
         {
             var settings = new
             {
@@ -219,10 +222,12 @@ namespace BTD6AutoCommunity.ScriptEngine
                 EnableDoubleCoin,
                 EnableFastPath,
                 EnableLogging,
+                EnableMaskWindow,
                 EnableRecommendInterval
             };
             File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(settings, Formatting.Indented));
         }
+
 
         public static ScriptSettings LoadJsonSettings()
         {
@@ -238,7 +243,7 @@ namespace BTD6AutoCommunity.ScriptEngine
             {
                 // 异常时生成新默认配置（可选：自动修复损坏配置文件）
                 var defaultSettings = new ScriptSettings();
-                defaultSettings.SaveSettings();
+                defaultSettings.SaveAllSettings();
                 return defaultSettings;
             }
         }
