@@ -57,11 +57,9 @@ public class MouseCoordinateDisplayService : IMouseCoordinateDisplayService
             }
 
             Point mousePoint = WindowApiWrapper.GetCursorPosition();
-            mousePoint.X = (int)(mousePoint.X * context.DpiScale);
-            mousePoint.Y = (int)(mousePoint.Y * context.DpiScale);
-            mousePoint = context.ConvertScreenPosition(mousePoint);
-            position.X = mousePoint.X;
-            position.Y = mousePoint.Y;
+            (double x, double y) = context.ConvertScreenPosition(mousePoint.X * context.DpiScale, mousePoint.Y * context.DpiScale);
+            position.X = (int)Math.Round(x);
+            position.Y = (int)Math.Round(y);
 
             if (position.X >= 16000 || position.Y >= 9000)
             {

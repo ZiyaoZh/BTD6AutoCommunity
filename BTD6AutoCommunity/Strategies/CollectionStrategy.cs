@@ -14,6 +14,7 @@ using System.Drawing;
 using System.CodeDom.Compiler;
 using OpenCvSharp.ML;
 using BTD6AutoCommunity.GameObjects;
+using OpenCvSharp.XPhoto;
 
 namespace BTD6AutoCommunity.Strategies
 {
@@ -201,7 +202,13 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("非专家级地图，无法进入收集模式，返回", LogLevel.Warning);
                 return;
             }
-            switch (mapDifficulties[currentMapId])
+            if (!mapDifficulties.TryGetValue(currentMapId, out int currentDiffculty))
+            {
+                _logs.Log("当前地图脚本缺失！", LogLevel.Error);
+                Stop();
+                return;
+            }
+            switch (currentDiffculty)
             {
                 case 0:
                     InputSimulator.MouseMoveAndLeftClick(_context, 630, 400);

@@ -15,12 +15,19 @@ namespace BTD6AutoCommunity.Core
         // 窗口相关参数
         public IntPtr WindowHandle { get; set; }
         public RECT ClientRect { get; set; }
+
+        // 原始窗口左上角屏幕坐标
+        public POINT OriginalClientTopLeft;
+
         public POINT ClientTopLeft;
 
         // 分辨率相关
         public Size BaseResolution { get; } = new Size(1920, 1080);
         public Size CurrentResolution { get; set; }
-        public double ResolutionScale => CurrentResolution.Width / (double)BaseResolution.Width;
+        public double ResolutionScale => _preciseCurrentResolution.Width / BaseResolution.Width;
+
+        public double ScreenWidth { get; set; }
+        public double ScreenHeight { get; set; }
 
         // DPI相关
         public double SystemDpi { get; set; }
@@ -28,6 +35,10 @@ namespace BTD6AutoCommunity.Core
 
         // 初始化状态
         public bool IsValid { get; set; }
+
+        // 用于精确计算的内部变量
+        private (double Width, double Height) _preciseCurrentResolution;
+        private (double X, double Y) _preciseClientTopLeft;
 
 
         public GameContext()
@@ -50,20 +61,34 @@ namespace BTD6AutoCommunity.Core
                 // 获取DPI
                 SystemDpi = GetSystemDpi();
 
+                ScreenWidth = GetSystemMetrics(0) * DpiScale;
+                ScreenHeight = GetSystemMetrics(1) * DpiScale;
+
                 // 获取窗口信息
-                if (!GetClientRect(WindowHandle, out RECT rect))
+                if (!GetClientRect(WindowHandle, out RECT clientRect))
                 {
                     IsValid = false;
                     return;
                 }
 
-                ClientRect = rect;
-                CurrentResolution = new Size((int)((rect.Right - rect.Left) * DpiScale), (int)((rect.Bottom - rect.Top) * DpiScale));
-                //Debug.WriteLine($"CurrentResolution: {CurrentResolution.Width}");
-                ClientTopLeft = new POINT { X = rect.Left, Y = rect.Top };
-                ClientToScreen(WindowHandle, ref ClientTopLeft);
-                ClientTopLeft.X = (int)(ClientTopLeft.X * DpiScale);
-                ClientTopLeft.Y = (int)(ClientTopLeft.Y * DpiScale);
+                ClientRect = clientRect;
+                //Debug.WriteLine($"ClientRect: Left={clientRect.Left}, Top={clientRect.Top}, Right={clientRect.Right}, Bottom={clientRect.Bottom}");
+                // 使用 double 存储精确的 DPI 缩放后尺寸
+                _preciseCurrentResolution.Width = (clientRect.Right - clientRect.Left) * DpiScale;
+                _preciseCurrentResolution.Height = (clientRect.Bottom - clientRect.Top) * DpiScale;
+                Debug.WriteLine($"Precise CurrentResolution: Width={_preciseCurrentResolution.Width}, Height={_preciseCurrentResolution.Height}");
+                CurrentResolution = new Size((int)Math.Round(_preciseCurrentResolution.Width), (int)Math.Round(_preciseCurrentResolution.Height));
+
+                OriginalClientTopLeft = new POINT { X = clientRect.Left, Y = clientRect.Top };
+                ClientToScreen(WindowHandle, ref OriginalClientTopLeft);
+                Debug.WriteLine($"ClientTopLeft after ClientToScreen: X={OriginalClientTopLeft.X}, Y={OriginalClientTopLeft.Y}");
+                // 使用 double 存储精确的 DPI 缩放后位置
+                _preciseClientTopLeft.X = OriginalClientTopLeft.X * DpiScale;
+                _preciseClientTopLeft.Y = OriginalClientTopLeft.Y * DpiScale;
+
+                ClientTopLeft.X = (int)Math.Round(_preciseClientTopLeft.X);
+                ClientTopLeft.Y = (int)Math.Round(_preciseClientTopLeft.Y);
+
                 IsValid = true;
             }
             catch
@@ -97,39 +122,51 @@ namespace BTD6AutoCommunity.Core
         // 窗口坐标->屏幕坐标
         public Point ConvertGamePosition(Point basePoint)
         {
-            var scaledX = (int)(basePoint.X * ResolutionScale);
-            //Debug.WriteLine($"ResolutionScale: {ResolutionScale} DpiScale: {DpiScale}");
-            var scaledY = (int)(basePoint.Y * ResolutionScale);
+            var scaledX = basePoint.X * ResolutionScale;
+            var scaledY = basePoint.Y * ResolutionScale;
             return new Point(
-                scaledX + ClientTopLeft.X,
-                scaledY + ClientTopLeft.Y
+                (int)Math.Round(scaledX + _preciseClientTopLeft.X),
+                (int)Math.Round(scaledY + _preciseClientTopLeft.Y)
             );
+        }
+
+        public (double x, double y) ConvertGamePosition(double x, double y)
+        {
+            double scaledX = x * ResolutionScale;
+            double scaledY = y * ResolutionScale;
+            return (scaledX + _preciseClientTopLeft.X, scaledY + _preciseClientTopLeft.Y);
         }
 
         // 屏幕坐标->窗口坐标
         public Point ConvertScreenPosition(Point screenPoint)
         {
             // 移除窗口左上角的偏移量
-            var adjustedX = screenPoint.X - ClientTopLeft.X;
-            var adjustedY = screenPoint.Y - ClientTopLeft.Y;
+            double adjustedX = screenPoint.X - _preciseClientTopLeft.X;
+            double adjustedY = screenPoint.Y - _preciseClientTopLeft.Y;
 
             // 根据分辨率缩放比例反向缩放
-            var originalX = (int)(adjustedX / ResolutionScale);
-            var originalY = (int)(adjustedY / ResolutionScale);
+            double originalX = adjustedX / ResolutionScale;
+            double originalY = adjustedY / ResolutionScale;
 
-            return new Point(originalX, originalY);
+            return new Point((int)Math.Round(originalX), (int)Math.Round(originalY));
+        }
+
+        public (double x, double y) ConvertScreenPosition(double x, double y)
+        {
+            double adjustedX = x - _preciseClientTopLeft.X;
+            double adjustedY = y - _preciseClientTopLeft.Y;
+            double originalX = adjustedX / ResolutionScale;
+            double originalY = adjustedY / ResolutionScale;
+            return (originalX, originalY);
         }
 
         public Point ConvertToAbsolute(Point basePoint)
         {
-            var point = ConvertGamePosition(basePoint);
-            //Debug.WriteLine($"PointX: {point.X} PointY: {point.Y}");
-            int screenWidth = (int)(GetSystemMetrics(0) * DpiScale);
-            int screenHeight = (int)(GetSystemMetrics(1) * DpiScale);
-            //Debug.WriteLine($"ScreenWidth: {screenWidth} ScreenHeight: {screenHeight}");
+            (double x, double y) = ConvertGamePosition(basePoint.X, basePoint.Y);
+
             return new Point(
-                point.X * 65535 / screenWidth,
-                point.Y * 65535 / screenHeight
+                (int)Math.Round(x * 65535 / ScreenWidth),
+                (int)Math.Round(y * 65535 / ScreenHeight)
             );
         }
 

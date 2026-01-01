@@ -490,7 +490,7 @@ namespace BTD6AutoCommunity.ViewModels
             {
                 currentStrategy.Stop();
                 IsRunning = false;
-                pauseButtonEnabled = false;
+                PauseButtonEnabled = false;
                 return;
             }
 
@@ -595,7 +595,7 @@ namespace BTD6AutoCommunity.ViewModels
             strategy.OnStopTriggered += () =>
             {
                 IsRunning = false;
-                pauseButtonEnabled = false;
+                PauseButtonEnabled = false;
             };
 
             strategy.OnGameDataUpdated += data =>
