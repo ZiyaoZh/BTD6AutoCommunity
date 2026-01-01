@@ -1,10 +1,11 @@
 ﻿using BTD6AutoCommunity.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
+using POINT = BTD6AutoCommunity.Core.WindowApiWrapper.POINT;
 namespace BTD6AutoCommunity.Views
 {
     public class MaskWindow : Form
@@ -142,9 +143,11 @@ namespace BTD6AutoCommunity.Views
 
         private static void ShowAndPosition(GameContext context)
         {
+            // 使用 ClientRect 的原始值来设置遮罩窗口的位置和大小
+            // ClientRect 是未缩放的，与 WinForms 的 Bounds 属性单位一致
             Instance.Bounds = new Rectangle(
-                (int)(context.ClientTopLeft.X / context.DpiScale + 1),
-                (int)(context.ClientTopLeft.Y / context.DpiScale + 1),
+                context.OriginalClientTopLeft.X,
+                context.OriginalClientTopLeft.Y,
                 context.ClientRect.Right - context.ClientRect.Left,
                 context.ClientRect.Bottom - context.ClientRect.Top
             );
@@ -194,14 +197,14 @@ namespace BTD6AutoCommunity.Views
         /// <summary>
         /// 在指定位置显示一个十字准星，持续一段时间
         /// </summary>
-        /// <param name="gamePosition">游戏内的坐标</param>
+        /// <param name="basePosition">游戏内的坐标</param>
         /// <param name="context">游戏上下文</param>
-        public void ShowCrosshair(Point gamePosition, GameContext context)
+        public void ShowCrosshair(Point basePosition, GameContext context)
         {
             // 将游戏坐标转换为窗口内的相对坐标
             var windowPosition = new Point(
-                (int)(gamePosition.X * context.ResolutionScale / context.DpiScale),
-                (int)(gamePosition.Y * context.ResolutionScale / context.DpiScale)
+                (int)Math.Round(basePosition.X * context.ResolutionScale / context.DpiScale),
+                (int)Math.Round(basePosition.Y * context.ResolutionScale / context.DpiScale)
             );
 
             var timer = new Timer { Interval = 100 };
@@ -218,10 +221,10 @@ namespace BTD6AutoCommunity.Views
         {
             // 将游戏坐标转换为窗口内的相对坐标
             var windowRectangle = new Rectangle(
-                (int)(gameRectangle.X * context.ResolutionScale / context.DpiScale),
-                (int)(gameRectangle.Y * context.ResolutionScale / context.DpiScale),
-                (int)(gameRectangle.Width * context.ResolutionScale / context.DpiScale),
-                (int)(gameRectangle.Height * context.ResolutionScale / context.DpiScale)
+                (int)Math.Round(gameRectangle.X * context.ResolutionScale / context.DpiScale),
+                (int)Math.Round(gameRectangle.Y * context.ResolutionScale / context.DpiScale),
+                (int)Math.Round(gameRectangle.Width * context.ResolutionScale / context.DpiScale),
+                (int)Math.Round(gameRectangle.Height * context.ResolutionScale / context.DpiScale)
             );
 
             var timer = new Timer { Interval = 100 };
