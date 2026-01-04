@@ -146,6 +146,10 @@ namespace BTD6AutoCommunity.Views
             else
             {
                 ShowAndPosition(context);
+                Instance.ClearShape();
+
+                //Instance.ShowCrosshair(new Point(0, 0), context, 10000);
+                //Instance.ShowCrosshair(new Point(1920, 1080), context, 10000);
             }
         }
 
@@ -229,6 +233,15 @@ namespace BTD6AutoCommunity.Views
         /// </summary>
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            ClearShape();
+            // 确保坐标显示计时器被停止和释放
+            ToggleMouseCoordinateDisplay(false);
+            _instance = null;
+            base.OnFormClosed(e);
+        }
+
+        private void ClearShape()
+        {
             lock (_shapeLock)
             {
                 foreach (var shape in _shapes)
@@ -238,10 +251,6 @@ namespace BTD6AutoCommunity.Views
                 }
                 _shapes.Clear();
             }
-            // 确保坐标显示计时器被停止和释放
-            ToggleMouseCoordinateDisplay(false);
-            _instance = null;
-            base.OnFormClosed(e);
         }
 
         /// <summary>
@@ -249,7 +258,7 @@ namespace BTD6AutoCommunity.Views
         /// </summary>
         /// <param name="basePosition">游戏内的坐标</param>
         /// <param name="context">游戏上下文</param>
-        public void ShowCrosshair(Point basePosition, GameContext context)
+        public void ShowCrosshair(Point basePosition, GameContext context, int interval = 100)
         {
             // 将游戏坐标转换为窗口内的相对坐标
             var windowPosition = new Point(
@@ -257,7 +266,7 @@ namespace BTD6AutoCommunity.Views
                 (int)Math.Round(basePosition.Y * context.ResolutionScale / context.DpiScale)
             );
 
-            var timer = new Timer { Interval = 100 };
+            var timer = new Timer { Interval = interval };
             var crosshair = new Crosshair(windowPosition, timer);
             AddShape(crosshair);
         }
@@ -267,7 +276,7 @@ namespace BTD6AutoCommunity.Views
         /// </summary>
         /// <param name="gameRectangle">游戏内的矩形区域</param>
         /// <param name="context">游戏上下文</param>
-        public void ShowRectangle(Rectangle gameRectangle, GameContext context)
+        public void ShowRectangle(Rectangle gameRectangle, GameContext context, int interval = 100)
         {
             // 将游戏坐标转换为窗口内的相对坐标
             var windowRectangle = new Rectangle(
@@ -277,7 +286,7 @@ namespace BTD6AutoCommunity.Views
                 (int)Math.Round(gameRectangle.Height * context.ResolutionScale / context.DpiScale)
             );
 
-            var timer = new Timer { Interval = 100 };
+            var timer = new Timer { Interval = interval };
             var rectangleBox = new RectangleBox(windowRectangle, timer);
             AddShape(rectangleBox);
         }

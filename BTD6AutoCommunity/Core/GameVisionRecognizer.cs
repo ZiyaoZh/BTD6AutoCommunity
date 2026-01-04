@@ -256,6 +256,18 @@ namespace BTD6AutoCommunity.Core
         private static Color GetGameColorFromScreen(GameContext context, System.Drawing.Point basePoint)
         {
             MaskWindow.Instance.ShowCrosshair(basePoint, context);
+
+            //using (Bitmap bitmap = new Bitmap(9, 9))
+            //{
+            //    using (Graphics g = Graphics.FromImage(bitmap))
+            //    {
+            //        var point = context.ConvertGamePosition(basePoint);
+            //        g.CopyFromScreen(point.X - 4, point.Y - 4, 0, 0, new System.Drawing.Size(9, 9));
+            //    }
+            //    // 测试保存
+            //    bitmap.Save($@"test/debug_color_{bitmap.GetHashCode()}.png");
+            //}
+
             using (Bitmap bitmap = new Bitmap(1, 1))
             {
                 using (Graphics g = Graphics.FromImage(bitmap))
@@ -346,7 +358,7 @@ namespace BTD6AutoCommunity.Core
             System.Drawing.Point point = Constants.UpgradeYellowPosition[index * 5 + 5 - p];
             //Debug.WriteLine($"point: {point}");
             Color c1 = GetGameColorFromScreen(context, point);
-            if (c1.B < 5 && c1.R > 40 && c1.G > 220)
+            if (c1.B < 5 && c1.R > 40 && c1.G > 200)
             {
                 return true;
             }
@@ -390,12 +402,12 @@ namespace BTD6AutoCommunity.Core
 
         public static bool IsLeftUpgrading(GameContext context)
         {
-            return CheckColorFromScreen(context, 415, 120, 0xbe925a) && CheckColorFromScreen(context, 415, 870, 0xb48149) && CheckColorFromScreen(context, 400, 82, 0x623811);
+            return CheckColorFromScreen(context, 415, 120, 0xbe925a) && CheckColorFromScreen(context, 415, 870, 0xb48149) && CheckColorFromScreen(context, 397, 76, 0x623811);
         }
 
         public static bool IsRightUpgrading(GameContext context)
         {
-            return CheckColorFromScreen(context, 1260, 200, 0xbe925a) && CheckColorFromScreen(context, 1260, 870, 0xb48149) && CheckColorFromScreen(context, 1620, 82, 0x623811);
+            return CheckColorFromScreen(context, 1260, 200, 0xbe925a) && CheckColorFromScreen(context, 1260, 870, 0xb48149) && CheckColorFromScreen(context, 1619, 76, 0x623811);
         }
 
         public static int AbilityRgbSum(GameContext context, int index)
