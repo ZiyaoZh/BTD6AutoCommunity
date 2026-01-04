@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using POINT = BTD6AutoCommunity.Core.WindowApiWrapper.POINT;
+using System.Windows.Input;
 namespace BTD6AutoCommunity.Views
 {
     public class MaskWindow : Form
@@ -16,6 +16,14 @@ namespace BTD6AutoCommunity.Views
 
         // Win32 API 常量，用于设置窗口样式
         private const int WS_EX_TRANSPARENT = 0x20;
+
+        private GameContext _gameContext;
+        private Timer _mousePollTimer;
+        private Point _currentMousePosition;
+        private bool _isMouseInBounds = false;
+        private bool _showMouseCoordinates = false;
+        private bool _showShapes = true; // 新增：控制是否绘制图形
+
 
         #region Drawable Shapes
 
@@ -138,11 +146,16 @@ namespace BTD6AutoCommunity.Views
             else
             {
                 ShowAndPosition(context);
+                Instance.ClearShape();
+
+                //Instance.ShowCrosshair(new Point(0, 0), context, 10000);
+                //Instance.ShowCrosshair(new Point(1920, 1080), context, 10000);
             }
         }
 
         private static void ShowAndPosition(GameContext context)
         {
+            Instance._gameContext = context;
             // 使用 ClientRect 的原始值来设置遮罩窗口的位置和大小
             // ClientRect 是未缩放的，与 WinForms 的 Bounds 属性单位一致
             Instance.Bounds = new Rectangle(
@@ -155,6 +168,45 @@ namespace BTD6AutoCommunity.Views
             if (!Instance.Visible)
             {
                 Instance.Show();
+            }
+        }
+
+        /// <summary>
+        /// 更新遮罩窗口的位置以匹配游戏窗口。
+        /// 如果游戏窗口移动或大小改变，可以调用此方法。
+        /// </summary>
+        public void UpdatePosition()
+        {
+            if (_gameContext == null) return;
+
+            // 在UI线程上执行更新
+            Action updateAction = () =>
+            {
+                _gameContext.Update(); // 刷新游戏窗口的上下文信息
+                if (_gameContext.IsValid)
+                {
+                    // 使用更新后的上下文重新设置窗口边界
+                    Bounds = new Rectangle(
+                        _gameContext.OriginalClientTopLeft.X,
+                        _gameContext.OriginalClientTopLeft.Y,
+                        _gameContext.ClientRect.Right - _gameContext.ClientRect.Left,
+                        _gameContext.ClientRect.Bottom - _gameContext.ClientRect.Top
+                    );
+                }
+                else
+                {
+                    // 如果游戏窗口找不到了，则关闭遮罩窗口
+                    Close();
+                }
+            };
+
+            if (InvokeRequired)
+            {
+                Invoke(updateAction);
+            }
+            else
+            {
+                updateAction();
             }
         }
 
@@ -181,6 +233,15 @@ namespace BTD6AutoCommunity.Views
         /// </summary>
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            ClearShape();
+            // 确保坐标显示计时器被停止和释放
+            ToggleMouseCoordinateDisplay(false);
+            _instance = null;
+            base.OnFormClosed(e);
+        }
+
+        private void ClearShape()
+        {
             lock (_shapeLock)
             {
                 foreach (var shape in _shapes)
@@ -190,8 +251,6 @@ namespace BTD6AutoCommunity.Views
                 }
                 _shapes.Clear();
             }
-            _instance = null;
-            base.OnFormClosed(e);
         }
 
         /// <summary>
@@ -199,7 +258,7 @@ namespace BTD6AutoCommunity.Views
         /// </summary>
         /// <param name="basePosition">游戏内的坐标</param>
         /// <param name="context">游戏上下文</param>
-        public void ShowCrosshair(Point basePosition, GameContext context)
+        public void ShowCrosshair(Point basePosition, GameContext context, int interval = 100)
         {
             // 将游戏坐标转换为窗口内的相对坐标
             var windowPosition = new Point(
@@ -207,7 +266,7 @@ namespace BTD6AutoCommunity.Views
                 (int)Math.Round(basePosition.Y * context.ResolutionScale / context.DpiScale)
             );
 
-            var timer = new Timer { Interval = 100 };
+            var timer = new Timer { Interval = interval };
             var crosshair = new Crosshair(windowPosition, timer);
             AddShape(crosshair);
         }
@@ -217,7 +276,7 @@ namespace BTD6AutoCommunity.Views
         /// </summary>
         /// <param name="gameRectangle">游戏内的矩形区域</param>
         /// <param name="context">游戏上下文</param>
-        public void ShowRectangle(Rectangle gameRectangle, GameContext context)
+        public void ShowRectangle(Rectangle gameRectangle, GameContext context, int interval = 100)
         {
             // 将游戏坐标转换为窗口内的相对坐标
             var windowRectangle = new Rectangle(
@@ -227,13 +286,16 @@ namespace BTD6AutoCommunity.Views
                 (int)Math.Round(gameRectangle.Height * context.ResolutionScale / context.DpiScale)
             );
 
-            var timer = new Timer { Interval = 100 };
+            var timer = new Timer { Interval = interval };
             var rectangleBox = new RectangleBox(windowRectangle, timer);
             AddShape(rectangleBox);
         }
 
         private void AddShape(DrawableShape shape)
         {
+            // 在添加新形状之前，确保窗口位置是最新的
+            UpdatePosition();
+
             // 确保在UI线程上创建和管理形状
             Action addShapeAction = () =>
             {
@@ -267,27 +329,173 @@ namespace BTD6AutoCommunity.Views
         }
 
         /// <summary>
+        /// 获取鼠标在窗口内的相对位置。
+        /// </summary>
+        /// <returns>相对于窗口左上角的坐标点。</returns>
+        public Point GetMousePositionInWindow()
+        {
+            // 使用 PointToClient 将屏幕坐标转换为窗口客户端坐标
+            return PointToClient(MousePosition);
+        }
+
+        /// <summary>
+        /// 获取鼠标在游戏内的坐标。
+        /// </summary>
+        /// <param name="context">游戏上下文，用于坐标转换。</param>
+        /// <returns>游戏内的坐标点。</returns>
+        public (double, double) GetMousePositionInGame(GameContext context)
+        {
+            // 获取鼠标在窗口中的相对位置
+            Point windowPosition = GetMousePositionInWindow();
+
+            // 将窗口坐标转换回游戏坐标
+            // 这是 ShowCrosshair/ShowRectangle 中坐标转换的逆过程
+            double gameX = windowPosition.X * context.DpiScale / context.ResolutionScale;
+            double gameY = windowPosition.Y * context.DpiScale / context.ResolutionScale;
+
+            return (gameX, gameY);
+        }
+
+        /// <summary>
+        /// 切换图形的显示状态。
+        /// </summary>
+        /// <param name="show">为 true 则显示图形，为 false 则隐藏。</param>
+        public void ToggleShapeDisplay(bool show)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => ToggleShapeDisplay(show)));
+                return;
+            }
+            _showShapes = show;
+            Invalidate(); // 触发重绘以立即应用更改
+        }
+
+        /// <summary>
+        /// 切换鼠标坐标的显示状态。
+        /// </summary>
+        /// <param name="show">为 true 则显示坐标，为 false 则隐藏。</param>
+        public void ToggleMouseCoordinateDisplay(bool show)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => ToggleMouseCoordinateDisplay(show)));
+                return;
+            }
+
+            _showMouseCoordinates = show;
+
+            if (_showMouseCoordinates)
+            {
+                if (_mousePollTimer == null)
+                {
+                    _mousePollTimer = new Timer { Interval = 50 }; // 每 50ms 更新一次
+                    _mousePollTimer.Tick += PollMousePosition;
+                    _mousePollTimer.Start();
+                }
+            }
+            else
+            {
+                if (_mousePollTimer != null)
+                {
+                    _mousePollTimer.Stop();
+                    _mousePollTimer.Dispose();
+                    _mousePollTimer = null;
+                }
+                // 如果之前鼠标在窗口内，触发一次重绘来清除坐标
+                if (_isMouseInBounds)
+                {
+                    _isMouseInBounds = false;
+                    Invalidate();
+                }
+            }
+        }
+
+        private void PollMousePosition(object sender, EventArgs e)
+        {
+            if (_gameContext == null) return;
+
+            // 每次轮询时都更新窗口位置，以防游戏窗口移动
+            UpdatePosition();
+
+            Point screenPos = MousePosition;
+            bool isCurrentlyInBounds = Bounds.Contains(screenPos);
+
+            // 只有当鼠标进入/离开窗口或在窗口内移动时才触发重绘
+            if (isCurrentlyInBounds || _isMouseInBounds != isCurrentlyInBounds)
+            {
+                _isMouseInBounds = isCurrentlyInBounds;
+                _currentMousePosition = PointToClient(screenPos);
+                Invalidate(); // 触发 OnPaint
+            }
+        }
+
+
+        /// <summary>
         /// 重写 OnPaint 方法以绘制所有活动的形状
         /// </summary>
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
 
-            List<DrawableShape> currentShapes;
-            lock (_shapeLock)
+            // 如果启用了图形显示，则绘制所有图形
+            if (_showShapes)
             {
-                // 创建一个副本以避免在迭代时集合被修改
-                currentShapes = _shapes.ToList();
+                List<DrawableShape> currentShapes;
+                lock (_shapeLock)
+                {
+                    // 创建一个副本以避免在迭代时集合被修改
+                    currentShapes = _shapes.ToList();
+                }
+
+                if (currentShapes.Any())
+                {
+                    using (var pen = new Pen(Color.Red, 2))
+                    {
+                        foreach (var shape in currentShapes)
+                        {
+                            shape.Draw(e.Graphics, pen);
+                        }
+                    }
+                }
             }
 
-            if (currentShapes.Any())
+            // 如果启用了坐标显示并且鼠标在窗口内
+            if (_showMouseCoordinates && _isMouseInBounds && _gameContext != null)
             {
-                using (var pen = new Pen(Color.Red, 2))
+                (double X, double Y) gamePos = GetMousePositionInGame(_gameContext);
+                // 添加新的一行文本
+                string text = $"({gamePos.X}, {gamePos.Y})\nEnter自动输入";
+
+                using (var font = new Font("Segoe UI", 10, FontStyle.Bold))
+                using (var backgroundBrush = new SolidBrush(Color.FromArgb(200, 30, 30, 30))) // 半透明深灰背景
+                using (var textBrush = new SolidBrush(Color.White)) // 白色文字
                 {
-                    foreach (var shape in currentShapes)
+                    const int offset = 15; // 文本框与鼠标指针的距离
+                    SizeF textSize = e.Graphics.MeasureString(text, font);
+
+                    // --- 智能定位逻辑 ---
+                    // 默认位置在右下
+                    float x = _currentMousePosition.X + offset;
+                    float y = _currentMousePosition.Y + offset;
+
+                    // 如果右侧空间不足，则移动到左侧
+                    if (x + textSize.Width > ClientSize.Width)
                     {
-                        shape.Draw(e.Graphics, pen);
+                        x = _currentMousePosition.X - textSize.Width - offset;
                     }
+
+                    // 如果下方空间不足，则移动到上方
+                    if (y + textSize.Height > ClientSize.Height)
+                    {
+                        y = _currentMousePosition.Y - textSize.Height - offset;
+                    }
+                    
+                    PointF textPosition = new PointF(x, y);
+                    RectangleF backgroundRect = new RectangleF(textPosition, new SizeF(textSize.Width + 4, textSize.Height + 4));
+
+                    e.Graphics.FillRectangle(backgroundBrush, backgroundRect);
+                    e.Graphics.DrawString(text, font, textBrush, textPosition.X + 2, textPosition.Y + 2);
                 }
             }
         }

@@ -75,7 +75,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             var inst = instructions[index];
             ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
 
-            compiled.Add(new MicroInstruction(MicroInstructionType.MouseMove, inst.Coordinates.X, inst.Coordinates.Y));
+            compiled.Add(new MicroInstruction(MicroInstructionType.MouseMove, (int)(inst.Coordinates.X * 10000), (int)(inst.Coordinates.Y * 10000)));
             compiled.Add(settings.GetHotKey((Monkeys)inst.Arguments[0]));
 
             compiled.Add(new MicroInstruction(MicroInstructionType.LeftClick));
@@ -147,7 +147,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
 
             if (!IfNext(index))
             {
-                compiled.Add(metadata.AnchorCoords.X, metadata.AnchorCoords.Y);
+                compiled.Add((int)(metadata.AnchorCoords.X * 10000), (int)(metadata.AnchorCoords.Y * 10000));
             }
             return compiled;
         }
@@ -172,7 +172,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             }
             if (!IfNext(index))
             {
-                compiled.Add(metadata.AnchorCoords.X, metadata.AnchorCoords.Y);
+                compiled.Add((int)(metadata.AnchorCoords.X * 10000), (int)(metadata.AnchorCoords.Y * 10000));
             }
             return compiled;
         }
@@ -192,7 +192,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
                 compiled.Add(hotKey1, 1);
                 if (inst.Coordinates != (-1, -1))
                 {
-                    compiled.Add(inst.Coordinates.X, inst.Coordinates.Y);
+                    compiled.Add(inst[8], inst[9]);
                 }
             }
             if (inst.Arguments[1] == 2 || inst.Arguments[1] == 3)
@@ -200,12 +200,12 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
                 compiled.Add(hotKey2, 1);
                 if (inst.Coordinates != (-1, -1))
                 {
-                    compiled.Add(inst.Coordinates.X, inst.Coordinates.Y);
+                    compiled.Add(inst[8], inst[9]);
                 }
             }
             if (!IfNext(index))
             {
-                compiled.Add(metadata.AnchorCoords.X, metadata.AnchorCoords.Y);
+                compiled.Add((int)(metadata.AnchorCoords.X * 10000), (int)(metadata.AnchorCoords.Y * 10000));
             }
             return compiled;
         }
@@ -236,8 +236,8 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             var inst = instructions[index];
             ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             compiled.Add(new MicroInstruction(MicroInstructionType.IsHeroCanPlace));
-            compiled.Add(1715, 230); 
-            compiled.Add(inst.Coordinates.X, inst.Coordinates.Y);
+            compiled.Add(1715 * 10000, 230 * 10000); 
+            compiled.Add(inst[8], inst[9]);
             compiled.Add(new MicroInstruction(MicroInstructionType.CheckPlaceSuccess));
             return compiled;
         }
@@ -257,7 +257,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
 
             if (!IfNext(index))
             {
-                compiled.Add(metadata.AnchorCoords.X, metadata.AnchorCoords.Y);
+                compiled.Add((int)(metadata.AnchorCoords.X * 10000), (int)(metadata.AnchorCoords.Y * 10000));
             }
             return compiled;
         }
@@ -278,10 +278,10 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
 
             if (inst.Coordinates != (-1, -1))
             {
-                compiled.Add(inst.Coordinates.X, inst.Coordinates.Y);
+                compiled.Add(inst[8], inst[9]);
             }
 
-            compiled.Add(metadata.AnchorCoords.X, metadata.AnchorCoords.Y);
+            compiled.Add((int)(metadata.AnchorCoords.X * 10000), (int)(metadata.AnchorCoords.Y * 10000));
             return compiled;
         }
 
@@ -307,7 +307,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             }
             if (!IfNext(index))
             {
-                compiled.Add(metadata.AnchorCoords.X, metadata.AnchorCoords.Y);
+                compiled.Add((int)(metadata.AnchorCoords.X * 10000), (int)(metadata.AnchorCoords.Y * 10000));
             }
             return compiled;
         }
@@ -334,11 +334,11 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             }
             if (inst.Coordinates != (-1, -1))
             {
-                compiled.Add(inst.Coordinates.X, inst.Coordinates.Y);
+                compiled.Add(inst[8], inst[9]);
             }
             if (!IfNext(index))
             {
-                compiled.Add(metadata.AnchorCoords.X, metadata.AnchorCoords.Y);
+                compiled.Add((int)(metadata.AnchorCoords.X * 10000), (int)(metadata.AnchorCoords.Y * 10000));
             }
             return compiled;
         }
@@ -366,7 +366,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             // 选择释放坐标
             if (inst.Coordinates != (-1, -1))
             {
-                compiled.Add(inst.Coordinates.X, inst.Coordinates.Y);
+                compiled.Add(inst[8], inst[9]);
             }
             return compiled;
         }
@@ -394,7 +394,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             ExecutableInstruction compiled = new ExecutableInstruction(inst, index);
             if (inst.Coordinates != (-1, -1))
             {
-                compiled.Add(inst.Coordinates.X, inst.Coordinates.Y, inst.Arguments[0]);
+                compiled.Add(inst[8], inst[9], inst.Arguments[0]);
             }
             return compiled;
         }
@@ -433,7 +433,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             {
                 compiled.Add(new MicroInstruction(MicroInstructionType.Empty));
             }
-            compiled.Add(1600, 45); // 点设置
+            compiled.Add(1600 * 10000, 45 * 10000); // 点设置
             for (int m = 0; m < times; m++)
             {
                 compiled.Add(new MicroInstruction(MicroInstructionType.Empty));

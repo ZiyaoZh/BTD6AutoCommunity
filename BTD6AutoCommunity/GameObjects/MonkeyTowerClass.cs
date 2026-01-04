@@ -12,7 +12,7 @@ namespace BTD6AutoCommunity.GameObjects
     public class MonkeyTowerClass
     {
         public Monkeys Type { get; set; }  // 猴子塔名字
-        public (int, int) coordinates { get; set; } = ( 0, 0 );  // 部署坐标 (x, y)
+        public (double, double) coordinates { get; set; } = ( 0, 0 );  // 部署坐标 (x, y)
         public List<int> upgradeLevels { get; set; } = new List<int> { 0, 0, 0 }; // 每条升级路线的当前等级
         public List<int> routeLock { get; set; } = new List<int> { 0, 0, 0 }; // 升级路线锁定情况
 
@@ -35,6 +35,15 @@ namespace BTD6AutoCommunity.GameObjects
             monkeyId = id;
         }
 
+        public MonkeyTowerClass(Monkeys name, int id, (double, double) coords)
+        {
+            IsDelete = false;
+            exsitence = true;
+            coordinates = coords;
+            Type = name;
+            monkeyId = id;
+        }
+
         public MonkeyTowerClass Clone()
         {
             MonkeyTowerClass newMonkey = new MonkeyTowerClass(Type, monkeyId, coordinates)
@@ -48,13 +57,13 @@ namespace BTD6AutoCommunity.GameObjects
         }
 
         // 获取部署坐标
-        public (int X, int Y) GetCoordinates()
+        public (double X, double Y) GetCoordinates()
         {
             return coordinates;
         }
 
         // 设置部署坐标
-        public void SetCoordinates((int, int) coords)
+        public void SetCoordinates((double, double) coords)
         {
             coordinates = coords;
         }

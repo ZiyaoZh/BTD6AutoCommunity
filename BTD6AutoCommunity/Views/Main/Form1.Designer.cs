@@ -3534,7 +3534,7 @@
             this.tableLayoutPanel14.ColumnCount = 3;
             this.tableLayoutPanel14.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45.49356F));
             this.tableLayoutPanel14.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 54.50644F));
-            this.tableLayoutPanel14.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 226F));
+            this.tableLayoutPanel14.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 227F));
             this.tableLayoutPanel14.Controls.Add(this.OperationsTV, 0, 0);
             this.tableLayoutPanel14.Controls.Add(this.tableLayoutPanel15, 2, 0);
             this.tableLayoutPanel14.Controls.Add(this.OperationsLV, 1, 0);
@@ -3553,7 +3553,7 @@
             this.OperationsTV.Dock = System.Windows.Forms.DockStyle.Fill;
             this.OperationsTV.Location = new System.Drawing.Point(3, 3);
             this.OperationsTV.Name = "OperationsTV";
-            this.OperationsTV.Size = new System.Drawing.Size(204, 627);
+            this.OperationsTV.Size = new System.Drawing.Size(203, 627);
             this.OperationsTV.TabIndex = 0;
             this.OperationsTV.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.OperationsTV_AfterSelect);
             // 
@@ -3568,7 +3568,7 @@
             this.tableLayoutPanel15.Controls.Add(this.OutputBT, 0, 4);
             this.tableLayoutPanel15.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.tableLayoutPanel15.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel15.Location = new System.Drawing.Point(464, 3);
+            this.tableLayoutPanel15.Location = new System.Drawing.Point(463, 3);
             this.tableLayoutPanel15.Name = "tableLayoutPanel15";
             this.tableLayoutPanel15.RowCount = 7;
             this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
@@ -3578,7 +3578,7 @@
             this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel15.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
-            this.tableLayoutPanel15.Size = new System.Drawing.Size(221, 627);
+            this.tableLayoutPanel15.Size = new System.Drawing.Size(222, 627);
             this.tableLayoutPanel15.TabIndex = 1;
             // 
             // ImportBT
@@ -3586,7 +3586,7 @@
             this.ImportBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ImportBT.Location = new System.Drawing.Point(3, 469);
             this.ImportBT.Name = "ImportBT";
-            this.ImportBT.Size = new System.Drawing.Size(215, 34);
+            this.ImportBT.Size = new System.Drawing.Size(216, 34);
             this.ImportBT.TabIndex = 0;
             this.ImportBT.Text = "导入";
             this.ImportBT.UseVisualStyleBackColor = true;
@@ -3597,7 +3597,7 @@
             this.EditBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.EditBT.Location = new System.Drawing.Point(3, 549);
             this.EditBT.Name = "EditBT";
-            this.EditBT.Size = new System.Drawing.Size(215, 34);
+            this.EditBT.Size = new System.Drawing.Size(216, 34);
             this.EditBT.TabIndex = 1;
             this.EditBT.Text = "编辑";
             this.EditBT.UseVisualStyleBackColor = true;
@@ -3608,7 +3608,7 @@
             this.RunBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.RunBT.Location = new System.Drawing.Point(3, 589);
             this.RunBT.Name = "RunBT";
-            this.RunBT.Size = new System.Drawing.Size(215, 35);
+            this.RunBT.Size = new System.Drawing.Size(216, 35);
             this.RunBT.TabIndex = 2;
             this.RunBT.Text = "运行";
             this.RunBT.UseVisualStyleBackColor = true;
@@ -3619,7 +3619,7 @@
             this.DeleteOperationBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DeleteOperationBT.Location = new System.Drawing.Point(3, 429);
             this.DeleteOperationBT.Name = "DeleteOperationBT";
-            this.DeleteOperationBT.Size = new System.Drawing.Size(215, 34);
+            this.DeleteOperationBT.Size = new System.Drawing.Size(216, 34);
             this.DeleteOperationBT.TabIndex = 3;
             this.DeleteOperationBT.Text = "删除";
             this.DeleteOperationBT.UseVisualStyleBackColor = true;
@@ -3630,7 +3630,7 @@
             this.OutputBT.Dock = System.Windows.Forms.DockStyle.Fill;
             this.OutputBT.Location = new System.Drawing.Point(3, 509);
             this.OutputBT.Name = "OutputBT";
-            this.OutputBT.Size = new System.Drawing.Size(215, 34);
+            this.OutputBT.Size = new System.Drawing.Size(216, 34);
             this.OutputBT.TabIndex = 4;
             this.OutputBT.Text = "导出";
             this.OutputBT.UseVisualStyleBackColor = true;
@@ -3645,7 +3645,7 @@
             this.OperationsLV.Dock = System.Windows.Forms.DockStyle.Fill;
             this.OperationsLV.HideSelection = false;
             this.OperationsLV.LabelEdit = true;
-            this.OperationsLV.Location = new System.Drawing.Point(213, 3);
+            this.OperationsLV.Location = new System.Drawing.Point(212, 3);
             this.OperationsLV.Name = "OperationsLV";
             this.OperationsLV.Size = new System.Drawing.Size(245, 627);
             this.OperationsLV.TabIndex = 2;

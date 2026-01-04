@@ -188,7 +188,7 @@ namespace BTD6AutoCommunity.Views.Main
             scriptSettings.EnableDoubleCoin = EnableDoubleCoinCB.Checked;
             scriptSettings.EnableFastPath = EnableFastPathCB.Checked;
             scriptSettings.EnableLogging = EnableLoggingCB.Checked;
-            scriptSettings.EnableMaskWindow = EnableMaskWindowCB.Checked;
+            scriptSettings.EnableDisplayShapes = EnableMaskWindowCB.Checked;
             scriptSettings.EnableRecommendInterval = EnableRecommendIntervalCB.Checked;
             //foreach (var buttonKeyPairs in hotKeysMap)
             //{
@@ -208,7 +208,7 @@ namespace BTD6AutoCommunity.Views.Main
             EnableFastPathCB.Checked = scriptSettings.EnableFastPath;
             EnableRecommendIntervalCB.Checked = scriptSettings.EnableRecommendInterval;
             EnableLoggingCB.Checked = scriptSettings.EnableLogging;
-            EnableMaskWindowCB.Checked = scriptSettings.EnableMaskWindow;
+            EnableMaskWindowCB.Checked = scriptSettings.EnableDisplayShapes;
             InitHotKeyButton();
             RefreshHotkeyText();
         }
@@ -397,7 +397,7 @@ namespace BTD6AutoCommunity.Views.Main
 
         private void EnableMaskWindowCB_CheckedChanged(object sender, EventArgs e)
         {
-            scriptSettings.EnableMaskWindow = EnableMaskWindowCB.Checked;
+            scriptSettings.EnableDisplayShapes = EnableMaskWindowCB.Checked;
             scriptSettings.SaveAllSettings();
         }
 

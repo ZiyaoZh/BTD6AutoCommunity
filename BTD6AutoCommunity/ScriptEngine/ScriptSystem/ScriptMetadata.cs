@@ -11,13 +11,13 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
 {
     public class ScriptMetadata
     {
-        public string Version { get; set; } = "1.0";
+        public string Version { get; set; } = "1.1";
         public string ScriptName { get; set; }
         public Maps SelectedMap { get; set; }
         public LevelDifficulties SelectedDifficulty { get; set; }
         public LevelModes SelectedMode { get; set; }
         public Heroes SelectedHero { get; set; }
-        public (int X, int Y) AnchorCoords { get; set; }
+        public (double X, double Y) AnchorCoords { get; set; }
 
         public ScriptMetadata() { }
 
@@ -27,7 +27,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             LevelDifficulties selectedDifficulty,
             LevelModes selectedMode,
             Heroes selectedHero,
-            (int x, int y) anchorCoords)
+            (double x, double y) anchorCoords)
         {
             ScriptName = scriptName;
             SelectedMap = selectedMap;

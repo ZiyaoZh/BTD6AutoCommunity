@@ -83,6 +83,7 @@
     <Reference Include="OpenCvSharp.Extensions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=6adad1e807fea099, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenCvSharp4.Extensions.4.10.0.20240616\lib\netstandard2.0\OpenCvSharp.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.6.0\lib\net462\System.Buffers.dll</HintPath>
@@ -163,7 +164,6 @@
     <Compile Include="Services\Interfaces\IStrategyExecutor.cs" />
     <Compile Include="Services\MessageBoxService.cs" />
     <Compile Include="Services\MouseCoordinateDisplayService.cs" />
-    <Compile Include="Services\OverlayService.cs" />
     <Compile Include="Services\StrategyManager.cs" />
     <Compile Include="Services\UpdateService.cs" />
     <Compile Include="Strategies\Base\BaseStrategy.cs" />

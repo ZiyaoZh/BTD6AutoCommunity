@@ -14,7 +14,7 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
             List<int> args,
             int roundTrigger,
             int coinTrigger,
-            (int x, int y) coords)
+            (double x, double y) coords)
         {
             return new Instruction(
                 type,

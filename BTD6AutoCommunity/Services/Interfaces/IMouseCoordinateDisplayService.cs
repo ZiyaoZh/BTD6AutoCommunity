@@ -9,7 +9,7 @@ namespace BTD6AutoCommunity.Services.Interfaces
 {
     public interface IMouseCoordinateDisplayService
     {
-        void StartDisplay(Action<Point> onEnterPressed);
+        void StartDisplay(Action<(double, double)> onEnterPressed);
         void StopDisplay();
     }
 }

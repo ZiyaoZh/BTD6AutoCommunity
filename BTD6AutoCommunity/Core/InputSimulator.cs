@@ -12,9 +12,9 @@ namespace BTD6AutoCommunity.Core
     public class InputSimulator
     {
         // 鼠标移动
-        public static void MouseMove(GameContext context, int x, int y)
+        public static void MouseMove(GameContext context, double x, double y)
         {
-            Point absPoint = context.ConvertToAbsolute(new Point(x, y));
+            Point absPoint = context.ConvertToAbsolute((x, y));
             int absX = absPoint.X;
             int absY = absPoint.Y;
 
@@ -103,9 +103,9 @@ namespace BTD6AutoCommunity.Core
         }
 
         // 带绝对坐标的鼠标点击
-        public static void MouseMoveAndLeftClick(GameContext context, int x, int y)
+        public static void MouseMoveAndLeftClick(GameContext context, double x, double y)
         {
-            Point absPoint = context.ConvertToAbsolute(new Point(x, y));
+            Point absPoint = context.ConvertToAbsolute((x, y));
             int absX = absPoint.X;
             int absY = absPoint.Y;
 

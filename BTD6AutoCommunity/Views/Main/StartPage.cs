@@ -44,6 +44,7 @@ namespace BTD6AutoCommunity.Views.Main
             BindCurrentInstructionRichTextBox();
             BindCurrentTriggerRichTextBox();
             BindLogsRichTextBox();
+
         }
 
         private void BindFunctionComboBox()

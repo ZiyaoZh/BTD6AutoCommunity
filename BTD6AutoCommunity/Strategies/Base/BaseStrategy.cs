@@ -179,9 +179,8 @@ namespace BTD6AutoCommunity.Strategies.Base
             // 前置行为
             OnPreStart();
 
-            if (_settings.EnableMaskWindow) {
-                MaskWindow.Open(_context);
-            }
+            MaskWindow.Open(_context);
+            MaskWindow.Instance.ToggleShapeDisplay(_settings.EnableDisplayShapes);
 
             screenShotCaptureTimer?.Start();
 
@@ -221,7 +220,6 @@ namespace BTD6AutoCommunity.Strategies.Base
 
         public virtual void Stop()
         {
-            MaskWindow.CloseWindow();
             screenShotCaptureTimer?.Stop();
             StopLevelTimer();
             lock (_checkStateTimerLock)

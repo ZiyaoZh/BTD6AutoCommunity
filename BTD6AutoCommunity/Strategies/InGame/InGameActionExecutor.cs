@@ -557,7 +557,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
             switch (micro.Type)
             {
                 case MicroInstructionType.MouseMove:
-                    InputSimulator.MouseMove(_context, micro[1], micro[2]);
+                    InputSimulator.MouseMove(_context, micro[1] / 10000, micro[2] / 10000);
                     break;
                 case MicroInstructionType.LeftClick:
                     InputSimulator.MouseLeftClick();

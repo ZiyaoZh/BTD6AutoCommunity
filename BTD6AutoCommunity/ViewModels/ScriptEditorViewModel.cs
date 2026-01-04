@@ -318,7 +318,7 @@ namespace BTD6AutoCommunity.ViewModels
             }
         }
 
-        private void OnEnterPressed(Point point)
+        private void OnEnterPressed((double X, double Y) point)
         {
             if (AnchorButtonText == "取消设置")
             {
@@ -342,7 +342,7 @@ namespace BTD6AutoCommunity.ViewModels
                 SelectedMode = SelectedMode.Value,
                 SelectedHero = SelectedHero.Value,
                 ScriptName = ScriptName,
-                AnchorCoords = Int32.TryParse(AnchorXText, out int x) && Int32.TryParse(AnchorYText, out int y) ? (x, y) : (860, 540)
+                AnchorCoords = Double.TryParse(AnchorXText, out double x) && Double.TryParse(AnchorYText, out double y) ? (x, y) : (860, 540)
             };
         }
 
@@ -568,7 +568,7 @@ namespace BTD6AutoCommunity.ViewModels
                 List<int> arguments = GetArguments();
                 int roundTrigger = TriggerDefinition.GetRoundTrigger();
                 int coinTrigger = TriggerDefinition.GetCoinTrigger();
-                (int, int) coordinate = CoordinateDefinition.GetCoordinate();
+                (double, double) coordinate = CoordinateDefinition.GetCoordinate();
                 Instructions.Add(scriptService.AddInstruction(actionType, arguments, roundTrigger, coinTrigger, coordinate));
             }
             else
@@ -599,7 +599,7 @@ namespace BTD6AutoCommunity.ViewModels
                 List<int> arguments = GetArguments();
                 int roundTrigger = TriggerDefinition.GetRoundTrigger();
                 int coinTrigger = TriggerDefinition.GetCoinTrigger();
-                (int, int) coordinate = CoordinateDefinition.GetCoordinate();
+                (double, double) coordinate = CoordinateDefinition.GetCoordinate();
                 Instructions.Insert(index + 1, scriptService.InsertInstruction(index + 1, actionType, arguments, roundTrigger, coinTrigger, coordinate));
             }
             else
@@ -652,7 +652,7 @@ namespace BTD6AutoCommunity.ViewModels
             List<int> args = GetArguments();
             int RoundTrigger = TriggerDefinition.GetRoundTrigger();
             int CoinTrigger = TriggerDefinition.GetCoinTrigger();
-            (int, int) coords = CoordinateDefinition.GetCoordinate();
+            (double, double) coords = CoordinateDefinition.GetCoordinate();
             if (scriptService.TryModifyInstruction(index, instructionType, args, RoundTrigger, CoinTrigger, coords))
             {
                 IsModifyInstructionEnabled = true;
@@ -674,7 +674,7 @@ namespace BTD6AutoCommunity.ViewModels
             List<int> arguments = GetArguments();
             int roundTrigger = TriggerDefinition.GetRoundTrigger();
             int coinTrigger = TriggerDefinition.GetCoinTrigger();
-            (int, int) coordinate = CoordinateDefinition.GetCoordinate();
+            (double, double) coordinate = CoordinateDefinition.GetCoordinate();
             if (actionType != ActionTypes.InstructionsBundle)
             {
                 Instructions[index] = scriptService.ModifyInstruction(index, actionType, arguments, roundTrigger, coinTrigger, coordinate);

@@ -40,7 +40,7 @@ namespace BTD6AutoCommunity.Services.Interfaces
         /// <param name="coinTrigger"></param>
         /// <param name="coords"></param>
         /// <returns></returns>
-        Instruction AddInstruction(ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords);
+        Instruction AddInstruction(ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (double, double) coords);
 
         /// <summary>
         /// 添加指令包
@@ -60,7 +60,7 @@ namespace BTD6AutoCommunity.Services.Interfaces
         /// <param name="coinTrigger"></param>
         /// <param name="coords"></param>
         /// <returns></returns>
-        Instruction InsertInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords);
+        Instruction InsertInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (double, double) coords);
 
         /// <summary>
         /// 插入指令包
@@ -81,7 +81,7 @@ namespace BTD6AutoCommunity.Services.Interfaces
         /// <param name="coinTrigger"></param>
         /// <param name="coords"></param>
         /// <returns></returns>
-        Instruction ModifyInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords);
+        Instruction ModifyInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (double, double) coords);
 
         /// <summary>
         /// 尝试修改指令
@@ -93,7 +93,7 @@ namespace BTD6AutoCommunity.Services.Interfaces
         /// <param name="coinTrigger"></param>
         /// <param name="coords"></param>
         /// <returns></returns>
-        bool TryModifyInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords);
+        bool TryModifyInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (double, double) coords);
 
         /// <summary>
         /// 删除指令
