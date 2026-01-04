@@ -52,7 +52,7 @@ namespace BTD6AutoCommunity.ScriptEngine
             return instructions.Clone();
         }
 
-        public Instruction AddInstruction(ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords)
+        public Instruction AddInstruction(ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (double, double) coords)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace BTD6AutoCommunity.ScriptEngine
             return instructions.InsertBundle(instructions.Count, bundle.GetInstructionSequence(bundleName), times);
         }
 
-        public Instruction InsertInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords)
+        public Instruction InsertInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (double, double) coords)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace BTD6AutoCommunity.ScriptEngine
             return instructions.InsertBundle(index, bundle.GetInstructionSequence(bundleName), times);
         }
 
-        public Instruction ModifyInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords)
+        public Instruction ModifyInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (double, double) coords)
         {
             try
             {
@@ -109,7 +109,7 @@ namespace BTD6AutoCommunity.ScriptEngine
             }
         }
 
-        public bool TryModifyInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (int, int) coords)
+        public bool TryModifyInstruction(int index, ActionTypes type, List<int> args, int roundTrigger, int coinTrigger, (double, double) coords)
         {
             var inst = factory.Create(type, args, roundTrigger, coinTrigger, coords);
             if (instructions.TryModify(index, inst)) return true;

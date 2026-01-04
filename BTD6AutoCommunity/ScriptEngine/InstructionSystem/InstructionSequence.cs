@@ -231,8 +231,8 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                             if (monkeyList[inst.Arguments[0]].Upgrade(inst.Arguments[1] % 3))
                             {
                                 inst.AllArguments[5] = monkeyList[inst.Arguments[0]].GetUpgradeInt();
-                                inst.AllArguments[6] = monkeyList[inst.Arguments[0]].GetCoordinates().X;
-                                inst.AllArguments[7] = monkeyList[inst.Arguments[0]].GetCoordinates().Y;
+                                inst.AllArguments[6] = (int)(monkeyList[inst.Arguments[0]].GetCoordinates().X * 10000);
+                                inst.AllArguments[7] = (int)(monkeyList[inst.Arguments[0]].GetCoordinates().Y * 10000);
                                 instructions[i] = new Instruction(inst.AllArguments);
                             }
                             else invalidIndexList.Add(i);
@@ -246,8 +246,8 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                             if (monkeyList[inst.Arguments[0]] == null || monkeyList[inst.Arguments[0]].exsitence == false) invalidIndexList.Add(i);
                             else
                             {
-                                inst.AllArguments[6] = monkeyList[inst.Arguments[0]].GetCoordinates().X;
-                                inst.AllArguments[7] = monkeyList[inst.Arguments[0]].GetCoordinates().Y;
+                                inst.AllArguments[6] = (int)(monkeyList[inst.Arguments[0]].GetCoordinates().X * 10000);
+                                inst.AllArguments[7] = (int)(monkeyList[inst.Arguments[0]].GetCoordinates().Y * 10000);
                                 instructions[i] = new Instruction(inst.AllArguments);
                             }
                         }
@@ -270,8 +270,8 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                             if (monkeyList[inst.Arguments[0]] == null || !monkeyList[inst.Arguments[0]].Sell()) invalidIndexList.Add(i);
                             else
                             {
-                                inst.AllArguments[6] = monkeyList[inst.Arguments[0]].GetCoordinates().X;
-                                inst.AllArguments[7] = monkeyList[inst.Arguments[0]].GetCoordinates().Y;
+                                inst.AllArguments[6] = (int)(monkeyList[inst.Arguments[0]].GetCoordinates().X * 10000);
+                                inst.AllArguments[7] = (int)(monkeyList[inst.Arguments[0]].GetCoordinates().Y * 10000);
                                 instructions[i] = new Instruction(inst.AllArguments);
                             }
                         }
@@ -286,8 +286,8 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                         if (hero.exsitence == false) invalidIndexList.Add(i);
                         else
                         {
-                            inst.AllArguments[6] = hero.GetCoordinates().X;
-                            inst.AllArguments[7] = hero.GetCoordinates().Y;
+                            inst.AllArguments[6] = (int)(hero.GetCoordinates().X * 10000);
+                            inst.AllArguments[7] = (int)(hero.GetCoordinates().Y * 10000);
                             instructions[i] = new Instruction(inst.AllArguments);
                         }
                         break;
@@ -295,8 +295,8 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                         if (!hero.Sell()) invalidIndexList.Add(i);
                         else
                         {
-                            inst.AllArguments[6] = hero.GetCoordinates().X;
-                            inst.AllArguments[7] = hero.GetCoordinates().Y;
+                            inst.AllArguments[6] = (int)(hero.GetCoordinates().X * 10000);
+                            inst.AllArguments[7] = (int)(hero.GetCoordinates().Y * 10000);
                             instructions[i] = new Instruction(inst.AllArguments);
                         }
                         break;

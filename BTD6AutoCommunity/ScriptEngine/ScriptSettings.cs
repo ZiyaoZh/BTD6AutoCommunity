@@ -28,7 +28,7 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public bool EnableLogging { get; set; }
 
-        public bool EnableMaskWindow { get; set; }
+        public bool EnableDisplayShapes { get; set; }
 
         public bool EnableRecommendInterval { get; set; }
 
@@ -136,7 +136,7 @@ namespace BTD6AutoCommunity.ScriptEngine
             EnableFastPath = false;
             EnableLogging = true;
             EnableRecommendInterval = true;
-            EnableMaskWindow = true;
+            EnableDisplayShapes = true;
         }
 
         public void RestoreDefaultHotKey()
@@ -222,7 +222,7 @@ namespace BTD6AutoCommunity.ScriptEngine
                 EnableDoubleCoin,
                 EnableFastPath,
                 EnableLogging,
-                EnableMaskWindow,
+                EnableDisplayShapes,
                 EnableRecommendInterval
             };
             File.WriteAllText(ConfigPath, JsonConvert.SerializeObject(settings, Formatting.Indented));

@@ -41,7 +41,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             return model;
         }
 
-        public static ScriptModel Convert(ScriptModelOld oldModel, string scriptName)
+        public static ScriptModel Convert00_11(ScriptModelOld oldModel, string scriptName)
         {
             var monkeyCountsOld = oldModel.ObjectCount;
             var monkeyIdsOld = oldModel.ObjectId;
@@ -63,8 +63,8 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
                         arguments[2] = 0;
                         arguments[7] = monkeyIdsOld[argumentsOld[2]].Item1 + monkeyIdsOld[argumentsOld[2]].Item2 * 100;
                         monkeyIds.Add(arguments[7]);
-                        arguments[8] = argumentsOld[3];
-                        arguments[9] = argumentsOld[4];
+                        arguments[8] = argumentsOld[3] * 10000;
+                        arguments[9] = argumentsOld[4] * 10000;
                         arguments[10] = argumentsOld[5];
                         arguments[11] = argumentsOld[6];
                         break;
@@ -96,8 +96,8 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
                         if (argumentsOld.Count == 6)
                         {
                             arguments[2] = 1;
-                            arguments[8] = argumentsOld[2];
-                            arguments[9] = argumentsOld[3];
+                            arguments[8] = argumentsOld[2] * 10000;
+                            arguments[9] = argumentsOld[3] * 10000;
                             arguments[10] = argumentsOld[4];
                             arguments[11] = argumentsOld[5];
                         }
@@ -126,8 +126,8 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
                         if (argumentsOld.Count == 6)
                         {
                             arguments[2] = 1;
-                            arguments[8] = argumentsOld[2];
-                            arguments[9] = argumentsOld[3];
+                            arguments[8] = argumentsOld[2] * 10000;
+                            arguments[9] = argumentsOld[3] * 10000;
                             arguments[10] = argumentsOld[4];
                             arguments[11] = argumentsOld[5];
                         }
@@ -140,8 +140,8 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
                         break;
                     case ActionTypes.PlaceHero:
                         arguments[0] = argumentsOld[0];
-                        arguments[8] = argumentsOld[1];
-                        arguments[9] = argumentsOld[2];
+                        arguments[8] = argumentsOld[1] * 10000;
+                        arguments[9] = argumentsOld[2] * 10000;
                         arguments[10] = argumentsOld[3];
                         arguments[11] = argumentsOld[4];
                         break;
@@ -156,8 +156,8 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
                         if (argumentsOld.Count == 6)
                         {
                             arguments[2] = 1;
-                            arguments[8] = argumentsOld[2];
-                            arguments[9] = argumentsOld[3];
+                            arguments[8] = argumentsOld[2] * 10000;
+                            arguments[9] = argumentsOld[3] * 10000;
                             arguments[10] = argumentsOld[4];
                             arguments[11] = argumentsOld[5];
                         }
@@ -180,8 +180,8 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
                         if (argumentsOld.Count == 6)
                         {
                             arguments[1] += 1;
-                            arguments[8] = argumentsOld[2];
-                            arguments[9] = argumentsOld[3];
+                            arguments[8] = argumentsOld[2] * 10000;
+                            arguments[9] = argumentsOld[3] * 10000;
                             arguments[10] = argumentsOld[4];
                             arguments[11] = argumentsOld[5];
                         }
@@ -199,16 +199,16 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
                     case ActionTypes.MouseClick:
                         arguments[0] = argumentsOld[0];
                         arguments[1] = argumentsOld[1];
-                        arguments[8] = argumentsOld[2];
-                        arguments[9] = argumentsOld[3];
+                        arguments[8] = argumentsOld[2] * 10000;
+                        arguments[9] = argumentsOld[3] * 10000;
                         arguments[10] = argumentsOld[4];
                         arguments[11] = argumentsOld[5];
                         break;
                     case ActionTypes.AdjustMonkeyCoordinates:
                         arguments[0] = argumentsOld[0];
                         arguments[1] = monkeyIdsOld[argumentsOld[1]].Item1 + monkeyIdsOld[argumentsOld[1]].Item2 * 100;
-                        arguments[8] = argumentsOld[2];
-                        arguments[9] = argumentsOld[3];
+                        arguments[8] = argumentsOld[2] * 10000;
+                        arguments[9] = argumentsOld[3] * 10000;
                         arguments[10] = argumentsOld[4];
                         arguments[11] = argumentsOld[5];
                         break;
@@ -240,6 +240,21 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
                 monkeyCounts.Add(monkeyCountsOld[i]);
             }
             return new ScriptModel(metadata, instructionsList, monkeyCounts, monkeyIds);
+        }
+
+        public static ScriptModel Convert10_11(ScriptModel oldModel)
+        {
+            var instructionsList = oldModel.InstructionsList;
+            var metadata = oldModel.Metadata;
+            metadata.Version = "1.1";
+            foreach (var instruction in instructionsList)
+            {
+                if (instruction[8] == -1 && instruction[9] == -1) continue;
+                // 将坐标从整数转换为乘以10000的整数表示
+                instruction[8] = instruction[8] * 10000;
+                instruction[9] = instruction[9] * 10000;
+            }
+            return new ScriptModel(metadata, instructionsList, oldModel.MonkeyCounts, oldModel.MonkeyIds);
         }
     }
 

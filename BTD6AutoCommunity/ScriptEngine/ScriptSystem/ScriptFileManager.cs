@@ -91,8 +91,16 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             if (model.Metadata == null)
             {
                 ScriptModelOld modelOld = JsonConvert.DeserializeObject<ScriptModelOld>(json);
-                newModel = ScriptModel.Convert(modelOld, scriptName);
+                newModel = ScriptModel.Convert00_11(modelOld, scriptName);
                 SaveScript(newModel);
+            }
+            else
+            {
+                if (model.Metadata.Version == "1.0")
+                {
+                    newModel = ScriptModel.Convert10_11(model);
+                    SaveScript(newModel);
+                }
             }
             return newModel;
         }

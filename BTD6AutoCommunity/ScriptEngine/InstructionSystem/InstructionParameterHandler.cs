@@ -81,20 +81,20 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
     public class InstructionCoordinateDefinition
     {
         public bool IsVisible { get; set; } = false;
-        public int X { get; set; }
-        public int Y { get; set; }
+        public double X { get; set; }
+        public double Y { get; set; }
         public string XInputText { get; set; } = "";
         public string YInputText { get; set; } = "";
         public string XText => X.ToString();
         public string YText => Y.ToString();
 
-        public (int X, int Y) GetCoordinate()
+        public (double X, double Y) GetCoordinate()
         {
-            if (Int32.TryParse(XInputText, out int x) && Int32.TryParse(YInputText, out int y))
+            if (Double.TryParse(XInputText, out double x) && Double.TryParse(YInputText, out double y))
             {
                 return (x, y);
             }
-            return (-1, -1);
+            return (-1.0, -1.0);
         }
     }
 

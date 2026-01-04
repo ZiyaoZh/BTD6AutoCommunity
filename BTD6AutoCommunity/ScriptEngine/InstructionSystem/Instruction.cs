@@ -13,7 +13,7 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
         public List<int> AllArguments { get; set; } = new List<int>(11);
         public ActionTypes Type { get => (ActionTypes)AllArguments[0]; set => AllArguments[0] = (int)value; }
         public List<int> Arguments { get => AllArguments.GetRange(1, 7); set => SetArguments(value); }
-        public (int X, int Y) Coordinates { get => (AllArguments[8], AllArguments[9]); set => SetCoordinates(value.X, value.Y); }
+        public (double X, double Y) Coordinates { get => AllArguments[8] == -1 && AllArguments[9] == -1 ? (-1, -1) : ((double)AllArguments[8] / 10000.0, (double)AllArguments[9] / 10000.0); set => SetCoordinates(value.X, value.Y); }
         public int RoundTrigger { get => AllArguments[10]; set => AllArguments[10] = value; }
         public int CoinTrigger { get => AllArguments[11]; set => AllArguments[11] = value; }
 
@@ -24,12 +24,12 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
             List<int> arguments,
             int roundTrigger,
             int coinTrigger,
-            (int, int) coordinates
+            (double, double) coordinates
             )
         {
             AllArguments = new List<int>(11) { (int)type }
                .Concat(arguments)
-               .Concat(new List<int> { roundTrigger, coinTrigger, coordinates.Item1, coordinates.Item2 })
+               .Concat(new List<int> { roundTrigger, coinTrigger, (int)(coordinates.Item1 * 10000), (int)(coordinates.Item2 * 10000) })
                .ToList();
             Type = type;
             Arguments = arguments;
@@ -85,7 +85,7 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
         // 是否包含坐标参数
         public bool HasCoordinates()
         {
-            if ( Coordinates.X != -1 && Coordinates.Y != -1) return true;
+            if ( AllArguments[8] != -1 && AllArguments[9] != -1) return true;
             return false;
         }
 
@@ -100,12 +100,13 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
         public override string ToString()
         {
             string content = "";
+            string coordinatesString = $"({(int)Coordinates.X}, {(int)Coordinates.Y})";
             switch (Type)
             {
                 case ActionTypes.PlaceMonkey: // 放置指令
                     content += Constants.GetTypeName((Monkeys)Arguments[0]) + (Arguments[6] / 100).ToString();
                     content += "放置";
-                    content += "于" + Coordinates.ToString();
+                    content += "于" + coordinatesString;
                     break;
                 case ActionTypes.UpgradeMonkey: // 升级指令
                     content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
@@ -130,12 +131,12 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                     content += Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString();
                     if (Arguments[1] == 0 || Arguments[1] == 1) content += "更改功能1";
                     if (Arguments[1] == 2 || Arguments[1] == 3) content += "更改功能2";
-                    if (Coordinates.X != -1)
-                        content += "于" + Coordinates.ToString();
+                    if (HasCoordinates())
+                        content += "于" + coordinatesString;
                     break;
                 case ActionTypes.AdjustMonkeyCoordinates:
                     content += "修改" + Constants.GetTypeName((Monkeys)(Arguments[0] % 100)) + (Arguments[0] / 100).ToString() + "坐标";
-                    content += "于" + Coordinates.ToString();
+                    content += "于" + coordinatesString;
                     break;
                 case ActionTypes.SellMonkey: // 出售指令
                     content += "出售";
@@ -143,7 +144,7 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                     break;
                 case ActionTypes.PlaceHero:
                     content += "放置英雄";
-                    content += "于" + Coordinates.ToString();
+                    content += "于" + coordinatesString;
                     break;
                 case ActionTypes.UpgradeHero:
                     content += "升级英雄";
@@ -151,8 +152,8 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                 case ActionTypes.PlaceHeroItem:
                     content += "放置英雄技能面板物品";
                     content += Arguments[0].ToString();
-                    if (Coordinates.X != -1)
-                        content += "于" + Coordinates.ToString();
+                    if (HasCoordinates())
+                        content += "于" + coordinatesString;
                     break;
                 case ActionTypes.SwitchHeroTarget:
                     content += "英雄目标";
@@ -164,8 +165,8 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                         content += "功能2";
                     else
                         content += "功能1";
-                    if (Coordinates.X != -1)
-                        content += "于" + Coordinates.ToString();
+                    if (HasCoordinates())
+                        content += "于" + coordinatesString;
                     break;
                 case ActionTypes.SellHero:
                     content += "出售英雄";
@@ -173,8 +174,8 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                 case ActionTypes.UseAbility: // 释放技能指令
                     content += "释放";
                     content += Constants.GetTypeName((SkillTypes)Arguments[0]);
-                    if (Coordinates.X != -1)
-                        content += "于" + Coordinates.ToString();
+                    if (HasCoordinates())
+                        content += "于" + coordinatesString;
                     break;
                 case ActionTypes.SwitchSpeed: // 倍速指令
                     if (Arguments[0] == 0)
@@ -184,7 +185,7 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
                     break;
                 case ActionTypes.MouseClick:
                     content += "鼠标点击";
-                    content += Coordinates.ToString();
+                    content += coordinatesString;
                     content += Arguments[0].ToString() + "次";
                     break;
                 case ActionTypes.WaitMilliseconds:
@@ -216,10 +217,18 @@ namespace BTD6AutoCommunity.ScriptEngine.InstructionSystem
         }
 
         // 为Coordinates实现set接口
-        private void SetCoordinates(int x, int y)
+        private void SetCoordinates(double x, double y)
         {
-            AllArguments[8] = x;
-            AllArguments[9] = y;
+            if (x == -1 && y == -1)
+            {
+                AllArguments[8] = -1;
+                AllArguments[9] = -1;
+            }
+            else
+            {
+                AllArguments[8] = (int)(x * 10000);
+                AllArguments[9] = (int)(y * 10000);
+            }
         }
 
         public int this[int index] { get => AllArguments[index]; set => AllArguments[index] = value; }

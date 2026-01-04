@@ -160,9 +160,9 @@ namespace BTD6AutoCommunity.Core
             return (originalX, originalY);
         }
 
-        public Point ConvertToAbsolute(Point basePoint)
+        public Point ConvertToAbsolute((double X, double Y)basePoint)
         {
-            (double x, double y) = ConvertGamePosition(basePoint.X, basePoint.Y);
+            (double x, double y) = ConvertGamePosition(basePoint.X + 0.5, basePoint.Y + 0.5);
 
             return new Point(
                 (int)Math.Round(x * 65535 / ScreenWidth),

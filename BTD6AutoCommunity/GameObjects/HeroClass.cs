@@ -11,7 +11,7 @@ namespace BTD6AutoCommunity.GameObjects
     public class HeroClass
     {
         public string name;  // 猴子塔的名字
-        public (int, int) coordinates  = (0, 0);  // 部署坐标 (x, y)
+        public (double, double) coordinates  = (0, 0);  // 部署坐标 (x, y)
 
         public bool exsitence;
         public bool storeOpen;
@@ -34,7 +34,7 @@ namespace BTD6AutoCommunity.GameObjects
             return hero;
         }
 
-        public bool PlaceHero((int, int) pos)
+        public bool PlaceHero((double, double) pos)
         {
             if (exsitence) return false;
             coordinates = pos;
@@ -49,7 +49,7 @@ namespace BTD6AutoCommunity.GameObjects
             return true;
         }
 
-        public (int X, int Y) GetCoordinates()
+        public (double X, double Y) GetCoordinates()
         {
             return coordinates;
         }
