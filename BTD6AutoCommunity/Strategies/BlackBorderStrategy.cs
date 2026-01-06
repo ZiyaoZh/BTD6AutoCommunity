@@ -1,5 +1,6 @@
 ﻿using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.GameObjects;
+using BTD6AutoCommunity.ScriptEngine.ScriptSystem;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -179,7 +180,7 @@ namespace BTD6AutoCommunity.Strategies
             string difficultyName = Constants.GetTypeName(scriptSequence[scriptIndex].levelDifficulties);
             string modeName = Constants.GetTypeName(scriptSequence[scriptIndex].levelModes);
             string scriptName = modeName + "-黑框";
-            string scriptPath = scriptFileManager.GetScriptFullPath(mapName, difficultyName, scriptName);
+            string scriptPath = ScriptFileManager.GetScriptFullPath(mapName, difficultyName, scriptName);
             if (mapInfo.GetBadgeStatus(mapList[mapIndex], scriptSequence[scriptIndex].levelDifficulties, scriptSequence[scriptIndex].levelModes))
             {
                 _logs.Log($"地图{mapName}已通过{Constants.GetTypeName(scriptSequence[scriptIndex].levelDifficulties)}难度的{Constants.GetTypeName(scriptSequence[scriptIndex].levelModes)}模式，无需重复挑战，开始尝试下一脚本！", LogLevel.Info);

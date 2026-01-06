@@ -319,7 +319,6 @@ namespace BTD6AutoCommunity.Views.Main
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string bundleName = Path.GetFileNameWithoutExtension(openFileDialog.FileName);
-                    ScriptFileManager fileManager = new ScriptFileManager();
                     ScriptModel scriptModel;
                     if (BundleNamesCB.Items.Contains(bundleName))
                     {
@@ -331,7 +330,7 @@ namespace BTD6AutoCommunity.Views.Main
                         BundleNamesCB.Items.Remove(bundleName);
                         bundles.SaveBundle();
                     }
-                    scriptModel = fileManager.LoadScript(openFileDialog.FileName);
+                    scriptModel = ScriptFileManager.LoadScript(openFileDialog.FileName);
                     if (bundles.AddBundle(bundleName, scriptModel))
                     {
                         BundleNamesCB.Items.Add(bundleName);

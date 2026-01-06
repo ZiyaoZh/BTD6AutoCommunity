@@ -21,7 +21,6 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         private readonly InstructionFactory factory;
 
-        private readonly ScriptFileManager fileManager;
 
         public ScriptService()
         {
@@ -29,7 +28,6 @@ namespace BTD6AutoCommunity.ScriptEngine
             instructions = new InstructionSequence();
             bundle = new InstructionsBundle();
             factory = new InstructionFactory();
-            fileManager = new ScriptFileManager();
         }
 
         public void SetMetadata(ScriptMetadata metadata)
@@ -156,7 +154,7 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public string GetScriptPath(string seletedMap, string selectedDifficulty, string scriptName)
         {
-            return fileManager.GetScriptFullPath(
+            return ScriptFileManager.GetScriptFullPath(
                 seletedMap,
                 selectedDifficulty,
                 scriptName
@@ -165,7 +163,7 @@ namespace BTD6AutoCommunity.ScriptEngine
 
         public string GetScriptPath()
         {
-            return fileManager.GetScriptFullPath(
+            return ScriptFileManager.GetScriptFullPath(
                 Constants.GetTypeName(metadata.SelectedMap),
                 Constants.GetTypeName(metadata.SelectedDifficulty),
                 metadata.ScriptName
@@ -176,18 +174,29 @@ namespace BTD6AutoCommunity.ScriptEngine
         {
             BuildInstructions();
             var script = new ScriptModel(metadata, instructions.GetInstructionList(), instructions.GetMonkeyCounts(), instructions.GetMonkeyIds());
-            return fileManager.SaveScript(script);
+            return ScriptFileManager.SaveScript(script);
         }
 
         public bool LoadScript(string scriptPath)
         {
-            var script = fileManager.LoadScript(scriptPath);
+            var script = ScriptFileManager.LoadScript(scriptPath);
             if (script == null)
             {
                 return false;
             }
             metadata = script.Metadata;
             instructions = InstructionSequence.BuildByScriptModel(script);
+            return true;
+        }
+
+        public bool LoadScript(ScriptModel scriptModel)
+        {
+            if (scriptModel == null)
+            {
+                return false;
+            }
+            metadata = scriptModel.Metadata;
+            instructions = InstructionSequence.BuildByScriptModel(scriptModel);
             return true;
         }
 

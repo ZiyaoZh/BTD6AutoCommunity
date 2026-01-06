@@ -158,6 +158,7 @@
     <Compile Include="ScriptEngine\ScriptSystem\ScriptMetadata.cs" />
     <Compile Include="ScriptEngine\ScriptSystem\ScriptModel.cs" />
     <Compile Include="ScriptEngine\UserSelection.cs" />
+    <Compile Include="Services\ImportScriptsService.cs" />
     <Compile Include="Services\Interfaces\IMessageBoxService.cs" />
     <Compile Include="Services\Interfaces\IMouseCoordinateDisplayService.cs" />
     <Compile Include="Services\Interfaces\IScriptService.cs" />

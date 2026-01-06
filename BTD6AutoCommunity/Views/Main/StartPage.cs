@@ -25,8 +25,7 @@ namespace BTD6AutoCommunity.Views.Main
 
         private void InitializeStartPage()
         {
-            IScriptService startPageScriptService = new ScriptService();
-            startViewModel = new StartViewModel(startPageScriptService, messageBoxService);
+            startViewModel = new StartViewModel(messageBoxService);
 
             BindFunctionComboBox();
             BindMapComboBox();

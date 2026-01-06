@@ -207,8 +207,7 @@ namespace BTD6AutoCommunity.Views.Main
                 {
                     string sourceFilePath = openFileDialog.FileName;
                     string fileName = Path.GetFileName(sourceFilePath);
-                    ScriptFileManager fileManager = new ScriptFileManager();
-                    string destinationFilePath = fileManager.GetScriptFullPath(fileManager.LoadScript(sourceFilePath));
+                    string destinationFilePath = ScriptFileManager.GetScriptFullPath(ScriptFileManager.LoadScript(sourceFilePath));
                     if (Path.GetExtension(fileName) == ".btd6")
                     {
                         try
