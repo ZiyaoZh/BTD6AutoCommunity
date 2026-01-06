@@ -11,6 +11,7 @@ using BTD6AutoCommunity.Core;
 using BTD6AutoCommunity.ScriptEngine;
 using BTD6AutoCommunity.GameObjects;
 using BTD6AutoCommunity.ScriptEngine.ScriptSystem;
+using BTD6AutoCommunity.Services;
 
 namespace BTD6AutoCommunity.Views.Main
 {
@@ -201,32 +202,15 @@ namespace BTD6AutoCommunity.Views.Main
 
         private void ImportBT_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            ImportScriptsService importScriptsService = new ImportScriptsService();
+            var scriptModel = importScriptsService.ImportScripts();
+            if (scriptModel != null)
             {
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    string sourceFilePath = openFileDialog.FileName;
-                    string fileName = Path.GetFileName(sourceFilePath);
-                    string destinationFilePath = ScriptFileManager.GetScriptFullPath(ScriptFileManager.LoadScript(sourceFilePath));
-                    if (Path.GetExtension(fileName) == ".btd6")
-                    {
-                        try
-                        {
-                            File.Copy(sourceFilePath, destinationFilePath, true);
-                            SelectPath(Path.GetDirectoryName(destinationFilePath));
-                        }
-                        catch (IOException ex)
-                        {
-                            MessageBox.Show("脚本格式错误！" + ex.Message);
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("脚本格式错误！");
-                    }
-                }
+                string destinationFilePath = ScriptFileManager.GetScriptFullPath(scriptModel);
+                SelectPath(Path.GetDirectoryName(destinationFilePath));
             }
         }
+
 
         private void OutputBT_Click(object sender, EventArgs e)
         {
