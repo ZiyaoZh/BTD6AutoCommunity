@@ -346,9 +346,9 @@ namespace BTD6AutoCommunity.Strategies.Base
             }
         }
 
-        protected void ReadGameData()
+        protected async void ReadGameData()
         {
-            CurrentGameData = LevelDataMonitor.GetCurrentGameData();
+            CurrentGameData = await LevelDataMonitor.GetCurrentGameDataAsync();
             OnGameDataUpdated?.Invoke(CurrentGameData);
         }
 

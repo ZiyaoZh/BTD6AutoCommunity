@@ -53,7 +53,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
             reDeployList = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8 };
             currentReDeployIndex = -1;
             reDeployFlag = false;
-            reDeployPace = 1;
+            reDeployPace = 10000;
 
             IsStartFreePlay = false;
             StartFreePlayFinished = false;

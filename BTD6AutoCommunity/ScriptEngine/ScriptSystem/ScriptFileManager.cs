@@ -96,7 +96,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             }
             else
             {
-                if (model.Metadata.Version == "1.0")
+                if (model.Metadata.Version != "1.1")
                 {
                     newModel = ScriptModel.Convert10_11(model);
                     SaveScript(newModel);
