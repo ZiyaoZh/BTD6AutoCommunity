@@ -8,32 +8,27 @@ using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
 using System.Windows.Forms;
+using System.Security.Policy;
 
 namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
 {
     public class ScriptFileManager
     {
-        private readonly string basePath;
-        private readonly string deleteDir;
+        private const string basePath = "data\\我的脚本\\";
+        private const string deleteDir = "data\\最近删除\\";
 
-        public ScriptFileManager()
-        {
-            basePath = $@"data\我的脚本\";
-            deleteDir = $@"data\最近删除\";
-        }
-
-        public bool ScriptExists(string mapName, string difficultyName, string scriptName)
+        public static bool ScriptExists(string mapName, string difficultyName, string scriptName)
         {
             string fullPath = (GetScriptFullPath(mapName, difficultyName, scriptName));
             return File.Exists(fullPath);
         }
 
-        public string GetScriptFullPath(string mapName, string difficultyName, string scriptName)
+        public static string GetScriptFullPath(string mapName, string difficultyName, string scriptName)
         {
             return Path.GetFullPath(Path.Combine(basePath, mapName, difficultyName, $"{scriptName}.btd6"));
         }
 
-        public string GetScriptFullPath(ScriptModel scriptModel)
+        public static string GetScriptFullPath(ScriptModel scriptModel)
         {
             string mapName = Constants.GetTypeName(scriptModel.Metadata.SelectedMap);
             string difficultyName = Constants.GetTypeName(scriptModel.Metadata.SelectedDifficulty);
@@ -41,7 +36,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             return GetScriptFullPath(mapName, difficultyName, scriptName);
         }
 
-        public string SaveScript(ScriptModel script)
+        public static string SaveScript(ScriptModel script)
         {
             string mapName = Constants.GetTypeName(script.Metadata.SelectedMap);
             string difficultyName = Constants.GetTypeName(script.Metadata.SelectedDifficulty);
@@ -57,7 +52,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             return path;
         }
 
-        public void DeleteScript(string fullpath)
+        public static void DeleteScript(string fullpath)
         {
             // 将文件移入data/最近删除
             Directory.CreateDirectory(deleteDir);
@@ -71,7 +66,21 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             File.Move(fullpath, newPath);
         }
 
-        public ScriptModel LoadScript(string fullPath)
+        public static ScriptMetadata GetScriptMetadata(string fullPath)
+        {
+            if (!File.Exists(fullPath))
+                return null;
+            string json = File.ReadAllText(fullPath);
+            ScriptModel model = JsonConvert.DeserializeObject<ScriptModel>(json);
+            return model.Metadata;
+        }
+
+        public static ScriptMetadata GetScriptMetadata(ScriptModel scriptModel)
+        {
+            return scriptModel.Metadata;
+        }
+
+        public static ScriptModel LoadScript(string fullPath)
         {
             if (!File.Exists(fullPath))
                 return null;
@@ -85,7 +94,32 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             return RepairScript(model, json, scriptName); ;
         }
 
-        private ScriptModel RepairScript(ScriptModel model, string json, string scriptName)
+        public static List<ScriptModel> LoadScriptPackage(string fullPath)
+        {
+            if (!File.Exists(fullPath))
+                return null;
+            string json = File.ReadAllText(fullPath);
+            List<ScriptModel> models = JsonConvert.DeserializeObject<List<ScriptModel>>(json);
+            return models;
+        }
+
+        public static List<string> GetScriptPackageList(string fullPath)
+        {
+            if (!File.Exists(fullPath))
+                return null;
+            string json = File.ReadAllText(fullPath);
+            List<ScriptModel> models = JsonConvert.DeserializeObject<List<ScriptModel>>(json);
+            return models.Select(m => m.Metadata.ScriptName).ToList();
+        }
+
+        public static List<string> GetScriptPackageList(List<ScriptModel> models)
+        {
+            return models.Select(m => Constants.GetTypeName(m.Metadata.SelectedMap) + '\\' + 
+                                    Constants.GetTypeName(m.Metadata.SelectedDifficulty) + '\\' + 
+                                    m.Metadata.ScriptName).ToList();
+        }
+
+        private static ScriptModel RepairScript(ScriptModel model, string json, string scriptName)
         {
             ScriptModel newModel = model;
             if (model.Metadata == null)
@@ -96,7 +130,7 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             }
             else
             {
-                if (model.Metadata.Version == "1.0")
+                if (model.Metadata.Version != "1.1")
                 {
                     newModel = ScriptModel.Convert10_11(model);
                     SaveScript(newModel);

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using BTD6AutoCommunity.Services.Interfaces;
 using System.Drawing;
 using BTD6AutoCommunity.Views;
+using System.Threading;
 
 
 
@@ -47,8 +48,6 @@ namespace BTD6AutoCommunity.Strategies.Base
         // 脚本元数据
         protected ScriptMetadata scriptMetadata;
         // 脚本文件管理
-        protected ScriptFileManager scriptFileManager;
-
         // 执行引擎
         protected InGame.InGameActionExecutor InGameActionExecutor;
         protected bool IsStrategyExecutionCompleted;
@@ -69,7 +68,6 @@ namespace BTD6AutoCommunity.Strategies.Base
         {
             _logs = logHandler;
             _context = new GameContext();
-            scriptFileManager = new ScriptFileManager();
             _settings = ScriptSettings.LoadJsonSettings();
             if (!_context.IsValid)
             {
@@ -88,7 +86,7 @@ namespace BTD6AutoCommunity.Strategies.Base
 
         protected void GetExecutableInstructions(UserSelection userSelection)
         {
-            string scriptPath = scriptFileManager.GetScriptFullPath(
+            string scriptPath = ScriptFileManager.GetScriptFullPath(
                     Constants.GetTypeName(userSelection.selectedMap),
                     Constants.GetTypeName(userSelection.selectedDifficulty),
                     userSelection.selectedScript
@@ -159,8 +157,7 @@ namespace BTD6AutoCommunity.Strategies.Base
         // 加载脚本
         protected ScriptModel LoadScript(string scriptPath)
         {
-            ScriptFileManager fileManager = new ScriptFileManager();
-            return fileManager.LoadScript(scriptPath);
+            return ScriptFileManager.LoadScript(scriptPath);
         }
 
         // 编译脚本
@@ -238,7 +235,7 @@ namespace BTD6AutoCommunity.Strategies.Base
         protected void SetupScreenShotCaptureTimer()
         {
             screenShotCaptureTimer = new System.Timers.Timer(DefaultScreenShotCaptureInterval);
-            screenShotCaptureTimer.Elapsed += (s, e) => CheckGameState();
+            screenShotCaptureTimer.Elapsed += async (s, e) => await CheckGameStateAsync();
             screenShotCaptureTimer.AutoReset = true;
         }
 
@@ -255,7 +252,7 @@ namespace BTD6AutoCommunity.Strategies.Base
                 _logs.Log($"使用自定义数据读取间隔：{interval}ms", LogLevel.Info);
             }
             LevelDataMonitorTimer = new System.Timers.Timer(interval);
-            LevelDataMonitorTimer.Elapsed += (s, e) => ReadGameData();
+            LevelDataMonitorTimer.Elapsed += async (s, e) => await ReadGameDataAsync();
             LevelDataMonitorTimer.AutoReset = true;
         }
 
@@ -312,7 +309,7 @@ namespace BTD6AutoCommunity.Strategies.Base
             InGameActionExecutorTimer = null;
         }
 
-        protected void CheckGameState()
+        protected async Task CheckGameStateAsync()
         {
             if (_isProcessing) return;
 
@@ -323,19 +320,27 @@ namespace BTD6AutoCommunity.Strategies.Base
             }
             try
             {
-                Bitmap screenshot = screenshotCapturer.CaptureFullAndGetClone();
-
-                var currentState = stateMachine.GetCurrentState(screenshot);
-                if (currentState != lastState)
+                await Task.Run(() =>
                 {
-                    _logs.Log($"当前状态：{GameStateDescription.GetChineseDescription(currentState)}", LogLevel.Info);
-                }
+                    using (Bitmap screenshot = screenshotCapturer.CaptureFullAndGetClone())
+                    {
+                        var currentState = stateMachine.GetCurrentState(screenshot);
+                        if (currentState != lastState)
+                        {
+                            _logs.Log($"当前状态：{GameStateDescription.GetChineseDescription(currentState)}", LogLevel.Info);
+                        }
 
-                if (stateHandlers.TryGetValue(currentState, out Action handler))
-                {
-                    handler.Invoke();
-                }
-                lastState = currentState;
+                        if (stateHandlers.TryGetValue(currentState, out Action handler))
+                        {
+                            handler.Invoke();
+                        }
+                        lastState = currentState;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logs.Log($"检查游戏状态时出错: {ex.Message}", LogLevel.Error);
             }
             finally
             {
@@ -346,10 +351,17 @@ namespace BTD6AutoCommunity.Strategies.Base
             }
         }
 
-        protected void ReadGameData()
+        protected async Task ReadGameDataAsync()
         {
-            CurrentGameData = LevelDataMonitor.GetCurrentGameData();
-            OnGameDataUpdated?.Invoke(CurrentGameData);
+            try
+            {
+                CurrentGameData = await LevelDataMonitor.GetCurrentGameDataAsync();
+                OnGameDataUpdated?.Invoke(CurrentGameData);
+            }
+            catch (Exception ex)
+            {
+                _logs.Log($"读取游戏数据时出错: {ex.Message}", LogLevel.Error);
+            }
         }
 
         protected void ExecuteInGameAction()

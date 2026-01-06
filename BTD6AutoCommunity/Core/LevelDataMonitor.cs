@@ -77,49 +77,50 @@ namespace BTD6AutoCommunity.Core
                 slashTemplate = Cv2.ImRead(slashTemplatePath, ImreadModes.Unchanged);
             }
         }
-        public List<string> GetCurrentGameData() 
+        public async Task<List<string>> GetCurrentGameDataAsync() 
         {
-            List<string> gameData = new List<string>();
+            var gameData = new List<string>();
+            var tasks = new List<Task<string>>();
 
-            Task<string>[] tasks = new Task<string>[3];
             if (IsRightUpgrading(_context)) // 右侧升级
             {
-                tasks[0] = Task.Run(() => GetNumberFromScreenArea(rightUpGradeRoundNumberArea, NumberType.Round));
+                tasks.Add(Task.Run(() => GetNumberFromScreenArea(rightUpGradeRoundNumberArea, NumberType.Round)));
                 MaskWindow.Instance.ShowRectangle(baseRightUpGradeRoundNumberArea, _context);
             }
             else
             {
-                tasks[0] = Task.Run(() => GetNumberFromScreenArea(roundNumberArea, NumberType.Round));
+                tasks.Add(Task.Run(() => GetNumberFromScreenArea(roundNumberArea, NumberType.Round)));
                 MaskWindow.Instance.ShowRectangle(baseRoundNumberArea, _context);
             }
+
             if (IsLeftUpgrading(_context)) // 左侧升级
             {
-                tasks[1] = Task.Run(() => GetNumberFromScreenArea(leftUpGradeCashNumberArea, NumberType.Cash));
-                tasks[2] = Task.Run(() => GetNumberFromScreenArea(leftUpGradeLifeNumberArea, NumberType.Life));
+                tasks.Add(Task.Run(() => GetNumberFromScreenArea(leftUpGradeCashNumberArea, NumberType.Cash)));
+                tasks.Add(Task.Run(() => GetNumberFromScreenArea(leftUpGradeLifeNumberArea, NumberType.Life)));
                 MaskWindow.Instance.ShowRectangle(baseLeftUpGradeCashNumberArea, _context);
                 MaskWindow.Instance.ShowRectangle(baseLeftUpGradeLifeNumberArea, _context);
-
             }
             else
             {
-                tasks[1] = Task.Run(() => GetNumberFromScreenArea(cashNumberArea, NumberType.Cash));
-                tasks[2] = Task.Run(() => GetNumberFromScreenArea(lifeNumberArea, NumberType.Life));
+                tasks.Add(Task.Run(() => GetNumberFromScreenArea(cashNumberArea, NumberType.Cash)));
+                tasks.Add(Task.Run(() => GetNumberFromScreenArea(lifeNumberArea, NumberType.Life)));
                 MaskWindow.Instance.ShowRectangle(baseCashNumberArea, _context);
                 MaskWindow.Instance.ShowRectangle(baseLifeNumberArea, _context);
-
             }
 
-            // 等待所有任务完成
-            Task.WaitAll(tasks);
+            try
+            {
+                string[] results = await Task.WhenAll(tasks);
+                gameData.AddRange(results);
+            }
+            catch (Exception ex)
+            {
+                // 记录异常，以便调试
+                Debug.WriteLine($"An error occurred while getting game data: {ex}");
+                // 根据需要返回默认值
+                gameData.AddRange(new[] { "", "", "" });
+            }
 
-            // 将识别结果添加到列表
-            gameData.Add(tasks[0].Result);
-            gameData.Add(tasks[1].Result);
-            gameData.Add(tasks[2].Result);
-            //Debug.WriteLine(tasks[0].Result + " " + tasks[1].Result + " " + tasks[2].Result);
-            // 将识别结果写入文件
-            //string status = $"Round: {roundNumber}, cash: {cashNumber}, Life: {lifeNumber}";
-            //File.WriteAllText(outputFilePath, status);
             return gameData;
         }
 
@@ -127,23 +128,31 @@ namespace BTD6AutoCommunity.Core
         {
             using (Bitmap bitmap = new Bitmap(area.Width, area.Height))
             {
-                using (Graphics g = Graphics.FromImage(bitmap))
+                try
                 {
-                    g.CopyFromScreen(area.Location, System.Drawing.Point.Empty, area.Size);
-                }
+                    using (Graphics g = Graphics.FromImage(bitmap))
+                    {
+                        g.CopyFromScreen(area.Location, System.Drawing.Point.Empty, area.Size);
+                    }
 
-                // 转换为OpenCV Mat
-                Mat image = BitmapConverter.ToMat(bitmap);
-                if (type == NumberType.Round)
-                {
-                    return RecognizeRoundNumber(image);
+                    // 转换为OpenCV Mat
+                    Mat image = BitmapConverter.ToMat(bitmap);
+                    if (type == NumberType.Round)
+                    {
+                        return RecognizeRoundNumber(image);
+                    }
+                    else if (type == NumberType.Cash || type == NumberType.Life)
+                    {
+                        return RecognizeLifeAndCashNumber(image);
+                    }
+                    else
+                    {
+                        return "";
+                    }
                 }
-                else if (type == NumberType.Cash || type == NumberType.Life)
+                catch (Exception ex)
                 {
-                    return RecognizeLifeAndCashNumber(image);
-                }
-                else
-                {
+                    Debug.WriteLine($"Error capturing or processing screen area: {ex.Message}");
                     return "";
                 }
             }

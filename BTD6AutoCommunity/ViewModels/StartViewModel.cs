@@ -21,12 +21,12 @@ namespace BTD6AutoCommunity.ViewModels
 {
     public class StartViewModel : INotifyPropertyChanged
     {
-        private readonly IScriptService scriptService;
+        private readonly ScriptService scriptService;
         private readonly IMessageBoxService messageBoxService;
 
-        public StartViewModel(IScriptService scriptService, IMessageBoxService messageBoxService)
+        public StartViewModel(IMessageBoxService messageBoxService)
         {
-            this.scriptService = scriptService;
+            scriptService = new ScriptService();
             this.messageBoxService = messageBoxService;
 
             // 加载脚本设置
@@ -330,40 +330,19 @@ namespace BTD6AutoCommunity.ViewModels
 
         private void ImportScript()
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            ImportScriptsService importScriptsService = new ImportScriptsService();
+            var scriptModel = importScriptsService.ImportScripts();
+            if (scriptModel == null)
             {
-                openFileDialog.Filter = "脚本文件 (*.btd6)|*.btd6";
-
-                if (openFileDialog.ShowDialog() != DialogResult.OK)
-                    return;
-
-                string sourceFilePath = openFileDialog.FileName;
-
-                if (Path.GetExtension(sourceFilePath) != ".btd6")
-                {
-                    messageBoxService.ShowError("脚本格式错误！");
-                    return;
-                }
-                try
-                {
-                    scriptService.LoadScript(sourceFilePath);
-                    scriptService.SaveScript();
-
-                    var scriptMetadata = scriptService.GetMetadata();
-
-                    // 更新 VM 中选中项，会自动触发 UI 更新
-                    SelectedMap = MapOptions.FirstOrDefault(m => Equals(m.Value, scriptMetadata.SelectedMap));
-                    SelectedDifficulty = DifficultyOptions.FirstOrDefault(d => Equals(d.Value, scriptMetadata.SelectedDifficulty));
-                    SelectedScript = scriptMetadata.ScriptName;
-
-                    LoadSelectedScript();
-                }
-                catch
-                {
-                    messageBoxService.ShowError("脚本内容错误！");
-                    return;
-                }
+                return;
             }
+            scriptService.LoadScript(scriptModel);
+            var scriptMetadata = scriptService.GetMetadata();
+            // 更新 VM 中选中项，会自动触发 UI 更新
+            SelectedMap = MapOptions.FirstOrDefault(m => Equals(m.Value, scriptMetadata.SelectedMap));
+            SelectedDifficulty = DifficultyOptions.FirstOrDefault(d => Equals(d.Value, scriptMetadata.SelectedDifficulty));
+            SelectedScript = scriptMetadata.ScriptName;
+            LoadSelectedScript();
         }
 
         public ICommand OutputScriptCommand { get; }

@@ -161,6 +161,13 @@ namespace BTD6AutoCommunity.Services.Interfaces
         bool LoadScript(string filePath);
 
         /// <summary>
+        /// 用脚本模型加载脚本文件
+        /// </summary>
+        /// <param name="scriptModel"></param>
+        /// <returns></returns>
+        bool LoadScript(ScriptModel scriptModel);
+
+        /// <summary>
         /// 获取预览
         /// </summary>
         /// <returns></returns>

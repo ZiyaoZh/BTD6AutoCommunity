@@ -15,6 +15,7 @@ using System.CodeDom.Compiler;
 using OpenCvSharp.ML;
 using BTD6AutoCommunity.GameObjects;
 using OpenCvSharp.XPhoto;
+using BTD6AutoCommunity.ScriptEngine.ScriptSystem;
 
 namespace BTD6AutoCommunity.Strategies
 {
@@ -78,13 +79,19 @@ namespace BTD6AutoCommunity.Strategies
             {
                 foreach (int dif in new int[] { 0, 1, 2 })
                 {
-                    string scriptPath = scriptFileManager.GetScriptFullPath(
+                    string scriptPath = ScriptFileManager.GetScriptFullPath(
                         Constants.GetTypeName((Maps)mapId),
                         Constants.GetTypeName((LevelDifficulties)dif),
                         Constants.CollectionScripts[collectionMode]
                         );
-                    if (File.Exists(scriptPath))
+                    var scriptMetadata = ScriptFileManager.GetScriptMetadata(scriptPath);
+                    if (File.Exists(scriptPath) && scriptMetadata != null)
                     {
+                        if (scriptMetadata.SelectedMap != (Maps)mapId ||
+                            scriptMetadata.SelectedDifficulty != (LevelDifficulties)dif)
+                        {
+                            continue;
+                        }
                         mapDifficulties.Add(mapId, dif);
                         collectionScripts.Add(mapId, scriptPath);
                         break;
