@@ -149,7 +149,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                     if (currentReDeployIndex == reDeployList.Count)
                     {
                         currentReDeployIndex = 0;
-                        reDeployPace++;
+                        reDeployPace+=10000;
                     }
                     int x = micro[1];
                     int y = micro[2];
@@ -350,7 +350,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                     if (currentReDeployIndex == reDeployList.Count)
                     {
                         currentReDeployIndex = 0;
-                        reDeployPace++;
+                        reDeployPace+=10000;
                     }
                     int x = micro[1];
                     int y = micro[2];

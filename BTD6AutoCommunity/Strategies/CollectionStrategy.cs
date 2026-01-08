@@ -40,6 +40,7 @@ namespace BTD6AutoCommunity.Strategies
         private CollectionMode collectionMode;
         private int currentMapId;
         private bool IsHeroSelectionComplete;
+        private Heroes currentHero = Heroes.Unkown;
 
         private int levelChallengingCount = 0;
 
@@ -247,7 +248,7 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("当前模式不是简单模式，无法进入简单模式，返回", LogLevel.Warning);
                 return;
             }
-            if (IsHeroSelectionComplete)
+            if (IsHeroSelectionComplete || scriptMetadata.SelectedHero == currentHero)
             {
                 IsHeroSelectionComplete = false;
 
@@ -276,7 +277,7 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("当前模式不是中级模式，无法进入中级模式，返回", LogLevel.Warning);
                 return;
             }
-            if (IsHeroSelectionComplete)
+            if (IsHeroSelectionComplete || scriptMetadata.SelectedHero == currentHero)
             {
                 IsHeroSelectionComplete = false;
                 Point point = Constants.GetLevelModePos(scriptMetadata.SelectedMode);
@@ -292,7 +293,7 @@ namespace BTD6AutoCommunity.Strategies
         private void HandleLevelHardModeSelection()
         {
             if (executableInstructions == null || scriptMetadata == null)
-                {
+            {
                 HandleReturnableScreen();
                 _logs.Log("脚本未加载，无法进入困难模式，返回", LogLevel.Warning);
                 return;
@@ -304,7 +305,7 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("当前模式不是困难模式，无法进入困难模式，返回", LogLevel.Warning);
                 return;
             }
-            if (IsHeroSelectionComplete)
+            if (IsHeroSelectionComplete || scriptMetadata.SelectedHero == currentHero)
             {
                 IsHeroSelectionComplete = false;
                 Point point = Constants.GetLevelModePos(scriptMetadata.SelectedMode);
@@ -354,6 +355,7 @@ namespace BTD6AutoCommunity.Strategies
             InputSimulator.MouseMoveAndLeftClick(_context, 80, 55);
             IsHeroSelectionComplete = true;
 
+            currentHero = scriptMetadata.SelectedHero;
             _logs.Log($"已选择英雄：{Constants.GetTypeName(scriptMetadata.SelectedHero)}", LogLevel.Info);
         }
 

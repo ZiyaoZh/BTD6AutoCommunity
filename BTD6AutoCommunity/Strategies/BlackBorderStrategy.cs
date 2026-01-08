@@ -46,6 +46,8 @@ namespace BTD6AutoCommunity.Strategies
         private int levelChallengingCount = 0;
         private int returnableScreenCount = 0;
 
+        private Heroes currentHero = Heroes.Unkown;
+
         private readonly List<(LevelDifficulties levelDifficulties, LevelModes levelModes)> scriptSequence;
         private int scriptIndex = 0;
         private readonly List<Maps> mapList;
@@ -382,26 +384,13 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("当前模式不是简单模式，无法进入简单模式，返回", LogLevel.Warning);
                 return;
             }
-            if (IsHeroSelectionComplete)
+            // 若英雄已经选好了，选择挑战关卡
+            if (!IsHeroSelectionComplete && scriptMetadata.SelectedHero != currentHero)
             {
-                IsHeroSelectionComplete = false;
-
-                Point point = Constants.GetLevelModePos(scriptMetadata.SelectedMode);
-                InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
-            }
-            else
-            {
-                if (modeReTryCount > 2)
-                {
-                    modeReTryCount = 0;
-                    strategyInfo.UnChallengingScripts.Add(scriptMetadata.ToString());
-                    _logs.Log($"未找到简单模式：{Constants.GetTypeName(scriptMetadata.SelectedMode)}位置，请确认是否已解锁，开始尝试下一脚本！", LogLevel.Warning);
-                    NextScript();
-                    return;
-                }
-                modeReTryCount++;
                 InputSimulator.MouseMoveAndLeftClick(_context, 100, 1000);
+                return;
             }
+            ChooseMode(LevelDifficulties.Easy);
         }
 
         private void HandleLevelMediumModeSelection()
@@ -425,25 +414,12 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("当前模式不是中级模式，无法进入中级模式，返回", LogLevel.Warning);
                 return;
             }
-            if (IsHeroSelectionComplete)
+            if (!IsHeroSelectionComplete && scriptMetadata.SelectedHero != currentHero)
             {
-                IsHeroSelectionComplete = false;
-                Point point = Constants.GetLevelModePos(scriptMetadata.SelectedMode);
-                InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
-            }
-            else
-            {
-                if (modeReTryCount > 2)
-                {
-                    modeReTryCount = 0;
-                    strategyInfo.UnChallengingScripts.Add(scriptMetadata.ToString());
-                    _logs.Log($"未找到中级模式：{Constants.GetTypeName(scriptMetadata.SelectedMode)}位置，请确认是否已解锁，开始尝试下一脚本！", LogLevel.Warning);
-                    NextScript();
-                    return;
-                }
-                modeReTryCount++;
                 InputSimulator.MouseMoveAndLeftClick(_context, 100, 1000);
+                return;
             }
+            ChooseMode(LevelDifficulties.Medium);
         }
 
         private void HandleLevelHardModeSelection()
@@ -467,24 +443,28 @@ namespace BTD6AutoCommunity.Strategies
                 _logs.Log("当前模式不是困难模式，无法进入困难模式，返回", LogLevel.Warning);
                 return;
             }
-            if (IsHeroSelectionComplete)
+            if (!IsHeroSelectionComplete && scriptMetadata.SelectedHero != currentHero)
             {
-                IsHeroSelectionComplete = false;
-                Point point = Constants.GetLevelModePos(scriptMetadata.SelectedMode);
-                InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
-            }
-            else
-            {
-                if (modeReTryCount > 2)
-                {
-                    modeReTryCount = 0;
-                    strategyInfo.UnChallengingScripts.Add(scriptMetadata.ToString());
-                    _logs.Log($"未找到困难模式：{Constants.GetTypeName(scriptMetadata.SelectedMode)}位置，请确认是否已解锁，开始尝试下一脚本！", LogLevel.Warning);
-                    NextScript();
-                    return;
-                }
-                modeReTryCount++;
                 InputSimulator.MouseMoveAndLeftClick(_context, 100, 1000);
+                return;
+            }
+            ChooseMode(LevelDifficulties.Hard);
+        }
+
+        private void ChooseMode(LevelDifficulties difficulties)
+        {
+            IsHeroSelectionComplete = false;
+            Point point = Constants.GetLevelModePos(scriptMetadata.SelectedMode);
+            InputSimulator.MouseMoveAndLeftClick(_context, point.X, point.Y);
+
+            modeReTryCount++;
+            if (modeReTryCount > 2)
+            {
+                modeReTryCount = 0;
+                strategyInfo.UnChallengingScripts.Add(scriptMetadata.ToString());
+                _logs.Log($"未找到{Constants.GetTypeName(difficulties)}模式：{Constants.GetTypeName(scriptMetadata.SelectedMode)}位置，请确认是否已解锁，开始尝试下一脚本！", LogLevel.Warning);
+                NextScript();
+                return;
             }
         }
 
@@ -524,7 +504,7 @@ namespace BTD6AutoCommunity.Strategies
             Thread.Sleep(500);
             InputSimulator.MouseMoveAndLeftClick(_context, 80, 55);
             IsHeroSelectionComplete = true;
-
+            currentHero = scriptMetadata.SelectedHero;
             _logs.Log($"已选择英雄：{Constants.GetTypeName(scriptMetadata.SelectedHero)}", LogLevel.Info);
         }
 
