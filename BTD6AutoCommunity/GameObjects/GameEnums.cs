@@ -26,7 +26,7 @@ namespace BTD6AutoCommunity.GameObjects
         TownCenter = 5,
         // 一二杉
         OneTwoTree = 6,
-        // 废料厂
+        // 废料场
         ScrapYard = 7,
         // 小木屋
         TheCabin = 8,

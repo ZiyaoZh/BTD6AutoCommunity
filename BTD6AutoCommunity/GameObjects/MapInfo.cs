@@ -94,17 +94,17 @@ namespace BTD6AutoCommunity.GameObjects
         public readonly Point EasyStandardPos = new Point(406, 366);
         public readonly Point MediumStandardPos = new Point(492, 366);
         public readonly Point HardStandardPos = new Point(580, 366);
-        public readonly Point PrimaryOnlyPos = new Point(382, 401);
-        public readonly Point MilitaryOnlyPos = new Point(466, 401);
+        public readonly Point PrimaryOnlyPos = new Point(382, 398);
+        public readonly Point MilitaryOnlyPos = new Point(468, 399);
         public readonly Point MagicMonkeysOnlyPos = new Point(543, 377);
-        public readonly Point DeflationPos = new Point(436, 401);
-        public readonly Point ApopalypsePos = new Point(492, 401);
-        public readonly Point ReversePos = new Point(520, 401);
-        public readonly Point HalfCashPos = new Point(607, 401);
-        public readonly Point DoubleHpMoabsPos = new Point(550, 401);
+        public readonly Point DeflationPos = new Point(436, 398);
+        public readonly Point ApopalypsePos = new Point(495, 398);
+        public readonly Point ReversePos = new Point(520, 398);
+        public readonly Point HalfCashPos = new Point(607, 398);
+        public readonly Point DoubleHpMoabsPos = new Point(550, 398);
         public readonly Point AlternateBloonsRoundsPos = new Point(615, 377);
         public readonly Point ImpoppablePos = new Point(666, 366);
-        public readonly Point CHIMPSPos = new Point(693, 401);
+        public readonly Point CHIMPSPos = new Point(693, 398);
 
         public Badges()
         {

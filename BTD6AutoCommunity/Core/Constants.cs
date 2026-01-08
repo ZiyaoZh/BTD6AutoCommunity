@@ -358,7 +358,7 @@ namespace BTD6AutoCommunity.Core
             { Maps.TreeStump, "树桩" },
             { Maps.TownCenter, "市中心" },
             { Maps.OneTwoTree, "一二杉" },
-            { Maps.ScrapYard, "废料厂" },
+            { Maps.ScrapYard, "废料场" },
             { Maps.TheCabin, "小木屋" },
             { Maps.Resort, "度假胜地" },
             { Maps.Skates, "溜冰鞋" },
