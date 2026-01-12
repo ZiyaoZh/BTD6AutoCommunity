@@ -44,6 +44,13 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
                 $"{Constants.GetTypeName(SelectedMode)}-" +
                 $"{Constants.GetTypeName(SelectedHero)}]";
         }
+
+        public string ToShortString()
+        {
+            return $"[{Constants.GetTypeName(SelectedMap)}-" +
+                $"{Constants.GetTypeName(SelectedDifficulty)}-" +
+                $"{Constants.GetTypeName(SelectedMode)}]";
+        }
     }
 }
 

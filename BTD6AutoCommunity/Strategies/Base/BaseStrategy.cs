@@ -340,7 +340,7 @@ namespace BTD6AutoCommunity.Strategies.Base
             }
             catch (Exception ex)
             {
-                _logs.Log($"检查游戏状态时出错: {ex.Message}", LogLevel.Error);
+                _logs.Log($"检测游戏状态时出现警告: {ex.Message}重新检测", LogLevel.Warning);
             }
             finally
             {

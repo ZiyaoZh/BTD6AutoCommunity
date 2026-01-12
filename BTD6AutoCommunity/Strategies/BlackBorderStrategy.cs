@@ -183,6 +183,12 @@ namespace BTD6AutoCommunity.Strategies
             string modeName = Constants.GetTypeName(scriptSequence[scriptIndex].levelModes);
             string scriptName = modeName + "-黑框";
             string scriptPath = ScriptFileManager.GetScriptFullPath(mapName, difficultyName, scriptName);
+            if (strategyInfo.PassedScripts.Contains('[' + mapName + '-' + difficultyName + '-' + modeName + ']'))
+            {
+                _logs.Log($"脚本{'[' + mapName + '-' + difficultyName + '-' + modeName + ']'}已通过，开始下一脚本！", LogLevel.Info);
+                if (!NextScript()) return true;
+                return false;
+            }
             if (mapInfo.GetBadgeStatus(mapList[mapIndex], scriptSequence[scriptIndex].levelDifficulties, scriptSequence[scriptIndex].levelModes))
             {
                 _logs.Log($"地图{mapName}已通过{Constants.GetTypeName(scriptSequence[scriptIndex].levelDifficulties)}难度的{Constants.GetTypeName(scriptSequence[scriptIndex].levelModes)}模式，无需重复挑战，开始尝试下一脚本！", LogLevel.Info);
@@ -193,12 +199,6 @@ namespace BTD6AutoCommunity.Strategies
             {
                 _logs.Log($"脚本{scriptPath}加载失败：开始下一脚本加载！", LogLevel.Warning);
                 strategyInfo.FailedScriptsToLoad.Add(scriptPath);
-                if (!NextScript()) return true;
-                return false;
-            }
-            if (strategyInfo.PassedScripts.Contains(scriptMetadata.ToString()))
-            {
-                _logs.Log($"脚本{scriptMetadata}已通过，开始下一脚本！", LogLevel.Info);
                 if (!NextScript()) return true;
                 return false;
             }
@@ -567,7 +567,7 @@ namespace BTD6AutoCommunity.Strategies
             {
                 IsStrategyExecutionCompleted = false;
             }
-            strategyInfo.PassedScripts.Add(scriptMetadata.ToString());
+            strategyInfo.PassedScripts.Add(scriptMetadata.ToShortString());
             NextScript();
             _logs.Log($"进入关卡结算界面，挑战成功，停止策略执行, 本关用时：{(int)(levelChallengingCount * 1.5 / 60)}分{(int)(levelChallengingCount * 1.5 % 60)}秒", LogLevel.Info);
         }
