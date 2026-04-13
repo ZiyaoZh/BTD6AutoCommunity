@@ -76,12 +76,12 @@ namespace BTD6AutoCommunity.Core
                 // 使用 double 存储精确的 DPI 缩放后尺寸
                 _preciseCurrentResolution.Width = (clientRect.Right - clientRect.Left) * DpiScale;
                 _preciseCurrentResolution.Height = (clientRect.Bottom - clientRect.Top) * DpiScale;
-                Debug.WriteLine($"Precise CurrentResolution: Width={_preciseCurrentResolution.Width}, Height={_preciseCurrentResolution.Height}");
+                //Debug.WriteLine($"Precise CurrentResolution: Width={_preciseCurrentResolution.Width}, Height={_preciseCurrentResolution.Height}");
                 CurrentResolution = new Size((int)Math.Round(_preciseCurrentResolution.Width), (int)Math.Round(_preciseCurrentResolution.Height));
 
                 OriginalClientTopLeft = new POINT { X = clientRect.Left, Y = clientRect.Top };
                 ClientToScreen(WindowHandle, ref OriginalClientTopLeft);
-                Debug.WriteLine($"ClientTopLeft after ClientToScreen: X={OriginalClientTopLeft.X}, Y={OriginalClientTopLeft.Y}");
+                //Debug.WriteLine($"ClientTopLeft after ClientToScreen: X={OriginalClientTopLeft.X}, Y={OriginalClientTopLeft.Y}");
                 // 使用 double 存储精确的 DPI 缩放后位置
                 _preciseClientTopLeft.X = OriginalClientTopLeft.X * DpiScale;
                 _preciseClientTopLeft.Y = OriginalClientTopLeft.Y * DpiScale;

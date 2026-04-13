@@ -98,6 +98,9 @@ namespace BTD6AutoCommunity.Strategies
                 strategyInfo = new BlackBorderStrategyInfo();
                 SaveInfo();
             }
+            strategyInfo.FailedScripts.Clear();
+            strategyInfo.FailedScriptsToLoad.Clear();
+            strategyInfo.UnChallengingScripts.Clear();
         }
 
         private void SaveInfo()
@@ -113,12 +116,12 @@ namespace BTD6AutoCommunity.Strategies
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("=============================");
             sb.AppendLine("刷黑框策略执行完毕，开始统计结果");
-            sb.AppendLine("=============================");
-            sb.AppendLine("通过的脚本：");
-            foreach (string script in strategyInfo.PassedScripts)
-            {
-                sb.AppendLine(script);
-            }
+            //sb.AppendLine("=============================");
+            //sb.AppendLine("通过的脚本：");
+            //foreach (string script in strategyInfo.PassedScripts)
+            //{
+            //    sb.AppendLine(script);
+            //}
             sb.AppendLine("=============================");
             sb.AppendLine("未通过的脚本：");
             foreach (string script in strategyInfo.FailedScripts)
@@ -183,15 +186,17 @@ namespace BTD6AutoCommunity.Strategies
             string modeName = Constants.GetTypeName(scriptSequence[scriptIndex].levelModes);
             string scriptName = modeName + "-黑框";
             string scriptPath = ScriptFileManager.GetScriptFullPath(mapName, difficultyName, scriptName);
-            if (strategyInfo.PassedScripts.Contains('[' + mapName + '-' + difficultyName + '-' + modeName + ']'))
+            string scriptInfo = '[' + mapName + '-' + difficultyName + '-' + modeName + ']';
+            if (strategyInfo.PassedScripts.Contains(scriptInfo))
             {
-                _logs.Log($"脚本{'[' + mapName + '-' + difficultyName + '-' + modeName + ']'}已通过，开始下一脚本！", LogLevel.Info);
+                _logs.Log($"脚本{scriptInfo}已通过，开始下一脚本！", LogLevel.Progress);
                 if (!NextScript()) return true;
                 return false;
             }
             if (mapInfo.GetBadgeStatus(mapList[mapIndex], scriptSequence[scriptIndex].levelDifficulties, scriptSequence[scriptIndex].levelModes))
             {
-                _logs.Log($"地图{mapName}已通过{Constants.GetTypeName(scriptSequence[scriptIndex].levelDifficulties)}难度的{Constants.GetTypeName(scriptSequence[scriptIndex].levelModes)}模式，无需重复挑战，开始尝试下一脚本！", LogLevel.Info);
+                _logs.Log($"地图{mapName}已通过{Constants.GetTypeName(scriptSequence[scriptIndex].levelDifficulties)}难度的{Constants.GetTypeName(scriptSequence[scriptIndex].levelModes)}模式，无需重复挑战，开始尝试下一脚本！", LogLevel.Progress);
+                strategyInfo.PassedScripts.Add(scriptInfo);
                 if (!NextScript()) return true;
                 return false;
             }

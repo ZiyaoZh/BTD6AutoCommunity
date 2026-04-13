@@ -256,7 +256,7 @@ namespace BTD6AutoCommunity.Strategies.Base
             LevelDataMonitorTimer.AutoReset = true;
         }
 
-        protected void SetupStrategyExecutorTimer(bool useRecommendInterval = false)
+        protected int SetupStrategyExecutorTimer(bool useRecommendInterval = false)
         {
             int interval = DefaultOperationInterval;
             if (useRecommendInterval)
@@ -271,6 +271,7 @@ namespace BTD6AutoCommunity.Strategies.Base
             InGameActionExecutorTimer = new System.Timers.Timer(interval);
             InGameActionExecutorTimer.Elapsed += (s, e) => ExecuteInGameAction();
             InGameActionExecutorTimer.AutoReset = true;
+            return interval;
         }
 
         protected void StartLevelTimer(int startIndex = 0, bool useRecommendInterval = false)
@@ -286,9 +287,11 @@ namespace BTD6AutoCommunity.Strategies.Base
             if (InGameActionExecutorTimer == null)
             {
                 IsStrategyExecutionCompleted = false;
-                InGameActionExecutor = new InGame.InGameActionExecutor(_context, executableInstructions);
-                SetupStrategyExecutorTimer(useRecommendInterval);
-                InGameActionExecutor.currentFirstIndex = startIndex;
+                int interval = SetupStrategyExecutorTimer(useRecommendInterval);
+                InGameActionExecutor = new InGame.InGameActionExecutor(_context, executableInstructions, interval)
+                {
+                    currentFirstIndex = startIndex
+                };
                 InGameActionExecutorTimer.Start();
                 _logs.Log("开始执行关卡策略...", LogLevel.Info);
                 InputSimulator.ReleaseAllKeys();

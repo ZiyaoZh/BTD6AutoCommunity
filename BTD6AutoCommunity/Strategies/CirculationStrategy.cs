@@ -122,15 +122,14 @@ namespace BTD6AutoCommunity.Strategies
             int reTryCount = 0;
             while (mapPos.X == -1)
             {
-                if (reTryCount > 8)
+                if (reTryCount > 4)
                 {
                     _logs.Log("未找到地图位置，请确认地图是否已解锁", LogLevel.Error);
-                    Stop();
                     return;
                 }
                 reTryCount++;
                 InputSimulator.MouseMoveAndLeftClick(_context, mapTypePos.X, mapTypePos.Y);
-                Thread.Sleep(500);
+                Thread.Sleep(1500);
                 mapPos = GameVisionRecognizer.GetMapPos(_context, (int)currentMap);
             }
             InputSimulator.MouseMoveAndLeftClick(_context, mapPos.X, mapPos.Y);

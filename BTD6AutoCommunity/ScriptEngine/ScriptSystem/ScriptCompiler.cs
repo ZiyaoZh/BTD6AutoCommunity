@@ -324,17 +324,21 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
             {
                 compiled.Add(hotKey1, 1);
             }
-            if (inst.Arguments[0] == 0)
+            if (inst.Arguments[0] == 0 || inst.Arguments[0] == 1)
+            {
+                compiled.Add(hotKey1, 1);
+                if (inst.Coordinates != (-1, -1))
+                {
+                    compiled.Add(inst[8], inst[9]);
+                }
+            }
+            if (inst.Arguments[0] == 2 || inst.Arguments[0] == 3)
             {
                 compiled.Add(hotKey2, 1);
-            }
-            else
-            {
-                compiled.Add(hotKey3, 1);
-            }
-            if (inst.Coordinates != (-1, -1))
-            {
-                compiled.Add(inst[8], inst[9]);
+                if (inst.Coordinates != (-1, -1))
+                {
+                    compiled.Add(inst[8], inst[9]);
+                }
             }
             if (!IfNext(index))
             {

@@ -675,6 +675,9 @@ namespace BTD6AutoCommunity.ViewModels
             }
         }
 
+        public LogItem LastLog => logs.Count > 0 ? logs[logs.Count - 1] : null;
+
+
         private void HandleLogMessage(string msg, LogLevel level)
         {
             CurrentLog = new LogItem { Message = msg, Level = level };
