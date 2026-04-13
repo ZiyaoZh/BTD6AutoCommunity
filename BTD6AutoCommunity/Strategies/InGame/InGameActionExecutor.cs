@@ -13,6 +13,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
     {
         private readonly GameContext _context;
         private readonly List<ExecutableInstruction> ExecutableInstructions;
+        private readonly int _interval = 200;
 
         private readonly object _checkExecutorLock = new object();
         private volatile bool _isExecuting = false;
@@ -29,6 +30,9 @@ namespace BTD6AutoCommunity.Strategies.InGame
         private bool reDeployFlag;
         private int reDeployPace;
 
+        private int upgradeAttemptCount;
+        private int AttemptMaxCount => (int)Math.Ceiling(250.0 / _interval);
+
         public (int round, int cash) currentTrigger;
         private int abilityRgb;
 
@@ -37,11 +41,13 @@ namespace BTD6AutoCommunity.Strategies.InGame
 
         public bool Finished;
 
-        public InGameActionExecutor(GameContext context, List<ExecutableInstruction> instructions)
+        public InGameActionExecutor(GameContext context, List<ExecutableInstruction> instructions, int interval)
         {
             _context = context;
 
             ExecutableInstructions = instructions;
+
+            _interval = interval;
 
             InitActionHandlers();
             currentFirstIndex = 0;
@@ -54,6 +60,8 @@ namespace BTD6AutoCommunity.Strategies.InGame
             currentReDeployIndex = -1;
             reDeployFlag = false;
             reDeployPace = 10000;
+
+            upgradeAttemptCount = 0;
 
             IsStartFreePlay = false;
             StartFreePlayFinished = false;
@@ -210,7 +218,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                 {
                     reDeployFlag = false;
                     currentReDeployIndex = -1;
-                    reDeployPace = 1;
+                    reDeployPace = 10000;
                     currentSecondIndex++;
                 }
                 else
@@ -228,6 +236,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
             if (currentSecondIndex == currentInstructionCount)
             {
                 reDeployFlag = false;
+                reDeployPace = 10000;
                 currentSecondIndex = 0;
                 currentFirstIndex++;
             }
@@ -243,19 +252,26 @@ namespace BTD6AutoCommunity.Strategies.InGame
 
             if (micro.Type == MicroInstructionType.CheckColorAndHitKey) // 升级猴子
             {
-                //int route = instructionInfo.Arguments[2];
-
                 int colorIndex = GetColorIndex(micro[2]);
-                ////Debug.WriteLine("Upgrade " + colorIndex);
-                //if (colorIndex == -1) return; // 未弹出升级界面
-
-                //int p = instructionInfo.Arguments[3];
-                //Debug.WriteLine("Upgrade " + colorIndex + " " + p);
-                //if (p == 0) return;
 
                 if (!GameVisionRecognizer.GetYellowBlockCount(_context, colorIndex, micro[3]))
                 {
                     RunCode(micro);
+
+                    // 没有弹出升级界面
+                    if (colorIndex == -1)
+                    {
+                        upgradeAttemptCount++;
+                        if (upgradeAttemptCount >= AttemptMaxCount)
+                        {
+                            upgradeAttemptCount = 0;
+                            InputSimulator.MouseLeftClick();
+                        }
+                    }
+                    else
+                    {
+                        upgradeAttemptCount = 0;
+                    }
                     return;
                 }
                 currentSecondIndex++;
@@ -350,7 +366,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                     if (currentReDeployIndex == reDeployList.Count)
                     {
                         currentReDeployIndex = 0;
-                        reDeployPace+=10000;
+                        reDeployPace += 10000;
                     }
                     int x = micro[1];
                     int y = micro[2];
@@ -403,7 +419,7 @@ namespace BTD6AutoCommunity.Strategies.InGame
                 {
                     reDeployFlag = false;
                     currentReDeployIndex = -1;
-                    reDeployPace = 1;
+                    reDeployPace = 10000;
                     currentSecondIndex++;
                 }
                 else

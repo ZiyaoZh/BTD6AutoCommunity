@@ -70,8 +70,9 @@ namespace BTD6AutoCommunity.ScriptEngine.ScriptSystem
         {
             if (!File.Exists(fullPath))
                 return null;
-            string json = File.ReadAllText(fullPath);
-            ScriptModel model = JsonConvert.DeserializeObject<ScriptModel>(json);
+            //string json = File.ReadAllText(fullPath);
+            //ScriptModel model = JsonConvert.DeserializeObject<ScriptModel>(json);
+            ScriptModel model = LoadScript(fullPath);
             return model.Metadata;
         }
 

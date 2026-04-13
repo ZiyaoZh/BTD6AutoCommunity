@@ -150,8 +150,12 @@ namespace BTD6AutoCommunity.GameObjects
         LastResort = 78,
         // 魔法林地
         EnchantedGlade = 79,
-        //日落峡谷
+        // 日落峡谷
         SunsetGulch = 80,
+        // 派对游行
+        PartyParade = 81,
+        // 蘑菇洞窟
+        MushroomGortto = 82,
 
         // 专家图
 

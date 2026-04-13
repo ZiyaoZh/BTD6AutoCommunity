@@ -10,7 +10,8 @@ namespace BTD6AutoCommunity.Core
     {
         Info,
         Warning,
-        Error
+        Error,
+        Progress
     }
 
     public class LogHandler

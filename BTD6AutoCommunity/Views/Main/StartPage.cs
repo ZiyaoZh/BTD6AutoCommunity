@@ -278,6 +278,9 @@ namespace BTD6AutoCommunity.Views.Main
                             case LogLevel.Info:
                                 color = Color.Gray;
                                 break;
+                            case LogLevel.Progress:
+                                color = Color.Gray;
+                                break;
                         }
 
                         // 当行数超过1000时，移除顶部的行
