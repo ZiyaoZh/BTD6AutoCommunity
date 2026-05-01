@@ -1,3 +1,4 @@
+本项目正在全量重构中，可以进群查看最新进展
 **README for BTD6 Automation Script**  
 **气球塔防6自动化脚本说明**
 
