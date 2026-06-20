@@ -1,4 +1,10 @@
-本项目正在全量重构中，可以进群查看最新进展
+# 项目动态
+
+本项目正在**全量重构**中，欢迎进群查看最新进展。
+
+## 新项目地址
+
+👉 [https://github.com/ZiyaoZh/BetterBTD](https://github.com/ZiyaoZh/BetterBTD)
 **README for BTD6 Automation Script**  
 **气球塔防6自动化脚本说明**
 
